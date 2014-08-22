@@ -1,0 +1,1 @@
+c:\users\tfuruta\documents\visual studio 2013\Projects\tetris\tetris\bin\Debug\tetris.exe.config
