@@ -98,7 +98,7 @@ namespace tetris
 
         public int MarginRight
         {
-            get
+            get 
             {
                 for (int x = WIDTH - 1; x > 0; x--)
                 {
