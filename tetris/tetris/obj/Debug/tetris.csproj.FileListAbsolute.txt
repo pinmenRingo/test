@@ -1,0 +1,13 @@
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\bin\Debug\tetris.exe.config
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\bin\Debug\tetris.exe
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\bin\Debug\tetris.pdb
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\tetris.csprojResolveAssemblyReference.cache
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\MainWindow.baml
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\MainWindow.g.cs
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\App.g.cs
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\tetris_MarkupCompile.cache
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\tetris.g.resources
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\tetris.Properties.Resources.resources
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\tetris.csproj.GenerateResource.Cache
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\tetris.exe
+c:\users\nm777taka\documents\visual studio 2013\Projects\tetris\tetris\obj\Debug\tetris.pdb
