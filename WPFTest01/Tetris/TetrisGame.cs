@@ -109,12 +109,14 @@ namespace WPFTest01
         /// <summary>
         /// ブロックを配置するフィールドを初期化する
         /// </summary>
-        public void Proc(){
+        /// <returns>ゲームオーバー時にtrueを返す</returns>
+        public bool Proc()
+        {
 
             //ゲームオーバー時は何もせずリターン
             if (gameover)
             {
-                return;
+                return true;
             }
 
             //キー入力処理
@@ -183,10 +185,15 @@ namespace WPFTest01
                         gameover = true;//temp,boolを返して外でやるべき
                         //背景を真っ赤に
                         GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
+
+                        //ゲームオーバーなのでtrueを返す
+                        return true;
                     }
                 }
             }
 
+            //通常終了
+            return false;
         }
         /// <summary>
         /// 消える行を探索,削除する
