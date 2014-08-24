@@ -4,5 +4,6 @@
         Title="ヒトリス" Height="400" Width="600">
     <Grid x:Name="grid01">
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="374,310,0,0" VerticalAlignment="Top" Width="208"/>
+        <Canvas x:Name="field_back_canvas" HorizontalAlignment="Left" Height="353" Margin="10,10,0,0" VerticalAlignment="Top" Width="287.493" Background="Black"/>
     </Grid>
 </Window>

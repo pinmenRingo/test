@@ -26,6 +26,7 @@ namespace WPFTest01
         //他からgrid01にアクセスする用
         //コンパイルの仕様上かなんかで必要
         public static Grid grid;
+        public static Canvas fieldcanvas;
 
         //テトリスのフィールドを管理するクラス
         Field field;
@@ -35,6 +36,16 @@ namespace WPFTest01
             InitializeComponent();
 
             grid = grid01;
+            fieldcanvas = new Canvas()
+            {
+                Background = new SolidColorBrush(Colors.Gray),
+                Visibility = Visibility.Visible,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                VerticalAlignment = System.Windows.VerticalAlignment.Top,
+                Margin = new Thickness(10,10,0,0)
+            };
+            field_back_canvas.Children.Add(fieldcanvas);
+
             field = new Field();
 
             DispatcherTimer timer = new DispatcherTimer();
@@ -59,11 +70,13 @@ namespace WPFTest01
 
         public static void AddRect(Rectangle inobj)
         {
-            grid.Children.Add(inobj);
+            //grid.Children.Add(inobj);
+            fieldcanvas.Children.Add(inobj);
         }
         public static void DeleteRect(Rectangle inobj)
         {
-            grid.Children.Remove( inobj );
+            //grid.Children.Remove( inobj );
+            fieldcanvas.Children.Remove(inobj);
         }
 
         //public static void ShowMessageaBox(string instr)
