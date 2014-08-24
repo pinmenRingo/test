@@ -111,6 +111,7 @@ namespace WPFTest01
         /// </summary>
         public void Proc(){
 
+            //ゲームオーバー時は何もせずリターン
             if (gameover)
             {
                 return;
