@@ -103,7 +103,7 @@ namespace WPFTest01
                 //生成に成功していた場合ブロックをgridにAddChildする
                 for (int i = 0; i < 4; ++i)
                 {
-                    MainWindow.AddRect(blocks[i].GetRect());
+                    GameScene.AddRect(blocks[i].GetRect());
                 }
             }
 

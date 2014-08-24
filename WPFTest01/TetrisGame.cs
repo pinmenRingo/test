@@ -65,19 +65,19 @@ namespace WPFTest01
                 {
                     if (bUsing[y, x])
                     {
-                        MainWindow.DeleteRect(rects[y, x].GetRect());
+                        GameScene.DeleteRect(rects[y, x].GetRect());
                     }
                     bUsing[y, x] = false;
                 }
             }
             //ゲームオーバー状態をリセット
             gameover = false;
-            MainWindow.gamecanvas.Background = new SolidColorBrush(Colors.Gray);
+            GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Gray);
 
             //落下中のテトリミノをリセット
             for (int i = 0; i < 4; ++i)
             {
-                MainWindow.DeleteRect(fallingTet.blocks[i].GetRect());
+               GameScene.DeleteRect(fallingTet.blocks[i].GetRect());
             }
             fallingTet = new Tetromino();
             framecount = fallframe;
@@ -182,7 +182,7 @@ namespace WPFTest01
                         //生成できなかった(=ゲームオーバー)
                         gameover = true;//temp,boolを返して外でやるべき
                         //背景を真っ赤に
-                        MainWindow.gamecanvas.Background = new SolidColorBrush(Colors.Red);
+                        GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
                     }
                 }
             }
@@ -234,7 +234,7 @@ namespace WPFTest01
             //指定行のRectangleをウィンドウの描画登録から削除する
             for (int x = 0; x < FIELD_WIDTH; ++x)
             {
-                MainWindow.DeleteRect(rects[inline, x].GetRect());
+                GameScene.DeleteRect(rects[inline, x].GetRect());
             }
             //削除行より上のすべての段を1マスずつ下げる
             for (int y = inline; y!=0; --y)

@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Tako\Desktop\gitTest\WPFTest01\obj\Debug\
+C:\Users\nm777taka\Documents\test\WPFTest01\obj\Debug\
 WPFTest01
 none
 false
 DEBUG;TRACE
-C:\Users\Tako\Desktop\gitTest\WPFTest01\App.xaml
-11151548125
+C:\Users\nm777taka\Documents\test\WPFTest01\App.xaml
+3-684216852
 
-12-2107512667
+141201457190
 12-1401562060
-MainWindow.xaml;
+GameScene.xaml;MainWindow.xaml;TitleScene.xaml;
 
 False
 
