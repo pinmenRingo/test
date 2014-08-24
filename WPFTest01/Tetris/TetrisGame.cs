@@ -35,7 +35,7 @@ namespace WPFTest01
         /// コンストラクタ
         /// </summary>
         public TetrisGame(){
-            //フィールドを初期化
+            //フィールドを初期化(空にする)
             for (int y = 0; y < FIELD_HEIGHT; ++y)
             {
                 for (int x = 0; x < FIELD_WIDTH; ++x)
@@ -48,7 +48,7 @@ namespace WPFTest01
             {
                 bUsing[FIELD_HEIGHT, x] = true;
             }
-
+            //落下中のブロックを生成する
             fallingTet = new Tetromino();
         }
 
@@ -80,6 +80,7 @@ namespace WPFTest01
                GameScene.DeleteRect(fallingTet.blocks[i].GetRect());
             }
             fallingTet = new Tetromino();
+            //落下カウントもリセット
             framecount = fallframe;
         }
 
@@ -248,6 +249,7 @@ namespace WPFTest01
             {
                 for (int x = 0; x < FIELD_WIDTH; ++x)
                 {
+                    //1マス上の行のデータ([y-1,x])を現在の行([y,x])にコピーする
                     bUsing[y, x] = bUsing[y - 1, x];
                     if (bUsing[y, x])
                     {

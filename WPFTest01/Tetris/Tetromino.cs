@@ -21,13 +21,15 @@ namespace WPFTest01
         /// </summary>
         public Tetromino()
         {
+            //最初落下するテトリミノ(ブロック4つ)を生成する
             GenerateNewTetromino();
         }
 
+        //テトリミノの種類
         const int TETROMINO_NUM = 6;//棒,括弧x2,四角,くねくねx2
-
-        //テトリミノテンプレート[型(TETROMINO_NUM),ブロック番号(4),座標xy(2)]
+        //テトリミノの色[型(TETROMINO_NUM)]
         Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen };
+        //テトリミノテンプレート[型(TETROMINO_NUM),ブロック番号(4),座標xy(2)]
         //テトリミノの形を配列で定義
         //値はテトリミノの座標からの相対距離
         int[, ,] TETROMINO_TEMPLATE ={
@@ -68,10 +70,11 @@ namespace WPFTest01
                                                   {1,1}
                                               }
                                           };
-        Random rand = new Random();
+        //乱数を得るためのクラス
+        Random rand = new Random();//引数無しなのでシード値は時間からいい感じにやってくれるそうです
 
         /// <summary>
-        /// 新たにテトリミノを生成する
+        /// 新たにテトリミノ(ブロック4つ)を生成する
         /// </summary>
         /// <returns>生成の成否を返す</returns>
         public bool GenerateNewTetromino()
@@ -80,8 +83,7 @@ namespace WPFTest01
             bool generated = true;
             //テトリミノのx座標を真ん中,y座標を一番上にとる
             int centerx = TetrisGame.FIELD_WIDTH / 2;
-            x = centerx;
-            y = 0;
+            x = centerx; y = 0;
 
             //生成するテトリミノの番号をランダムに設定
             int tetrominonum = rand.Next(TETROMINO_NUM);
@@ -90,13 +92,20 @@ namespace WPFTest01
             //各ブロック生成可能か判定する
             for (int i = 0; i < 4; ++i)
             {
-                blocks[i] = new Block(TETROMINO_COLOR[tetrominonum]);
-                if (!blocks[i].CanMoveTo(centerx + TETROMINO_TEMPLATE[tetrominonum, i, 0], TETROMINO_TEMPLATE[tetrominonum, i, 1]))
+                //TETROMINO_TEMPLATEのtetrominonum番目のテトリミノのi番目のブロックの座標を得る
+                int tx = centerx + TETROMINO_TEMPLATE[tetrominonum, i, 0];
+                int ty = TETROMINO_TEMPLATE[tetrominonum, i, 1];
+
+                //ブロックを生成
+                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[tetrominonum]);
+
+                //他のブロックに被っていないか確かめる
+                if (!blocks[i].CanMove(0, 0))
                 {
-                    generated = false;
+                    //ブロックを生成したい場所に既にブロックがおいてあった場合
+                    generated = false;//フラグを折る
                     break;
                 }
-                blocks[i].MoveTo(centerx + TETROMINO_TEMPLATE[tetrominonum, i, 0], TETROMINO_TEMPLATE[tetrominonum, i, 1]);
             }
             if (generated)
             {
@@ -120,7 +129,7 @@ namespace WPFTest01
         {
             //移動可能か判定する
             bool bCanMove = true;
-            for ( int i = 0; i < 4 && bCanMove; ++i )
+            for ( int i = 0; i < 4 && bCanMove; ++i )//canmoveがfalseになったらループを抜ける(条件部参照)
             {
                 bCanMove = blocks[i].CanMove(dx,dy);
             }
@@ -134,8 +143,7 @@ namespace WPFTest01
                     blocks[i].Move(dx, dy);
                 }
                 //テトリミノの座標を移動させる
-                x += dx;
-                y += dy;
+                x += dx; y += dy;
             }
 
             return bCanMove;
@@ -159,22 +167,28 @@ namespace WPFTest01
             //回転可能か判定しながら可能なら移動していってやる
             for (int i = 0; i < 4; ++i)
             {
-                //テトリミノの中心からブロックへの相対座標を得る
+                //テトリミノの中心からブロックへの相対座標を得る(ブロック座標-テトリミノ座標=相対座標)
                 int dx = blocks[i].x - x;
                 int dy = blocks[i].y - y;
                 //回転行列のあれを用いて90度回転
                 //( cosθ , sinθ )
                 //( -sinθ, cosθ )
-                int tx = x + (right ? -dy : +dy);
-                int ty = y + (right ? +dx : -dx);
+                int tx =  (right ? -dy : +dy);
+                int ty =  (right ? +dx : -dx);
+                //相対座標から絶対座標に直す(回転後相対座標+テトリミノ座標=回転後ブロック座標)
+                tx += x; ty += y;
+
+                //回転後の座標にブロックが無いかチェック
                 if (!blocks[i].CanMoveTo(tx, ty))
                 {
+                    //あったら失敗
                     suc = false;
                     break;
                 }
+                //そのブロックが移動できそうならとりあえず移動しとく
                 blocks[i].MoveTo(tx, ty);
             }
-            //失敗時は元の場所に戻す(回転を取り消す的な)
+            //失敗していた時は全部ロック元の場所に戻す(回転を取り消す的な)
             if (!suc)
             {
                 for (int i = 0; i < 4; ++i)

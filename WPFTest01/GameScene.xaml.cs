@@ -26,8 +26,8 @@ namespace WPFTest01
         //アクセス用
         //コンパイルの仕様上かなんかで非静的メソッドからアクセスする場合必要っぽい
         public static Grid grid;
-        public static Canvas gamebackcanvas;
-        public static Canvas gamecanvas;
+        public static Canvas gamebackcanvas;//背景とか追加予定のキャンバス
+        public static Canvas gamecanvas;//テトリスのブロックが登録されるキャンバス,gamebackcanvasの子
 
         //テトリスのフィールドを管理するクラス
         TetrisGame tetris;
@@ -37,48 +37,26 @@ namespace WPFTest01
             //なんか元からあったやつ,おまじないって認識で
             InitializeComponent();
 
-            //キャンバスの準備
-            grid = grid01;
-            //黒いキャンバス,あるだけ,gamecanvasだけChildlenにAddされてる
-            gamebackcanvas = gamebackcanvas_xaml;//new Canvas()
-            //{
-            //    Background = new SolidColorBrush(Colors.Black),
-            //    Visibility = Visibility.Visible,
-            //    Width = (TetrisGame.FIELD_WIDTH + 2) * Block.BLOCK_SIZE,
-            //    Height = (TetrisGame.FIELD_HEIGHT + 2) * Block.BLOCK_SIZE,
-            //    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-            //    VerticalAlignment = System.Windows.VerticalAlignment.Top,
-            //    Margin = new Thickness(0, 0, 0, 0)
-            //};
-            //grid.Children.Add(gamebackcanvas);
-            //ゲームキャンバス,ブロックは全部ここのChildlenにAddされる
-            gamecanvas = gamecanvas_xaml;/*new Canvas()
-            {
-                Background = new SolidColorBrush(Colors.Gray),
-                Visibility = Visibility.Visible,
-                Width = TetrisGame.FIELD_WIDTH * Block.BLOCK_SIZE,
-                Height = TetrisGame.FIELD_HEIGHT * Block.BLOCK_SIZE,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                Margin = new Thickness(Block.BLOCK_SIZE, Block.BLOCK_SIZE, 0, 0)
-            };
-            gamebackcanvas.Children.Add(gamecanvas);*/
+            //要素に静的メソッド以外からでもアクセスできるように小細工
+            grid = grid01;//gamebackcanvasの親
+            gamebackcanvas = gamebackcanvas_xaml;//gamecanvasの親
+            gamecanvas = gamecanvas_xaml;//ゲームキャンバス,ブロックは全部ここのChildlenにAddされる
 
             //ゲームのクラスを生成する
             tetris = new TetrisGame();
 
             //タイマーの準備
-            DispatcherTimer timer = new DispatcherTimer();
+            DispatcherTimer timer = new DispatcherTimer();//タイマー生成
             timer.Interval = new TimeSpan(0, 0, 0, 0, 16);//1秒60フレームに設定,1000/60=16.6666...
-            timer.Tick += timer_Tick;
-            timer.Start();
+            timer.Tick += timer_Tick;//デリゲートを追加？的な
+            timer.Start();//タイマースタート
         }
 
-        //毎フレーム呼ばれる
+        //毎フレーム呼ばれる関数
         void timer_Tick(object sender, EventArgs e)
         {
             //テトリスゲームを1フレーム進める
-            tetris.Proc();
+            tetris.Proc();//ゲームオーバー時はtrueが返ってくる
         }
 
         //ボタンが押された場合に呼ばれる
@@ -88,14 +66,14 @@ namespace WPFTest01
             tetris.ResetGame();
         }
 
+        //gamecanvasにRectangleを登録する
         public static void AddRect(Rectangle inobj)
         {
-            //grid.Children.Add(inobj);
             gamecanvas.Children.Add(inobj);
         }
+        //gamecanvasからRectangleを削除する
         public static void DeleteRect(Rectangle inobj)
         {
-            //grid.Children.Remove( inobj );
             gamecanvas.Children.Remove(inobj);
         }
 

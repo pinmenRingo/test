@@ -26,9 +26,14 @@ namespace WPFTest01
         /// <summary>
         /// コンストラクタ
         /// </summary>
+        /// <param name="inx">ブロックの初期x座標</param>
+        /// <param name="iny">ブロックの初期y座標</param>
         /// <param name="incolor">ブロックの色</param>
-        public Block( Color incolor )
+        public Block( int inx, int iny, Color incolor )
         {
+            //座標をセット
+            Move(inx, iny);
+            //Rectangleを生成
             rect = new Rectangle()
             {
                 Width = BLOCK_WIDTH,
@@ -40,11 +45,11 @@ namespace WPFTest01
                 Stroke=new SolidColorBrush(Colors.Black),
                 StrokeThickness = 1.5
             };
-
         }
 
         /// <summary>
         /// 渡された移動量分移動可能か判断する
+        /// 0,0を渡した場合その場に設置可能か判定できる
         /// </summary>
         /// <param name="dx">x移動量</param>
         /// <param name="dy">y移動量</param>
