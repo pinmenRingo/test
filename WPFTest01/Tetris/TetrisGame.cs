@@ -13,9 +13,9 @@ namespace WPFTest01
     /// </summary>
     class TetrisGame
     {
-        //横方向のマス数
+        //フィールドの横方向のマス数
         public static int FIELD_WIDTH = 12;
-        //縦方向のマス数
+        //フィールドの縦方向のマス数
         public static int FIELD_HEIGHT = 20;
         //全マス数
         static int BLOCK_MAX = FIELD_WIDTH*FIELD_HEIGHT;

@@ -40,19 +40,19 @@ namespace WPFTest01
             //キャンバスの準備
             grid = grid01;
             //黒いキャンバス,あるだけ,gamecanvasだけChildlenにAddされてる
-            gamebackcanvas = new Canvas()
-            {
-                Background = new SolidColorBrush(Colors.Black),
-                Visibility = Visibility.Visible,
-                Width = (TetrisGame.FIELD_WIDTH + 2) * Block.BLOCK_SIZE,
-                Height = (TetrisGame.FIELD_HEIGHT + 2) * Block.BLOCK_SIZE,
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                Margin = new Thickness(0, 0, 0, 0)
-            };
-            grid.Children.Add(gamebackcanvas);
+            gamebackcanvas = gamebackcanvas_xaml;//new Canvas()
+            //{
+            //    Background = new SolidColorBrush(Colors.Black),
+            //    Visibility = Visibility.Visible,
+            //    Width = (TetrisGame.FIELD_WIDTH + 2) * Block.BLOCK_SIZE,
+            //    Height = (TetrisGame.FIELD_HEIGHT + 2) * Block.BLOCK_SIZE,
+            //    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+            //    VerticalAlignment = System.Windows.VerticalAlignment.Top,
+            //    Margin = new Thickness(0, 0, 0, 0)
+            //};
+            //grid.Children.Add(gamebackcanvas);
             //ゲームキャンバス,ブロックは全部ここのChildlenにAddされる
-            gamecanvas = new Canvas()
+            gamecanvas = gamecanvas_xaml;/*new Canvas()
             {
                 Background = new SolidColorBrush(Colors.Gray),
                 Visibility = Visibility.Visible,
@@ -62,7 +62,7 @@ namespace WPFTest01
                 VerticalAlignment = System.Windows.VerticalAlignment.Top,
                 Margin = new Thickness(Block.BLOCK_SIZE, Block.BLOCK_SIZE, 0, 0)
             };
-            gamebackcanvas.Children.Add(gamecanvas);
+            gamebackcanvas.Children.Add(gamecanvas);*/
 
             //ゲームのクラスを生成する
             tetris = new TetrisGame();

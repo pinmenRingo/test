@@ -56,7 +56,7 @@
     <Compile Include="GameScene.xaml.cs">
       <DependentUpon>GameScene.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tetromino.cs" />
+    <Compile Include="Tetris関係のクラス\Tetromino.cs" />
     <Compile Include="TitleScene.xaml.cs">
       <DependentUpon>TitleScene.xaml</DependentUpon>
     </Compile>
@@ -72,8 +72,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Block.cs" />
-    <Compile Include="TetrisGame.cs" />
+    <Compile Include="Tetris関係のクラス\Block.cs" />
+    <Compile Include="Tetris関係のクラス\TetrisGame.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

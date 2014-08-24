@@ -9,6 +9,9 @@
 
     <Grid x:Name="grid01" Background="White">
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="374,310,0,0" VerticalAlignment="Top" Width="208"/>
+        <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="336.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="Black">
+        	<Canvas x:Name="gamecanvas_xaml" Height="261.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="240.83" Background="#7E535353"/>
+        </Canvas>
 
     </Grid>
 </Page>

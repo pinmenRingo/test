@@ -12,7 +12,10 @@ namespace WPFTest01
     class Block
     {
         //ブロックのサイズ
-        public const int BLOCK_SIZE = 16;
+        //public const int BLOCK_SIZE = 16;
+        //キャンバスのサイズとフィールドの横幅から計算
+        public static int BLOCK_WIDTH = (int)GameScene.gamecanvas.Width / TetrisGame.FIELD_WIDTH;
+        public static int BLOCK_HEIGHT = (int)GameScene.gamecanvas.Height / TetrisGame.FIELD_HEIGHT;
 
         //ブロックの座標
         public int x, y;
@@ -28,8 +31,8 @@ namespace WPFTest01
         {
             rect = new Rectangle()
             {
-                Width = BLOCK_SIZE,
-                Height = BLOCK_SIZE,
+                Width = BLOCK_WIDTH,
+                Height = BLOCK_HEIGHT,
                 Fill = new SolidColorBrush(incolor),
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                 VerticalAlignment = System.Windows.VerticalAlignment.Top,
@@ -96,7 +99,7 @@ namespace WPFTest01
         /// </summary>
         public void UpdateDrawPosition()
         {
-            rect.Margin = new Thickness(x * BLOCK_SIZE, y * BLOCK_SIZE, 0, 0);
+            rect.Margin = new Thickness(x * BLOCK_WIDTH, y * BLOCK_HEIGHT, 0, 0);
         }
 
         /// 着地時に呼ばれる
