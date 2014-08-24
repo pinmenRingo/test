@@ -26,6 +26,7 @@ namespace WPFTest01
         //他からgrid01にアクセスする用
         //コンパイルの仕様上かなんかで必要
         public static Grid grid;
+        public static Canvas fieldbackcanvas;
         public static Canvas fieldcanvas;
 
         //テトリスのフィールドを管理するクラス
@@ -36,15 +37,28 @@ namespace WPFTest01
             InitializeComponent();
 
             grid = grid01;
+            fieldbackcanvas = new Canvas()
+            {
+                Background = new SolidColorBrush(Colors.Black),
+                Visibility = Visibility.Visible,
+                Width = (Field.FIELD_WIDTH+2) * Block.BLOCK_SIZE,
+                Height = (Field.FIELD_HEIGHT+2) * Block.BLOCK_SIZE,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                VerticalAlignment = System.Windows.VerticalAlignment.Top,
+                Margin = new Thickness(0, 0, 0, 0)
+            };
+            grid.Children.Add(fieldbackcanvas);
             fieldcanvas = new Canvas()
             {
                 Background = new SolidColorBrush(Colors.Gray),
                 Visibility = Visibility.Visible,
+                Width = Field.FIELD_WIDTH * Block.BLOCK_SIZE,
+                Height = Field.FIELD_HEIGHT * Block.BLOCK_SIZE,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                 VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                Margin = new Thickness(10,10,0,0)
+                Margin = new Thickness(Block.BLOCK_SIZE, Block.BLOCK_SIZE, 0, 0)
             };
-            field_back_canvas.Children.Add(fieldcanvas);
+            fieldbackcanvas.Children.Add(fieldcanvas);
 
             field = new Field();
 

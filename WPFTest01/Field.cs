@@ -34,26 +34,26 @@ namespace WPFTest01
                 bUsing[FIELD_HEIGHT, x] = true;
             }
 
-            //右の枠を追加
-            MainWindow.AddRect(new Rectangle()
-            {
-                Width = Block.BLOCK_SIZE,
-                Height = Block.BLOCK_SIZE * FIELD_HEIGHT,
-                Fill = new SolidColorBrush(Colors.Black),
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                Margin = new System.Windows.Thickness(Block.BLOCK_SIZE * FIELD_WIDTH, 0, 0, 0)
-            });
-            //下の枠を追加
-            MainWindow.AddRect(new Rectangle()
-            {
-                Width = Block.BLOCK_SIZE * (FIELD_WIDTH+1),//右下の角も埋める
-                Height = Block.BLOCK_SIZE,
-                Fill = new SolidColorBrush(Colors.Black),
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-                VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                Margin = new System.Windows.Thickness(0, Block.BLOCK_SIZE * FIELD_HEIGHT, 0, 0)
-            });
+            ////右の枠を追加
+            //MainWindow.AddRect(new Rectangle()
+            //{
+            //    Width = Block.BLOCK_SIZE,
+            //    Height = Block.BLOCK_SIZE * FIELD_HEIGHT,
+            //    Fill = new SolidColorBrush(Colors.Black),
+            //    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+            //    VerticalAlignment = System.Windows.VerticalAlignment.Top,
+            //    Margin = new System.Windows.Thickness(Block.BLOCK_SIZE * FIELD_WIDTH, 0, 0, 0)
+            //});
+            ////下の枠を追加
+            //MainWindow.AddRect(new Rectangle()
+            //{
+            //    Width = Block.BLOCK_SIZE * (FIELD_WIDTH+1),//右下の角も埋める
+            //    Height = Block.BLOCK_SIZE,
+            //    Fill = new SolidColorBrush(Colors.Black),
+            //    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+            //    VerticalAlignment = System.Windows.VerticalAlignment.Top,
+            //    Margin = new System.Windows.Thickness(0, Block.BLOCK_SIZE * FIELD_HEIGHT, 0, 0)
+            //});
 
             fallingTet = new Tetromino();
         }
@@ -77,6 +77,7 @@ namespace WPFTest01
                 }
             }
             gaming = true;
+            MainWindow.fieldcanvas.Background = new SolidColorBrush(Colors.Gray);
 
             for (int i = 0; i < 4; ++i)
             {
@@ -129,11 +130,20 @@ namespace WPFTest01
                 fallingTet.Move(-1, 0);
             }
             //回転は押された瞬間のみ反応するようフラグで管理(長押し無効)
-            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Up))
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Up) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Z))
             {
                 if (!spacepushing)
                 {
-                    fallingTet.Turn( true );
+                    fallingTet.Turn(true);
+                    spacepushing = true;
+                }
+            }
+            //回転は押された瞬間のみ反応するようフラグで管理(長押し無効)
+            else if ( System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.X))
+            {
+                if (!spacepushing)
+                {
+                    fallingTet.Turn(false);
                     spacepushing = true;
                 }
             }
@@ -168,6 +178,7 @@ namespace WPFTest01
                     {
                         //生成できなかった(=ゲームオーバー)
                         gaming = false;//temp,boolを返して外でやるべき
+                        MainWindow.fieldcanvas.Background = new SolidColorBrush(Colors.Red);
                     }
                 }
             }
