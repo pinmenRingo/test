@@ -11,12 +11,19 @@ namespace WPFTest01
 {
     class Block
     {
-
+        //ブロックのサイズ
         public const int BLOCK_SIZE = 16;
 
+        //ブロックの座標
         public int x, y;
+
+        //MainWindow.fieldcanvasに登録する
         Rectangle rect;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="incolor">ブロックの色</param>
         public Block( Color incolor )
         {
             rect = new Rectangle()
@@ -63,13 +70,13 @@ namespace WPFTest01
         /// <returns>移動可能か</returns>
         public bool CanMoveTo(int tox, int toy)
         {
-            if (tox == -1 || tox == Field.FIELD_WIDTH || toy == -1 || toy == Field.FIELD_HEIGHT)
+            if (tox == -1 || tox == TetrisGame.FIELD_WIDTH || toy == -1 || toy == TetrisGame.FIELD_HEIGHT)
             {
                 return false;
             }
 
 
-            return !(Field.bUsing[toy,tox]);
+            return !(TetrisGame.bUsing[toy,tox]);
         }
         /// <summary>
         /// 渡された座標に移動する

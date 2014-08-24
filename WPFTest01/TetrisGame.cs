@@ -8,18 +8,33 @@ using System.Windows.Media;
 
 namespace WPFTest01
 {
-    class Field
+    /// <summary>
+    /// テトリス全体を司るクラス
+    /// </summary>
+    class TetrisGame
     {
+        //横方向のマス数
         public static int FIELD_WIDTH = 12;
+        //縦方向のマス数
         public static int FIELD_HEIGHT = 20;
+        //全マス数
         static int BLOCK_MAX = FIELD_WIDTH*FIELD_HEIGHT;
 
+        
+        //[HEIGHT,WIDTH]で配列を作る
+        //着地したブロックを登録するクラス
         Block[,] rects     = new Block[FIELD_HEIGHT,FIELD_WIDTH];
+        //そこにブロックが置いてあるかどうかのフラグ
         public static bool[,] bUsing  = new bool[FIELD_HEIGHT+1,FIELD_WIDTH];
 
+        //落下中のテトリミノ
+        //プレイヤーが操作しているやつ
         public Tetromino fallingTet;
 
-        public Field(){
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public TetrisGame(){
             //フィールドを初期化
             for (int y = 0; y < FIELD_HEIGHT; ++y)
             {
@@ -34,37 +49,16 @@ namespace WPFTest01
                 bUsing[FIELD_HEIGHT, x] = true;
             }
 
-            ////右の枠を追加
-            //MainWindow.AddRect(new Rectangle()
-            //{
-            //    Width = Block.BLOCK_SIZE,
-            //    Height = Block.BLOCK_SIZE * FIELD_HEIGHT,
-            //    Fill = new SolidColorBrush(Colors.Black),
-            //    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-            //    VerticalAlignment = System.Windows.VerticalAlignment.Top,
-            //    Margin = new System.Windows.Thickness(Block.BLOCK_SIZE * FIELD_WIDTH, 0, 0, 0)
-            //});
-            ////下の枠を追加
-            //MainWindow.AddRect(new Rectangle()
-            //{
-            //    Width = Block.BLOCK_SIZE * (FIELD_WIDTH+1),//右下の角も埋める
-            //    Height = Block.BLOCK_SIZE,
-            //    Fill = new SolidColorBrush(Colors.Black),
-            //    HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
-            //    VerticalAlignment = System.Windows.VerticalAlignment.Top,
-            //    Margin = new System.Windows.Thickness(0, Block.BLOCK_SIZE * FIELD_HEIGHT, 0, 0)
-            //});
-
             fallingTet = new Tetromino();
         }
 
         /// <summary>
-        /// フィールドをリセットする
+        /// ゲームをリセットする
         /// </summary>
-        public void ResetField()
+        public void ResetGame()
         {
 
-            //フラグを初期化
+            //フィールド上のブロックやフラグを初期化
             for (int y = 0; y < FIELD_HEIGHT; ++y)
             {
                 for (int x = 0; x < FIELD_WIDTH; ++x)
@@ -76,9 +70,11 @@ namespace WPFTest01
                     bUsing[y, x] = false;
                 }
             }
-            gaming = true;
-            MainWindow.fieldcanvas.Background = new SolidColorBrush(Colors.Gray);
+            //ゲームオーバー状態をリセット
+            gameover = false;
+            MainWindow.gamecanvas.Background = new SolidColorBrush(Colors.Gray);
 
+            //落下中のテトリミノをリセット
             for (int i = 0; i < 4; ++i)
             {
                 MainWindow.DeleteRect(fallingTet.blocks[i].GetRect());
@@ -91,7 +87,7 @@ namespace WPFTest01
         /// 渡されたブロックをフィールドに追加する
         /// </summary>
         /// <param name="inblock">追加するブロック</param>
-        public void RegistTetromino( Tetromino intet ){
+        public void RegisterTetromino( Tetromino intet ){
             for (int i = 0; i < 4; ++i)
             {
                 bUsing[intet.blocks[i].y, intet.blocks[i].x] = true;
@@ -106,8 +102,8 @@ namespace WPFTest01
         static int framecount = fallframe;
 
         //テスト用,そのうち消す
-        bool gaming = true;
-        bool spacepushing = false;
+        bool gameover = false;//ゲームオーバーフラグ
+        bool spacepushing = false;//一回のキープッシュで一度だけ反応するようにするフラグ
 
 
         /// <summary>
@@ -115,7 +111,7 @@ namespace WPFTest01
         /// </summary>
         public void Proc(){
 
-            if (!gaming)
+            if (gameover)
             {
                 return;
             }
@@ -123,13 +119,15 @@ namespace WPFTest01
             //キー入力処理
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Right))
             {
+                //落下中のテトリミノを右へ
                 fallingTet.Move(1, 0);
             }
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Left))
             {
+                //落下中のテトリミノを左へ
                 fallingTet.Move(-1, 0);
             }
-            //回転は押された瞬間のみ反応するようフラグで管理(長押し無効)
+            //右回転：押された瞬間のみ反応するようフラグで管理(長押し無効)
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Up) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Z))
             {
                 if (!spacepushing)
@@ -138,7 +136,7 @@ namespace WPFTest01
                     spacepushing = true;
                 }
             }
-            //回転は押された瞬間のみ反応するようフラグで管理(長押し無効)
+            //左回転：押された瞬間のみ反応するようフラグで管理(長押し無効)
             else if ( System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.X))
             {
                 if (!spacepushing)
@@ -149,36 +147,41 @@ namespace WPFTest01
             }
             else
             {
+                //キーが話されたらフラグをリセット
                 spacepushing = false;
             }
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Down))
             {
+                //下に移動する
                 fallingTet.Move(0, 1);
             }
 
-            //fallspeedフレーム経過した場合
+            //カウントを進める
             if (--framecount == 0)
             {
-                //カウンタリセット
+                //fallspeedフレーム経過した
+
+                //カウンターリセット
                 framecount = fallframe;
 
-                //1マス下げる
+                //1マス下がる
                 if (!fallingTet.Move(0,1))
                 {
-                    //着地成功
+                    //着地した場合
 
                     //落下地点をフィールドに登録
-                    RegistTetromino(fallingTet);
+                    RegisterTetromino(fallingTet);
 
-                    //行の削除処理
+                    //行の削除処理(埋まった行があれば削除する)
                     DeleteFilledLine(fallingTet);
 
                     //着地時,新たにテトリミノを生成する
                     if (!fallingTet.GenerateNewTetromino())
                     {
                         //生成できなかった(=ゲームオーバー)
-                        gaming = false;//temp,boolを返して外でやるべき
-                        MainWindow.fieldcanvas.Background = new SolidColorBrush(Colors.Red);
+                        gameover = true;//temp,boolを返して外でやるべき
+                        //背景を真っ赤に
+                        MainWindow.gamecanvas.Background = new SolidColorBrush(Colors.Red);
                     }
                 }
             }

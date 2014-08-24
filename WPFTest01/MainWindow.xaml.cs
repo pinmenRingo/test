@@ -23,74 +23,80 @@ namespace WPFTest01
     public partial class MainWindow : Window
     {
 
-        //他からgrid01にアクセスする用
-        //コンパイルの仕様上かなんかで必要
+        //アクセス用
+        //コンパイルの仕様上かなんかで非静的メソッドからアクセスする場合必要っぽい
         public static Grid grid;
-        public static Canvas fieldbackcanvas;
-        public static Canvas fieldcanvas;
+        public static Canvas gamebackcanvas;
+        public static Canvas gamecanvas;
 
         //テトリスのフィールドを管理するクラス
-        Field field;
+        TetrisGame tetris;
 
         public MainWindow()
         {
+            //なんか元からあったやつ,おまじないって認識で
             InitializeComponent();
 
+            //キャンバスの準備
             grid = grid01;
-            fieldbackcanvas = new Canvas()
+            //黒いキャンバス,あるだけ,gamecanvasだけChildlenにAddされてる
+            gamebackcanvas = new Canvas()
             {
                 Background = new SolidColorBrush(Colors.Black),
                 Visibility = Visibility.Visible,
-                Width = (Field.FIELD_WIDTH+2) * Block.BLOCK_SIZE,
-                Height = (Field.FIELD_HEIGHT+2) * Block.BLOCK_SIZE,
+                Width = (TetrisGame.FIELD_WIDTH+2) * Block.BLOCK_SIZE,
+                Height = (TetrisGame.FIELD_HEIGHT+2) * Block.BLOCK_SIZE,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                 VerticalAlignment = System.Windows.VerticalAlignment.Top,
                 Margin = new Thickness(0, 0, 0, 0)
             };
-            grid.Children.Add(fieldbackcanvas);
-            fieldcanvas = new Canvas()
+            grid.Children.Add(gamebackcanvas);
+            //ゲームキャンバス,ブロックは全部ここのChildlenにAddされる
+            gamecanvas = new Canvas()
             {
                 Background = new SolidColorBrush(Colors.Gray),
                 Visibility = Visibility.Visible,
-                Width = Field.FIELD_WIDTH * Block.BLOCK_SIZE,
-                Height = Field.FIELD_HEIGHT * Block.BLOCK_SIZE,
+                Width = TetrisGame.FIELD_WIDTH * Block.BLOCK_SIZE,
+                Height = TetrisGame.FIELD_HEIGHT * Block.BLOCK_SIZE,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                 VerticalAlignment = System.Windows.VerticalAlignment.Top,
                 Margin = new Thickness(Block.BLOCK_SIZE, Block.BLOCK_SIZE, 0, 0)
             };
-            fieldbackcanvas.Children.Add(fieldcanvas);
+            gamebackcanvas.Children.Add(gamecanvas);
 
-            field = new Field();
+            //ゲームのクラスを生成する
+            tetris = new TetrisGame();
 
+            //タイマーの準備
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 16);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 16);//1秒60フレームに設定,1000/60=16.6666...
             timer.Tick += timer_Tick;
             timer.Start();
         }
 
-
+        //毎フレーム呼ばれる
         void timer_Tick(object sender, EventArgs e)
         {
-            field.Proc();
+            //テトリスゲームを1フレーム進める
+            tetris.Proc();
         }
 
+        //ボタンが押された場合に呼ばれる
         private void button01_Click(object sender, RoutedEventArgs e)
         {
-
-            field.ResetField();
-
-
+            //テトリスゲームをリセットする
+            tetris.ResetGame();
         }
 
         public static void AddRect(Rectangle inobj)
         {
             //grid.Children.Add(inobj);
-            fieldcanvas.Children.Add(inobj);
+            gamecanvas.Children.Add(inobj);
         }
         public static void DeleteRect(Rectangle inobj)
         {
             //grid.Children.Remove( inobj );
-            fieldcanvas.Children.Remove(inobj);
+            gamecanvas.Children.Remove(inobj);
         }
 
         //public static void ShowMessageaBox(string instr)
