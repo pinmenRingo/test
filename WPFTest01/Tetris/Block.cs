@@ -34,6 +34,7 @@ namespace WPFTest01
             //座標をセット
             Move(inx, iny);
             //Rectangleを生成
+
             rect = new Rectangle()
             {
                 Width = BLOCK_WIDTH,
@@ -104,7 +105,7 @@ namespace WPFTest01
         /// </summary>
         public void UpdateDrawPosition()
         {
-            rect.Margin = new Thickness(x * BLOCK_WIDTH, y * BLOCK_HEIGHT, 0, 0);
+           // rect.Margin = new Thickness(x * BLOCK_WIDTH, y * BLOCK_HEIGHT, 0, 0);
         }
 
         /// 着地時に呼ばれる
