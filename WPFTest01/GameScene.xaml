@@ -13,7 +13,7 @@
         	<Canvas x:Name="gamecanvas_xaml" Height="261.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="240.83" Background="#7E535353"/>
         </Canvas>
 
-        <Viewbox HorizontalAlignment="Right" Width="201.747" Margin="238,26.298,20,108.837">
+        <Viewbox HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
             <Image Source="{Binding ImageSource}" Stretch="UniformToFill" />
         </Viewbox>
 

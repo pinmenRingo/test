@@ -176,7 +176,7 @@ namespace WPFTest01
 
             this.imageSource = new DrawingImage(this.drawingGroup);
 
-            this.DataContext = this;
+            this.DataContext = this; //バインディング関係
 
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
@@ -279,10 +279,10 @@ namespace WPFTest01
                                 jointPoint[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
                             }
 
+                            //体を描画
                             this.DrawBody(joints, jointPoint, dc, drawPen);
 
-                            //手の平の描画は今回はしない
-
+                          
                         }
                       
                     }
