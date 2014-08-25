@@ -31,8 +31,6 @@ namespace WPFTest01
         /// <param name="incolor">ブロックの色</param>
         public Block( int inx, int iny, Color incolor )
         {
-            //座標をセット
-            Move(inx, iny);
             //Rectangleを生成
             rect = new Rectangle()
             {
@@ -45,6 +43,8 @@ namespace WPFTest01
                 Stroke=new SolidColorBrush(Colors.Black),
                 StrokeThickness = 1.5
             };
+            //座標をセット
+            Move(inx, iny);
         }
 
         /// <summary>
