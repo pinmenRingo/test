@@ -105,7 +105,7 @@ namespace WPFTest01
         /// </summary>
         public void UpdateDrawPosition()
         {
-           // rect.Margin = new Thickness(x * BLOCK_WIDTH, y * BLOCK_HEIGHT, 0, 0);
+           rect.Margin = new Thickness(x * BLOCK_WIDTH, y * BLOCK_HEIGHT, 0, 0);
         }
 
         /// 着地時に呼ばれる

@@ -8,14 +8,29 @@
 	Title="GameScene" Loaded="GameSceneLoaded">
 
     <Grid x:Name="grid01" Background="White">
-        <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="374,310,0,0" VerticalAlignment="Top" Width="208"/>
+        <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="376,258.8,0,0" VerticalAlignment="Top" Width="208"/>
         <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="336.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="Black">
         	<Canvas x:Name="gamecanvas_xaml" Height="261.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="240.83" Background="#7E535353"/>
         </Canvas>
 
         <Viewbox HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
-            <Image Source="{Binding ImageSource}" Stretch="UniformToFill" />
+            <Image Source="{Binding ImageSource}" Stretch="UniformToFill"  x:Name="kinectImage"/>
         </Viewbox>
+        <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="376,28,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
+        	<Grid.ColumnDefinitions>
+        		<ColumnDefinition/>
+        		<ColumnDefinition/>
+        		<ColumnDefinition/>
+        		<ColumnDefinition/>
+        	</Grid.ColumnDefinitions>
+        	<Grid.RowDefinitions>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        		<RowDefinition/>
+        	</Grid.RowDefinitions>
+        </Grid>
+        <TextBlock  HorizontalAlignment="Left" Height="41" Margin="376,322,0,0" TextWrapping="Wrap" Text="{Binding StatusText}" VerticalAlignment="Top" Width="208"/>
 
     </Grid>
 </Page>

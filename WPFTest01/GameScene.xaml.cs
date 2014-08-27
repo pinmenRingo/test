@@ -110,6 +110,29 @@ namespace WPFTest01
         /// </summary>
         private string statusText = null;
 
+        /// <summary>
+        /// Controllerクラスのインスタンス
+        /// </summary>
+        private Control control;
+
+        private int[] useJoints;
+
+        /// <summary>
+        /// マッチング用のテンプレート
+        /// </summary>
+        private int[,,] matchingTemplets;
+        
+        //スケール
+        int kScaleY = 100;
+        int kSCaleX = 100;
+
+        //各Gridのサイズ
+        double gridWidth;
+        double gridHeight;
+
+        private String debugString;
+
+
 
         public GameScene()
         {
@@ -124,7 +147,13 @@ namespace WPFTest01
             this.displayWidth = frameDescription.Width;
             this.displayHeight = frameDescription.Height;
 
+            this.gridWidth = matchGrid.Width / 4;
+            this.gridHeight = matchGrid.Height / 4;
+
+
             this.bodyFrameReader = this.kinectSensor.BodyFrameSource.OpenReader();
+
+            #region Boneの初期化
 
             this.bones = new List<Tuple<JointType, JointType>>();
             // Torso
@@ -143,12 +172,6 @@ namespace WPFTest01
             this.bones.Add(new Tuple<JointType, JointType>(JointType.WristRight, JointType.HandRight));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.HandRight, JointType.HandTipRight));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.WristRight, JointType.ThumbRight));
-
-            // Left Arm
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.ThumbLeft));
 
             // Right Leg
@@ -161,6 +184,8 @@ namespace WPFTest01
             this.bones.Add(new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.AnkleLeft, JointType.FootLeft));
 
+            #endregion
+
             this.bodyColors = new List<Pen>();
             this.bodyColors.Add(new Pen(Brushes.Red, 6)); //Pen = 図形を中抜き？
             this.bodyColors.Add(new Pen(Brushes.Orange, 6));
@@ -169,14 +194,33 @@ namespace WPFTest01
             this.bodyColors.Add(new Pen(Brushes.Indigo, 6));
             this.bodyColors.Add(new Pen(Brushes.Violet, 6));
 
-
             this.kinectSensor.Open();
+
+            // Left Arm
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft));
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft));
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft));
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft));
 
             this.drawingGroup = new DrawingGroup();
 
             this.imageSource = new DrawingImage(this.drawingGroup);
 
-            this.DataContext = this; //バインディング関係
+            this.DataContext = this;
+            
+
+            //マッチング関係
+            this.useJoints = new int[4] { (int)JointType.Head, (int)JointType.HandLeft,(int)JointType.KneeRight,(int)JointType.KneeLeft};
+            this.matchingTemplets = new int[,,]{
+                                                    {
+                                                        {0,0,0,0},
+                                                        {0,7,0,0},
+                                                        {0,7,13,11},
+                                                        {0,0,0,0}
+                                                
+                                                    }
+                                                };
+
 
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
@@ -203,6 +247,36 @@ namespace WPFTest01
             get
             {
                 return this.imageSource;
+            }
+        }
+
+        public string StatusText
+        {
+            get
+            {
+                return this.statusText;
+            }
+
+            set
+            {
+                if (this.statusText != value)
+                {
+                    this.statusText = value;
+
+                    // notify any bound elements that the text has changed
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
+                    }
+                }
+            }
+        }
+
+        public string TextSource
+        {
+            get
+            {
+                return this.debugString;
             }
         }
 
@@ -263,10 +337,20 @@ namespace WPFTest01
                         if (body.IsTracked)
                         {
                             this.DrawClippedEdges(body, dc);
+
+                            //ジョイントの辞書配列
+                            //joint名:key
                             IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
 
+                            //CameraSpacePoint point =  body.Joints[JointType.HandLeft].Position;
+
                             //jointのポイントをディスプレイに変換
+
+                            //ジョイントごとの座標をいれる辞書配列
+                            //key:ジョント名
                             Dictionary<JointType, Point> jointPoint = new Dictionary<JointType, Point>();
+
+
                             foreach (JointType jointType in joints.Keys)
                             {
                                 CameraSpacePoint position = joints[jointType].Position;
@@ -276,12 +360,36 @@ namespace WPFTest01
                                 }
 
                                 DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
+
                                 jointPoint[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+
+                                switch (jointType)
+                                {
+                                    
+                                    case JointType.HandLeft:
+
+                                        double pX = jointPoint[JointType.HandLeft].X;
+                                        double pY = jointPoint[JointType.HandLeft].Y;
+                                        this.StatusText = "x:" + pX.ToString() + " " + "y:" + pY.ToString();
+
+
+                                        break;
+                                    case JointType.HandRight:
+                                        break;
+                                   
+                                    default:
+                                        break;
+                                }
+
                             }
 
                             //体を描画
                             this.DrawBody(joints, jointPoint, dc, drawPen);
 
+
+                            //マッチングメソッドにbodyを渡す
+                            bool isMatched = this.isMatched(body, 0);
+                            System.Console.WriteLine(isMatched);
                           
                         }
                       
@@ -296,6 +404,55 @@ namespace WPFTest01
 
 
         }
+
+        private bool isMatched(Body body , int templateNum)
+        {
+            bool ret = false;
+            int matchingCount = 0;
+
+            foreach (JointType i in this.useJoints)
+            {
+                CameraSpacePoint point = body.Joints[i].Position;
+                if (point.Z　< 0)
+                {
+                    point.Z = InferredZPositionClamp;
+                }
+
+                CameraSpacePoint position = body.Joints[i].Position;
+                if (position.Z < 0)
+                {
+                    position.Z = InferredZPositionClamp;
+                }
+
+                DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
+
+                double x = depthSpacePoint.X;
+                double y = depthSpacePoint.Y;
+
+                //index
+                x /= this.gridWidth;
+                y /= this.gridHeight;
+                
+
+
+               /* if (this.matchingTemplets[templateNum, (int)body.Joints[i].Position.Y * kScaleY, (int)body.Joints[i].Position.X * kSCaleX] == (int)i) 
+                {
+                    matchingCount++;
+                }
+                */
+
+                if (matchingCount >=4) ret = true;
+                else ret = false;
+
+            }
+
+            return ret;
+
+        }
+        
+
+
+
         /// <summary>
         /// 体を描画する
         /// </summary>
