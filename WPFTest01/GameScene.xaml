@@ -5,13 +5,17 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       d:DesignHeight="400" d:DesignWidth="600"
-	Title="GameScene">
+	Title="GameScene" Loaded="GameSceneLoaded">
 
     <Grid x:Name="grid01" Background="White">
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="374,310,0,0" VerticalAlignment="Top" Width="208"/>
         <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="336.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="Black">
         	<Canvas x:Name="gamecanvas_xaml" Height="261.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="240.83" Background="#7E535353"/>
         </Canvas>
+
+        <Viewbox HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
+            <Image Source="{Binding ImageSource}" Stretch="UniformToFill" />
+        </Viewbox>
 
     </Grid>
 </Page>
