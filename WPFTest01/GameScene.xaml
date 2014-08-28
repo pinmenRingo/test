@@ -4,16 +4,16 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-      d:DesignHeight="400" d:DesignWidth="600"
+      d:DesignHeight="630" d:DesignWidth="906"
 	Title="GameScene" Loaded="GameSceneLoaded">
 
     <Grid x:Name="grid01" Background="White">
-        <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="376,258.8,0,0" VerticalAlignment="Top" Width="208"/>
+        <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="376,258.8,0,75" VerticalAlignment="Bottom" Width="208"/>
         <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="336.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="Black">
         	<Canvas x:Name="gamecanvas_xaml" Height="261.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="240.83" Background="#7E535353"/>
         </Canvas>
 
-        <Viewbox HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
+        <Viewbox x:Name="viewBox" HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
             <Image Source="{Binding ImageSource}" Stretch="UniformToFill"  x:Name="kinectImage"/>
         </Viewbox>
         <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="376,28,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
@@ -30,7 +30,8 @@
         		<RowDefinition/>
         	</Grid.RowDefinitions>
         </Grid>
-        <TextBlock  HorizontalAlignment="Left" Height="41" Margin="376,322,0,0" TextWrapping="Wrap" Text="{Binding StatusText}" VerticalAlignment="Top" Width="208"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="376,0,0,43.4" TextWrapping="Wrap" Text="{Binding StatusText}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="376,361.6,0,18" TextWrapping="Wrap" Text="{Binding MatchStatus}" VerticalAlignment="Bottom" Width="208" Background="#FF15805C"/>
 
     </Grid>
 </Page>

@@ -94,6 +94,7 @@ namespace WPFTest01
         /// Current status text to display
         /// </summary>
         private string statusText = null;
+        private string matchStatus = null;
 
         /// <summary>
         /// Controllerクラスのインスタンス
@@ -108,8 +109,8 @@ namespace WPFTest01
         private int[,,] matchingTemplets;
         
         //スケール
-        double kScaleY = 0.01;
-        double kSCaleX = 0.01;
+        double kScaleY = 0.008;
+        double kScaleX = 0.008;
 
         //各Gridのサイズ
         double gridWidth;
@@ -132,6 +133,12 @@ namespace WPFTest01
             this.displayHeight = frameDescription.Height;
             this.gridWidth = matchGrid.Width / 4;
             this.gridHeight = matchGrid.Height / 4;
+
+            viewBox.Width = this.displayWidth;
+            viewBox.Height = this.displayHeight;
+
+            matchGrid.Width = this.displayWidth;
+            matchGrid.Height = this.displayHeight;
 
 
 
@@ -195,7 +202,7 @@ namespace WPFTest01
             
 
             //マッチング関係
-            this.useJoints = new int[4] { (int)JointType.Head, (int)JointType.HandLeft,(int)JointType.KneeRight,(int)JointType.KneeLeft};
+            this.useJoints = new int[5] { (int)JointType.Head, (int)JointType.HandLeft,(int)JointType.HandRight,(int)JointType.KneeRight,(int)JointType.KneeLeft};
             this.matchingTemplets = new int[,,]{
                                                     {
                                                         {0,0,0,0},
@@ -252,6 +259,27 @@ namespace WPFTest01
                     if (this.PropertyChanged != null)
                     {
                         this.PropertyChanged(this, new PropertyChangedEventArgs("StatusText"));
+                    }
+                }
+            }
+        }
+
+        public string MatchStatus
+        {
+            get
+            {
+                return this.matchStatus;
+            }
+
+            set
+            {
+                if (this.matchStatus != value)
+                {
+                    this.matchStatus = value;
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("MatchStatus"));
                     }
                 }
             }
@@ -346,7 +374,7 @@ namespace WPFTest01
                                     
                                     case JointType.HandLeft:
 
-                                        double pX = jointPoint[JointType.HandLeft].X * kSCaleX;
+                                        double pX = jointPoint[JointType.HandLeft].X * kScaleX;
                                         double pY = jointPoint[JointType.HandLeft].Y * kScaleY;
                                         this.StatusText = "x:" + pX.ToString() + " " + "y:" + pY.ToString();
 
@@ -388,41 +416,71 @@ namespace WPFTest01
             bool ret = false;
             int matchingCount = 0;
 
-            foreach (JointType i in this.useJoints)
+            CameraSpacePoint handLeftPoint = body.Joints[JointType.HandLeft].Position;
+            if (handLeftPoint.Z < 0)
             {
-                CameraSpacePoint point = body.Joints[i].Position;
-                if (point.Z　< 0)
-                {
-                    point.Z = InferredZPositionClamp;
-                }
+                handLeftPoint.Z = InferredZPositionClamp;
+            }
 
-                CameraSpacePoint position = body.Joints[i].Position;
-                if (position.Z < 0)
-                {
-                    position.Z = InferredZPositionClamp;
-                }
+            DepthSpacePoint depthPoint = this.coorinateMapper.MapCameraPointToDepthSpace(handLeftPoint);
+            int hand_left_x = (int)(depthPoint.X * kScaleX);
+            int hand_left_y = (int)(depthPoint.Y * kScaleY);
 
-                DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
+            if (hand_left_x <= 0) hand_left_x = 0;
+            if (hand_left_x >= 3) hand_left_x = 3;
+            if (hand_left_y <= 0) hand_left_y = 0;
+            if (hand_left_y >= 3) hand_left_y = 3;
 
-                double x = depthSpacePoint.X;
-                double y = depthSpacePoint.Y;
+            if (this.matchingTemplets[0, hand_left_y, hand_left_x] == this.useJoints[1]) 
+            {
+                this.MatchStatus = "Match!!";
+            }
+            else
+            {
+                this.MatchStatus = "Miss!!";
+            }
 
-                //index
-                x /= this.gridWidth;
-                y /= this.gridHeight;
+
+            //foreach (JointType i in this.useJoints)
+            //{
+            //    CameraSpacePoint point = body.Joints[i].Position;
+            //    if (point.Z　< 0)
+            //    {
+            //        point.Z = InferredZPositionClamp;
+            //    }
+
+            //    CameraSpacePoint position = body.Joints[i].Position;
+            //    if (position.Z < 0)
+            //    {
+            //        position.Z = InferredZPositionClamp;
+            //    }
+
+            //    DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
+
+            //    int x = (int)(depthSpacePoint.X * kSCaleX);
+            //    int y = (int)(depthSpacePoint.Y * kScaleY);
+
+            //    if (x <= 0) x = 0;
+            //    if (x >= 3) x = 3;
+            //    if (y <= 0) y = 0;
+            //    if (y >= 3) y = 3;
+
+            //    if (this.matchingTemplets[templateNum, x,y] == (int)i) 
+            //    {
+            //        matchingCount++;
+            //        this.MatchStatus = "Match!!";
+            //        ret = true;
+            //    }
+            //    else
+            //    {
+            //        this.MatchStatus = "Miss!!";
+            //    }
                 
 
+                ////if (matchingCount >=4) ret = true;
+                ////else ret = false;
 
-               /* if (this.matchingTemplets[templateNum, (int)body.Joints[i].Position.Y * kScaleY, (int)body.Joints[i].Position.X * kSCaleX] == (int)i) 
-                {
-                    matchingCount++;
-                }
-                */
-
-                if (matchingCount >=4) ret = true;
-                else ret = false;
-
-            }
+            //}
 
             return ret;
 
