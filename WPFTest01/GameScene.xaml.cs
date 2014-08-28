@@ -39,19 +39,10 @@ namespace WPFTest01
 
         /// キネクト用>
      
-        /// <summary>
-        /// Radius of drawn hand circles
-        /// </summary>
         private const double HandSize = 30;
 
-        /// <summary>
-        /// Thickness of drawn joint lines
-        /// </summary>
         private const double JointThickness = 3;
 
-        /// <summary>
-        /// Thickness of clip edge rectangles
-        /// </summary>
         private const double ClipBoundsThickness = 10;
 
         /// <summary>
@@ -90,14 +81,8 @@ namespace WPFTest01
         /// </summary>
         private List<Tuple<JointType, JointType>> bones;
 
-        /// <summary>
-        /// Width of display (depth space)
-        /// </summary>
         private int displayWidth;
 
-        /// <summary>
-        /// Height of display (depth space)
-        /// </summary>
         private int displayHeight;
 
         /// <summary>
@@ -123,14 +108,12 @@ namespace WPFTest01
         private int[,,] matchingTemplets;
         
         //スケール
-        int kScaleY = 100;
-        int kSCaleX = 100;
+        double kScaleY = 0.01;
+        double kSCaleX = 0.01;
 
         //各Gridのサイズ
         double gridWidth;
         double gridHeight;
-
-        private String debugString;
 
 
 
@@ -142,13 +125,15 @@ namespace WPFTest01
             //kinect
             this.kinectSensor = KinectSensor.GetDefault();
             this.coorinateMapper = this.kinectSensor.CoordinateMapper;
-
+   
+            //フレームサイズ
             FrameDescription frameDescription = this.kinectSensor.DepthFrameSource.FrameDescription;
             this.displayWidth = frameDescription.Width;
             this.displayHeight = frameDescription.Height;
-
             this.gridWidth = matchGrid.Width / 4;
             this.gridHeight = matchGrid.Height / 4;
+
+
 
 
             this.bodyFrameReader = this.kinectSensor.BodyFrameSource.OpenReader();
@@ -272,13 +257,6 @@ namespace WPFTest01
             }
         }
 
-        public string TextSource
-        {
-            get
-            {
-                return this.debugString;
-            }
-        }
 
         private void GameSceneLoaded(object sender, RoutedEventArgs e)
         {
@@ -368,8 +346,8 @@ namespace WPFTest01
                                     
                                     case JointType.HandLeft:
 
-                                        double pX = jointPoint[JointType.HandLeft].X;
-                                        double pY = jointPoint[JointType.HandLeft].Y;
+                                        double pX = jointPoint[JointType.HandLeft].X * kSCaleX;
+                                        double pY = jointPoint[JointType.HandLeft].Y * kScaleY;
                                         this.StatusText = "x:" + pX.ToString() + " " + "y:" + pY.ToString();
 
 
