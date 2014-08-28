@@ -100,6 +100,7 @@ namespace WPFTest01
         private string rightHandPos = null;
         private string rightKneePos = null;
         private string leftKneePos = null;
+        private SolidColorBrush matchAlertColor;
 
         /// <summary>
         /// Controllerクラスのインスタンス
@@ -397,6 +398,28 @@ namespace WPFTest01
             }
         }
 
+        public SolidColorBrush MatchAlertColor
+        {
+            get
+            {
+                return this.matchAlertColor;
+            }
+
+            set
+            {
+                if (this.matchAlertColor != value)
+                {
+                    this.matchAlertColor = value;
+                }
+
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("MatchAlertColor"));
+                }
+
+            }
+        }
+
 #endregion
 
 
@@ -529,10 +552,11 @@ namespace WPFTest01
                             //体を描画
                             this.DrawBody(joints, jointPoint, dc, drawPen);
 
+                            //マッチング処理
+                            bool isMatched = this.isMatching(jointPoint, 0);
+                            if (isMatched) this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
+                            else this.MatchAlertColor = new SolidColorBrush(Colors.Red);
 
-                            //マッチングメソッドにbodyを渡す
-                            bool isMatched = this.isMatched(body, 0);
-                            System.Console.WriteLine(isMatched);
                           
                         }
                       
@@ -548,81 +572,31 @@ namespace WPFTest01
 
         }
 
-        private bool isMatched(Body body , int templateNum)
+        private bool isMatching(Dictionary<JointType, Point> jointPoint, int templateNum)
         {
             bool ret = false;
             int matchingCount = 0;
-            
-            /*
-            CameraSpacePoint handLeftPoint = body.Joints[JointType.HandLeft].Position;
-            if (handLeftPoint.Z < 0)
-            {
-                handLeftPoint.Z = InferredZPositionClamp;
-            }
 
-            CameraSpacePoint handRightPoint = body.Joints[JointType.HandRight].Position;
-            if (handRightPoint.Z < 0){
-                handRightPoint.Z = InferredZPositionClamp;
-            }
-
-
-            DepthSpacePoint depthPoint = this.coorinateMapper.MapCameraPointToDepthSpace(handLeftPoint);
-            int hand_left_x = (int)(depthPoint.X * kScaleX);
-            int hand_left_y = (int)(depthPoint.Y * kScaleY);
-
-            if (hand_left_x <= 0) hand_left_x = 0;
-            if (hand_left_x >= 3) hand_left_x = 3;
-            if (hand_left_y <= 0) hand_left_y = 0;
-            if (hand_left_y >= 3) hand_left_y = 3;
-
-            if (this.matchingTemplets[0, hand_left_y, hand_left_x] == this.useJoints[(int]) 
-            {
-                this.MatchStatus = "Match!!";
-            }
-            else
-            {
-                this.MatchStatus = "Miss!!";
-            }
-             */
-            
-            
-
-            
             foreach (JointType i in this.useJoints)
             {
-                CameraSpacePoint point = body.Joints[i].Position;
-                if (point.Z　< 0)
-                {
-                    point.Z = InferredZPositionClamp;
-                }
+                int x = (int)(jointPoint[i].X * kScaleX);
+                int y = (int)(jointPoint[i].Y * kScaleY);
 
-                CameraSpacePoint position = body.Joints[i].Position;
-                if (position.Z < 0)
-                {
-                    position.Z = InferredZPositionClamp;
-                }
-
-                DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
-
-                int x = (int)(depthSpacePoint.X * kScaleX);
-                int y = (int)(depthSpacePoint.Y * kScaleY);
-
+                //validation
                 if (x <= 0) x = 0;
                 if (x >= 3) x = 3;
                 if (y <= 0) y = 0;
                 if (y >= 3) y = 3;
 
-                if (this.matchingTemplets[templateNum, x,y] == (int)i) 
+                if (this.matchingTemplets[templateNum,y,x] == (int)i)
                 {
                     matchingCount++;
                 }
-                else
-                {
-                }
 
-                if (matchingCount >= 4)
+                if (matchingCount == 4)
                 {
                     ret = true;
+                    break;
                 }
                 else
                 {
@@ -632,10 +606,7 @@ namespace WPFTest01
             }
 
             return ret;
-
         }
-        
-
 
 
         /// <summary>

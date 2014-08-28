@@ -35,6 +35,6 @@
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,101" TextWrapping="Wrap" Text="{Binding RightHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,69.4" TextWrapping="Wrap" Text="{Binding RightKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,37.8" TextWrapping="Wrap" Text="{Binding LeftKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF15805C"/>
+        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="{Binding MatchAlertColor,ElementName=Root}"/>
     </Grid>
 </Page>
