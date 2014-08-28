@@ -5,10 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
       d:DesignHeight="630" d:DesignWidth="906"
-	Title="GameScene" Loaded="GameSceneLoaded">
+	Title="GameScene" Loaded="GameSceneLoaded" x:Name="Root">
 
     <Grid x:Name="grid01" Background="White">
-        <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="376,258.8,0,75" VerticalAlignment="Bottom" Width="208"/>
+        <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="86.8,0,0,195.8" VerticalAlignment="Bottom" Width="208"/>
         <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="336.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="Black">
         	<Canvas x:Name="gamecanvas_xaml" Height="261.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="240.83" Background="#7E535353"/>
         </Canvas>
@@ -30,8 +30,11 @@
         		<RowDefinition/>
         	</Grid.RowDefinitions>
         </Grid>
-        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="376,0,0,43.4" TextWrapping="Wrap" Text="{Binding StatusText}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="376,361.6,0,18" TextWrapping="Wrap" Text="{Binding MatchStatus}" VerticalAlignment="Bottom" Width="208" Background="#FF15805C"/>
-
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,164.2" TextWrapping="Wrap" Text="{Binding HeadPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,132.6" TextWrapping="Wrap" Text="{Binding LeftHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,101" TextWrapping="Wrap" Text="{Binding RightHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,69.4" TextWrapping="Wrap" Text="{Binding RightKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,37.8" TextWrapping="Wrap" Text="{Binding LeftKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF15805C"/>
     </Grid>
 </Page>

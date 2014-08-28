@@ -95,6 +95,11 @@ namespace WPFTest01
         /// </summary>
         private string statusText = null;
         private string matchStatus = null;
+        private string headPos = null;
+        private string leftHandPos = null;
+        private string rightHandPos = null;
+        private string rightKneePos = null;
+        private string leftKneePos = null;
 
         /// <summary>
         /// Controllerクラスのインスタンス
@@ -206,7 +211,7 @@ namespace WPFTest01
             this.matchingTemplets = new int[,,]{
                                                     {
                                                         {0,0,0,0},
-                                                        {0,7,0,0},
+                                                        {0,0,3,0},
                                                         {0,7,13,11},
                                                         {0,0,0,0}
                                                 
@@ -233,6 +238,8 @@ namespace WPFTest01
 
         #region Kienct
         public event PropertyChangedEventHandler PropertyChanged;
+
+#region バインディング
 
         public ImageSource ImageSource
         {
@@ -284,6 +291,113 @@ namespace WPFTest01
                 }
             }
         }
+
+        public string HeadPos
+        {
+            get
+            {
+                return this.headPos;
+            }
+
+            set
+            {
+                if (this.headPos != value)
+                {
+                    this.headPos = value;
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("HeadPos"));
+                    }
+                }
+            }
+        }
+
+        public string LeftHandPos
+        {
+            get
+            {
+                return this.leftHandPos;
+            }
+
+            set
+            {
+                if (this.leftHandPos != value)
+                {
+                    this.leftHandPos = value;
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("LeftHandPos"));
+                    }
+                }
+            }
+        }
+
+        public string RightHandPos
+        {
+            get
+            {
+                return this.rightHandPos;
+            }
+
+            set
+            {
+                if (this.rightHandPos != value)
+                {
+                    this.rightHandPos = value;
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("RightHandPos"));
+                    }
+                }
+            }
+        }
+
+        public string RightKneePos
+        {
+            get
+            {
+                return this.rightKneePos;
+            }
+
+            set
+            {
+                if (this.rightKneePos != value)
+                {
+                    this.rightKneePos = value;
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("RightKneePos"));
+                    }
+                }
+            }
+        }
+
+        public string LeftKneePos
+        {
+            get
+            {
+                return this.leftKneePos;
+            }
+
+            set
+            {
+                if (this.leftKneePos != value)
+                {
+                    this.leftKneePos = value;
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("LeftKneePos"));
+                    }
+                }
+            }
+        }
+
+#endregion
 
 
         private void GameSceneLoaded(object sender, RoutedEventArgs e)
@@ -371,16 +485,39 @@ namespace WPFTest01
 
                                 switch (jointType)
                                 {
+
+                                    case JointType.Head:
+                                        double head_x = jointPoint[JointType.Head].X * kScaleX;
+                                        double head_y = jointPoint[JointType.Head].Y * kScaleY;
+                                        this.HeadPos = "head_x:" + head_x.ToString() + " " + "head_y" + head_y.ToString();
+
+                                        break;
+
                                     
                                     case JointType.HandLeft:
 
-                                        double pX = jointPoint[JointType.HandLeft].X * kScaleX;
-                                        double pY = jointPoint[JointType.HandLeft].Y * kScaleY;
-                                        this.StatusText = "x:" + pX.ToString() + " " + "y:" + pY.ToString();
+                                        double leftHand_x = jointPoint[JointType.HandLeft].X * kScaleX;
+                                        double leftHand_y = jointPoint[JointType.HandLeft].Y * kScaleY;
+                                        this.LeftHandPos = "leftHand_x:" + leftHand_x.ToString() + " " + "leftHand_y:" + leftHand_y.ToString(); 
+                                        break;
 
+                                    case JointType.HandRight:
+                                         double rightHand_x = jointPoint[JointType.HandRight].X * kScaleX;
+                                        double rightHand_y = jointPoint[JointType.HandRight].Y * kScaleY;
+                                        this.RightHandPos = "rightHand_x:" + rightHand_x.ToString() + " " + "rightHand_y:" + rightHand_y.ToString();
 
                                         break;
-                                    case JointType.HandRight:
+
+                                    case JointType.KneeRight:
+                                        double rightKnee_x = jointPoint[JointType.KneeRight].X * kScaleX;
+                                        double rightKnee_y = jointPoint[JointType.KneeRight].Y * kScaleY;
+                                        this.RightKneePos = "rightKnee_x:" + rightKnee_x.ToString() + " " + "rightKnee_y" + rightKnee_y.ToString();
+                                        break;
+
+                                    case JointType.KneeLeft:
+                                        double leftKnee_x = jointPoint[JointType.KneeLeft].X * kScaleX;
+                                        double leftKnee_y = jointPoint[JointType.KneeLeft].X * kScaleY;
+                                        this.LeftKneePos = "leftKnee_x:" + leftKnee_x.ToString() + " " + "leftKnee_y" + leftKnee_y.ToString();
                                         break;
                                    
                                     default:
@@ -415,12 +552,19 @@ namespace WPFTest01
         {
             bool ret = false;
             int matchingCount = 0;
-
+            
+            /*
             CameraSpacePoint handLeftPoint = body.Joints[JointType.HandLeft].Position;
             if (handLeftPoint.Z < 0)
             {
                 handLeftPoint.Z = InferredZPositionClamp;
             }
+
+            CameraSpacePoint handRightPoint = body.Joints[JointType.HandRight].Position;
+            if (handRightPoint.Z < 0){
+                handRightPoint.Z = InferredZPositionClamp;
+            }
+
 
             DepthSpacePoint depthPoint = this.coorinateMapper.MapCameraPointToDepthSpace(handLeftPoint);
             int hand_left_x = (int)(depthPoint.X * kScaleX);
@@ -431,7 +575,7 @@ namespace WPFTest01
             if (hand_left_y <= 0) hand_left_y = 0;
             if (hand_left_y >= 3) hand_left_y = 3;
 
-            if (this.matchingTemplets[0, hand_left_y, hand_left_x] == this.useJoints[1]) 
+            if (this.matchingTemplets[0, hand_left_y, hand_left_x] == this.useJoints[(int]) 
             {
                 this.MatchStatus = "Match!!";
             }
@@ -439,48 +583,53 @@ namespace WPFTest01
             {
                 this.MatchStatus = "Miss!!";
             }
+             */
+            
+            
 
+            
+            foreach (JointType i in this.useJoints)
+            {
+                CameraSpacePoint point = body.Joints[i].Position;
+                if (point.Z　< 0)
+                {
+                    point.Z = InferredZPositionClamp;
+                }
 
-            //foreach (JointType i in this.useJoints)
-            //{
-            //    CameraSpacePoint point = body.Joints[i].Position;
-            //    if (point.Z　< 0)
-            //    {
-            //        point.Z = InferredZPositionClamp;
-            //    }
+                CameraSpacePoint position = body.Joints[i].Position;
+                if (position.Z < 0)
+                {
+                    position.Z = InferredZPositionClamp;
+                }
 
-            //    CameraSpacePoint position = body.Joints[i].Position;
-            //    if (position.Z < 0)
-            //    {
-            //        position.Z = InferredZPositionClamp;
-            //    }
+                DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
 
-            //    DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
+                int x = (int)(depthSpacePoint.X * kScaleX);
+                int y = (int)(depthSpacePoint.Y * kScaleY);
 
-            //    int x = (int)(depthSpacePoint.X * kSCaleX);
-            //    int y = (int)(depthSpacePoint.Y * kScaleY);
+                if (x <= 0) x = 0;
+                if (x >= 3) x = 3;
+                if (y <= 0) y = 0;
+                if (y >= 3) y = 3;
 
-            //    if (x <= 0) x = 0;
-            //    if (x >= 3) x = 3;
-            //    if (y <= 0) y = 0;
-            //    if (y >= 3) y = 3;
+                if (this.matchingTemplets[templateNum, x,y] == (int)i) 
+                {
+                    matchingCount++;
+                }
+                else
+                {
+                }
 
-            //    if (this.matchingTemplets[templateNum, x,y] == (int)i) 
-            //    {
-            //        matchingCount++;
-            //        this.MatchStatus = "Match!!";
-            //        ret = true;
-            //    }
-            //    else
-            //    {
-            //        this.MatchStatus = "Miss!!";
-            //    }
-                
+                if (matchingCount >= 4)
+                {
+                    ret = true;
+                }
+                else
+                {
+                    ret = false;
+                }
 
-                ////if (matchingCount >=4) ret = true;
-                ////else ret = false;
-
-            //}
+            }
 
             return ret;
 
