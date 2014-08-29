@@ -123,6 +123,21 @@ namespace WPFTest01
         double gridHeight;
 
 
+        //以下画像制御
+        static WriteableBitmap[] rows = new WriteableBitmap[20];
+        static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
+        
+        const int BLOCK_WIDTH_PIX = 16;
+        const int FIELD_WIDTH_PIX = BLOCK_WIDTH_PIX*TetrisGame.FIELD_WIDTH;
+        const int BLOCK_HEIGHT_PIX = 16;
+        const int BYTES_PER_PIX = 4;
+        static byte[] bytes = new byte[FIELD_WIDTH_PIX * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
+        static byte[] fallingbytes = new byte[BLOCK_HEIGHT_PIX * 4 * BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX];
+
+        static byte[] temprowbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
+        static byte[] tempfallingbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
+
+        static Random rand = new Random();//引数無しなのでシード値は時間からいい感じにやってくれるそうです
 
         public GameScene()
         {
@@ -207,6 +222,8 @@ namespace WPFTest01
             this.DataContext = this;
             
 
+            
+
             //マッチング関係
             this.useJoints = new int[5] { (int)JointType.Head, (int)JointType.HandLeft,(int)JointType.HandRight,(int)JointType.KneeRight,(int)JointType.KneeLeft};
             this.matchingTemplets = new int[,,]{
@@ -226,6 +243,52 @@ namespace WPFTest01
             gamebackcanvas = gamebackcanvas_xaml;//gamecanvasの親
             gamecanvas = gamecanvas_xaml;//ゲームキャンバス,ブロックは全部ここのChildlenにAddされる
 
+            //32*16の画像を生成
+            for (int i = 0; i < BLOCK_HEIGHT_PIX*FIELD_WIDTH_PIX; ++i)
+            {
+                bytes[i * 4] = 0x00;
+                bytes[i * 4+1] = 0x00;
+                bytes[i * 4+2] = 0x00;
+                bytes[i * 4+3] = 0x00;
+            }
+            for (int i = 0; i < 20; ++i)
+            {
+                rows[i] = new WriteableBitmap(FIELD_WIDTH_PIX, BLOCK_HEIGHT_PIX, 96.0, 96.0, PixelFormats.Bgra32, null);
+                rows[i].WritePixels(
+                    new Int32Rect(0, 0, FIELD_WIDTH_PIX, BLOCK_HEIGHT_PIX),
+                    bytes,
+                    FIELD_WIDTH_PIX * 4,
+                    0);
+
+            }
+
+            fallingbmp = new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null);
+            //80*80の画像を生成
+            for (int i = 0; i < BLOCK_WIDTH_PIX*BLOCK_HEIGHT_PIX*4*4; ++i)
+            {
+                byte t = 0x00;
+                if(rand.Next(10)==1){
+                    t = 0xff;
+                    fallingbytes[i * 4] = (byte)rand.Next(256);
+                    fallingbytes[i * 4 + 1] = (byte)rand.Next(256);
+                    fallingbytes[i * 4 + 2] = (byte)rand.Next(256);
+                }
+                else
+                {
+                    fallingbytes[i * 4] = 0x00;
+                    fallingbytes[i * 4 + 1] = 0x00;
+                    fallingbytes[i * 4 + 2] = 0x00;
+                }
+                fallingbytes[i * 4 + 3] = t;//(rand.Next(3) == 1) ? 0xff : 0x00;
+            }
+            fallingbmp.WritePixels(
+                new Int32Rect(0,0,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX*4),
+                fallingbytes,
+                BLOCK_WIDTH_PIX*4*4,
+                0);
+
+            
+
             //ゲームのクラスを生成する
             tetris = new TetrisGame();
 
@@ -235,6 +298,72 @@ namespace WPFTest01
             timer.Tick += timer_Tick;//デリゲートを追加？的な
             timer.Start();//タイマースタート
             
+        }
+
+        /// <summary>
+        /// rows[line]にfallingbmpに(BLOCK_HEIGHT_PIX*line,0)(BLOCK_HEIGHT_PIX*(line+1),BLOCK_WIDTH_PIX*4)の部分を合成する
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="bmpline"></param>
+        public static void AddBMP(int x,int line, int bmpline)
+        {
+            Array.Clear(temprowbytes, 0, temprowbytes.Length);
+            Array.Clear(tempfallingbytes, 0, tempfallingbytes.Length);
+
+            int tx = (x - 2) < 0 ? 0 : x - 2;
+            tx = tx > TetrisGame.FIELD_WIDTH - 4 ? TetrisGame.FIELD_WIDTH - 4 : tx;
+
+            fallingbmp.CopyPixels(new Int32Rect(0,bmpline*BLOCK_HEIGHT_PIX,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX),tempfallingbytes, BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX, 0);
+
+            Array.Clear(temprowbytes,0, temprowbytes.Length);
+
+            rows[line].CopyPixels(new Int32Rect(tx * BLOCK_WIDTH_PIX, 0, BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX), temprowbytes, BLOCK_WIDTH_PIX*4 * BYTES_PER_PIX, 0);
+
+            for (int i = BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX - 1; i >= 0; --i)
+            {
+                if (temprowbytes[i * 4 + 3] == 0x00 && tempfallingbytes[i * 4 + 3] == 0xff)
+                //if ( tempfallingbytes[i*4+3] == 0xff)
+                {
+                    temprowbytes[i * 4] = tempfallingbytes[i * 4];
+                    temprowbytes[i * 4 + 1] = tempfallingbytes[i * 4 + 1];
+                    temprowbytes[i * 4 + 2] = tempfallingbytes[i * 4 + 2];
+                    temprowbytes[i * 4 + 3] = 0xff;
+                }
+            }
+
+            rows[line].WritePixels(
+                new Int32Rect(tx*BLOCK_WIDTH_PIX,0,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX),
+                temprowbytes,
+                BLOCK_WIDTH_PIX*4*BYTES_PER_PIX,
+                0
+                );
+
+            //fallingを更新
+            for (int i = 0; i < BLOCK_WIDTH_PIX * BLOCK_HEIGHT_PIX * 4 * 4; ++i)
+            {
+                byte t = 0x00;
+                if (rand.Next(10) == 1)
+                {
+                    t = 0xff;
+                    fallingbytes[i * 4] = (byte)rand.Next(256);
+                    fallingbytes[i * 4 + 1] = (byte)rand.Next(256);
+                    fallingbytes[i * 4 + 2] = (byte)rand.Next(256);
+                }
+                else
+                {
+                    fallingbytes[i * 4] = 0x00;
+                    fallingbytes[i * 4 + 1] = 0x00;
+                    fallingbytes[i * 4 + 2] = 0x00;
+                }
+                fallingbytes[i * 4 + 3] = t;//(rand.Next(3) == 1) ? 0xff : 0x00;
+            }
+            fallingbmp.WritePixels(
+                new Int32Rect(0, 0, BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX * 4),
+                fallingbytes,
+                BLOCK_WIDTH_PIX * 4 * 4,
+                0);
+
+
         }
 
         #region Kienct
@@ -735,6 +864,156 @@ namespace WPFTest01
         public static void DeleteRect(Rectangle inobj)
         {
             gamecanvas.Children.Remove(inobj);
+        }
+
+
+
+        public ImageSource CutImageSource0
+        {
+            get
+            {
+                return rows[0];
+            }
+        }
+        public ImageSource CutImageSource1
+        {
+            get
+            {
+                return rows[1];
+            }
+        }
+        public ImageSource CutImageSource2
+        {
+            get
+            {
+                return rows[2];
+            }
+        }
+        public ImageSource CutImageSource3
+        {
+            get
+            {
+                return rows[3];
+            }
+        }
+        public ImageSource CutImageSource4
+        {
+            get
+            {
+                return rows[4];
+            }
+        }
+        public ImageSource CutImageSource5
+        {
+            get
+            {
+                return rows[5];
+            }
+        }
+        public ImageSource CutImageSource6
+        {
+            get
+            {
+                return rows[6];
+            }
+        }
+        public ImageSource CutImageSource7
+        {
+            get
+            {
+                return rows[7];
+            }
+        }
+        public ImageSource CutImageSource8
+        {
+            get
+            {
+                return rows[8];
+            }
+        }
+        public ImageSource CutImageSource9
+        {
+            get
+            {
+                return rows[9];
+            }
+        }
+        public ImageSource CutImageSource10
+        {
+            get
+            {
+                return rows[10];
+            }
+        }
+        public ImageSource CutImageSource11
+        {
+            get
+            {
+                return rows[11];
+            }
+        }
+        public ImageSource CutImageSource12
+        {
+            get
+            {
+                return rows[12];
+            }
+        }
+        public ImageSource CutImageSource13
+        {
+            get
+            {
+                return rows[13];
+            }
+        }
+        public ImageSource CutImageSource14
+        {
+            get
+            {
+                return rows[14];
+            }
+        }
+        public ImageSource CutImageSource15
+        {
+            get
+            {
+                return rows[15];
+            }
+        }
+        public ImageSource CutImageSource16
+        {
+            get
+            {
+                return rows[16];
+            }
+        }
+        public ImageSource CutImageSource17
+        {
+            get
+            {
+                return rows[17];
+            }
+        }
+        public ImageSource CutImageSource18
+        {
+            get
+            {
+                return rows[18];
+            }
+        }
+        public ImageSource CutImageSource19
+        {
+            get
+            {
+                return rows[19];
+            }
+        }
+        public ImageSource FallingBitmap
+        {
+            get
+            {
+                return fallingbmp;
+            }
         }
 
         //public static void ShowMessageaBox(string instr)

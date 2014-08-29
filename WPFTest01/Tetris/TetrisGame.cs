@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace WPFTest01
 {
@@ -14,7 +15,7 @@ namespace WPFTest01
     class TetrisGame
     {
         //フィールドの横方向のマス数
-        public static int FIELD_WIDTH = 12;
+        public const int FIELD_WIDTH = 10;
         //フィールドの縦方向のマス数
         public static int FIELD_HEIGHT = 20;
         //全マス数
@@ -26,6 +27,9 @@ namespace WPFTest01
         Block[,] rects     = new Block[FIELD_HEIGHT,FIELD_WIDTH];
         //そこにブロックが置いてあるかどうかのフラグ
         public static bool[,] bUsing  = new bool[FIELD_HEIGHT+1,FIELD_WIDTH];
+
+        //画像を登録する
+        List<WriteableBitmap>[] bmps = new List<WriteableBitmap>[FIELD_HEIGHT];
 
         //落下中のテトリミノ
         //プレイヤーが操作しているやつ
@@ -50,6 +54,12 @@ namespace WPFTest01
             }
             //落下中のブロックを生成する
             fallingTet = new Tetromino();
+
+            ////リストを初期化する
+            //for (int i = 0; i < FIELD_HEIGHT; ++i)
+            //{
+            //    bmps[i] = new List<WriteableBitmap>();
+            //}
         }
 
         /// <summary>
@@ -82,6 +92,15 @@ namespace WPFTest01
             fallingTet = new Tetromino();
             //落下カウントもリセット
             framecount = fallframe;
+
+            ////リストをリセットする
+            //for (int i = 0; i < FIELD_HEIGHT; ++i)
+            //{
+            //    foreach (var bmp in bmps[i])
+            //    {
+            //    }
+            //    bmps[i].Clear();
+            //}
         }
 
         /// <summary>
@@ -89,6 +108,16 @@ namespace WPFTest01
         /// </summary>
         /// <param name="inblock">追加するブロック</param>
         public void RegisterTetromino( Tetromino intet ){
+
+            for (int i = 0; i < 4; ++i)
+            {
+                if (intet.y + i < 20)
+                {
+                    GameScene.AddBMP(intet.x, intet.y + i, i);
+                }
+            }
+
+
             for (int i = 0; i < 4; ++i)
             {
                 bUsing[intet.blocks[i].y, intet.blocks[i].x] = true;
