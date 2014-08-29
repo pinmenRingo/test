@@ -78,6 +78,9 @@
             <Viewbox x:Name="viewbox_falling" HorizontalAlignment="Left" VerticalAlignment="Top" Height="64" Width="64" Canvas.Left="-111" Canvas.Top="212">
                 <Image Source="{Binding FallingBitmap}" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Viewbox>
+            <!--<Viewbox x:Name="viewbox_source" HorizontalAlignment="Left" VerticalAlignment="Top" Height="64" Width="64" Canvas.Left="178" Canvas.Top="190">
+                <Image x:Name="bmpsource" Source="pack://siteoforigin:,,,/512_424.bmp" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Viewbox>-->
         </Canvas>
     </Grid>
 </Page>

@@ -124,9 +124,9 @@ namespace WPFTest01
         static WriteableBitmap[] rows = new WriteableBitmap[20];
         public static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
         
-        const int BLOCK_WIDTH_PIX = 16;
+        const int BLOCK_WIDTH_PIX = 16;//512/TetrisGame.FIELD_WIDTH;
         const int FIELD_WIDTH_PIX = BLOCK_WIDTH_PIX*TetrisGame.FIELD_WIDTH;
-        const int BLOCK_HEIGHT_PIX = 16;
+        const int BLOCK_HEIGHT_PIX = 16;//22;
         const int BYTES_PER_PIX = 4;
         static byte[] bytes = new byte[FIELD_WIDTH_PIX * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
         static byte[] fallingbytes = new byte[BLOCK_HEIGHT_PIX * 4 * BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX];
@@ -148,7 +148,11 @@ namespace WPFTest01
         private DepthSpacePoint[] depthPoints = null;
         private WriteableBitmap colorbitmap = null;
 
-        
+        //public byte[] testbmp = new byte[512 * 424 * 4];
+
+        //落下時にクロマキーをfallingbmpに保存する周りで利用するフラグ
+        public static bool waitingforclip = false;//ブロックが落下した際にtrueになり次のキネクトフレーム更新時にfallingbmpにクリップ画像を渡す
+        //static bool completeclip = false;//クリップ画像が渡されたらtrueになる
 
 
         public GameScene()
@@ -437,8 +441,8 @@ namespace WPFTest01
                     new Int32Rect(0, 0, FIELD_WIDTH_PIX, BLOCK_HEIGHT_PIX),bytes,FIELD_WIDTH_PIX * 4,0);
             }
 
-            fallingbmp = new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null);
-            //fallingbmp = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
+            //fallingbmp = new WriteableBitmap(BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX * 4, 96.0, 96.0, PixelFormats.Bgra32, null);
+            fallingbmp = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
             //80*80の画像を生成
             for (int i = 0; i < BLOCK_WIDTH_PIX*BLOCK_HEIGHT_PIX*4*4; ++i)
             {
@@ -453,7 +457,12 @@ namespace WPFTest01
                 fallingbytes[i * 4 + 3] = t;//(rand.Next(3) == 1) ? 0xff : 0x00;
             }
             fallingbmp.WritePixels(
-                new Int32Rect(0,0,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX*4), fallingbytes, BLOCK_WIDTH_PIX*4*4, 0);
+                new Int32Rect(0,0,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX*4),
+                fallingbytes,
+                BLOCK_WIDTH_PIX*4*4,
+                0);
+
+            
 
             #endregion
 
@@ -465,7 +474,7 @@ namespace WPFTest01
             timer.Interval = new TimeSpan(0, 0, 0, 0, 16);//1秒60フレームに設定,1000/60=16.6666...
             timer.Tick += timer_Tick;//デリゲートを追加？的な
             timer.Start();//タイマースタート
-            
+         
         }
 
         /// <summary>
@@ -888,206 +897,276 @@ namespace WPFTest01
             #endregion
 
             #region カラーの描画
-            //using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
-            //{
-            //    if (colorFrame != null)
-            //    {
-            //        FrameDescription colorFrameDescription = colorFrame.FrameDescription;
 
-            //        using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
-            //        {
-            //            this.colorbitmap.Lock();
-
-            //            // verify data and write the new color frame data to the display bitmap
-            //            if ((colorFrameDescription.Width == this.colorbitmap.PixelWidth) && (colorFrameDescription.Height == this.colorbitmap.PixelHeight))
-            //            {
-            //                colorFrame.CopyConvertedFrameDataToIntPtr(
-            //                    this.colorbitmap.BackBuffer,
-            //                    (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
-            //                    ColorImageFormat.Bgra);
-
-            //                this.colorbitmap.AddDirtyRect(new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight));
-            //            }
-
-            //            this.colorbitmap.Unlock();
-            //        }
-            //    }
-            //}
-            #endregion
-
-            #region コーディネート系
-           
-            int depthWidth = 0;
-            int depthHeight = 0;
-
-            bool multiSourceFrameProcessed = false;
-            bool colorFrameProcessed = false;
-            bool depthFrameProcessed = false;
-            bool bodyIndexFrameProcessed = false;
-            //こっからコーディネート
-            if (multiSourceFrame != null)
+            if (!waitingforclip)
             {
-                // Frame Acquisition should always occur first when using multiSourceFrameReader
-                using (DepthFrame depthFrame = multiSourceFrame.DepthFrameReference.AcquireFrame())
-                {
-                    if (depthFrame != null)
-                    {
-                        FrameDescription depthFrameDescription = depthFrame.FrameDescription;
-                        depthWidth = depthFrameDescription.Width;
-                        depthHeight = depthFrameDescription.Height;
-
-                        if ((depthWidth * depthHeight) == this.depthFrameData.Length)
-                        {
-                            depthFrame.CopyFrameDataToArray(this.depthFrameData);
-                            depthFrameProcessed = true;
-                        }
-                    }
-                }
-
                 using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
                 {
                     if (colorFrame != null)
                     {
                         FrameDescription colorFrameDescription = colorFrame.FrameDescription;
 
-                        if ((colorFrameDescription.Width * colorFrameDescription.Height * BYTES_PER_PIX) == this.colorFrameData.Length)
+                        using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
                         {
-                            if (colorFrame.RawColorImageFormat == ColorImageFormat.Bgra)
+                            this.colorbitmap.Lock();
+
+                            // verify data and write the new color frame data to the display bitmap
+                            if ((colorFrameDescription.Width == this.colorbitmap.PixelWidth) && (colorFrameDescription.Height == this.colorbitmap.PixelHeight))
                             {
-                                colorFrame.CopyRawFrameDataToArray(this.colorFrameData);
-                            }
-                            else
-                            {
-                                colorFrame.CopyConvertedFrameDataToArray(this.colorFrameData, ColorImageFormat.Bgra);
+                                colorFrame.CopyConvertedFrameDataToIntPtr(
+                                    this.colorbitmap.BackBuffer,
+                                    (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
+                                    ColorImageFormat.Bgra);
+
+                                this.colorbitmap.AddDirtyRect(new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight));
                             }
 
-                            colorFrameProcessed = true;
+                            this.colorbitmap.Unlock();
                         }
                     }
-                }
-
-                using (BodyIndexFrame bodyIndexFrame = multiSourceFrame.BodyIndexFrameReference.AcquireFrame())
-                {
-                    if (bodyIndexFrame != null)
-                    {
-                        FrameDescription bodyIndexFrameDescription = bodyIndexFrame.FrameDescription;
-
-                        if ((bodyIndexFrameDescription.Width * bodyIndexFrameDescription.Height) == this.bodyIndexFrameData.Length)
-                        {
-                            bodyIndexFrame.CopyFrameDataToArray(this.bodyIndexFrameData);
-                            bodyIndexFrameProcessed = true;
-                        }
-                    }
-
-                    multiSourceFrameProcessed = true;
                 }
             }
+            #endregion
 
-            // we got all frames
-            if (multiSourceFrameProcessed && depthFrameProcessed && colorFrameProcessed && bodyIndexFrameProcessed)
+            #region コーディネート系
+
+            //必要に応じて行う
+            if (waitingforclip)
             {
-                this.coordinateMapper.MapColorFrameToDepthSpace(this.depthFrameData, this.depthPoints);
 
-                Array.Clear(this.displayPixels, 0, this.displayPixels.Length);
+                int depthWidth = 0;
+                int depthHeight = 0;
 
-                int length = this.bodyIndexFrameData.Length;
-
-                DepthSpacePoint depthPoint;
-
-                var negativeinf = float.NegativeInfinity;
-
-                int depthX, depthY;
-
-                int bodyW = 512, bodyH = 424;
-                int cnt = 0;
-
-                int colorIndex = 0;
-                int line = 0;
-
-                float bodyx = 0;
-                float bodyline = 0;
-
-                double scaleX = 1920 / 512;
-                double scaleY = 1080 / 424;
-
-                float procline = 2;
-                int iprocline = 2;
-
-
-
-                length = this.depthPoints.Length;
-                // loop over each row and column of the depth
-                for (colorIndex = 0; colorIndex < length; colorIndex += 2)
-                //for (int colorIndex = length - 2; colorIndex >= 1000000; colorIndex -= 3)
-                //for (int colorIndex = length - 2; colorIndex >= 0; colorIndex -= 3)
+                bool multiSourceFrameProcessed = false;
+                bool colorFrameProcessed = false;
+                bool depthFrameProcessed = false;
+                bool bodyIndexFrameProcessed = false;
+                //こっからコーディネート
+                if (multiSourceFrame != null)
                 {
-
-                    //一時変数
-                    depthPoint = this.depthPoints[colorIndex];
-
-                    //if (float.IsNegativeInfinity(depthPoint.X) && !float.IsNegativeInfinity(depthPoint.Y)) ←ゴミ　ゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミ
-                    if (depthPoint.X != negativeinf && depthPoint.Y != negativeinf)
+                    // Frame Acquisition should always occur first when using multiSourceFrameReader
+                    using (DepthFrame depthFrame = multiSourceFrame.DepthFrameReference.AcquireFrame())
                     {
-                        // make sure the depth pixel maps to a valid point in color space
-                        depthX = (int)(depthPoint.X);// + 0.5f);
-                        depthY = (int)(depthPoint.Y);// + 0.5f);
-
-                        if ((depthX >= 0) && (depthX < depthWidth) && (depthY >= 0) && (depthY < depthHeight))
+                        if (depthFrame != null)
                         {
-                            int depthIndex = (depthY * depthWidth) + depthX;
-                            byte player = this.bodyIndexFrameData[depthIndex];
+                            FrameDescription depthFrameDescription = depthFrame.FrameDescription;
+                            depthWidth = depthFrameDescription.Width;
+                            depthHeight = depthFrameDescription.Height;
 
-                            // if we're tracking a player for the current pixel, sets its color and alpha to full
-                            if (player != 0xff)
+                            if ((depthWidth * depthHeight) == this.depthFrameData.Length)
                             {
-                                // set source for copy to the color pixel
-                                int sourceIndex = colorIndex * BYTES_PER_PIX;
-
-                                int nextpixIndex = sourceIndex + BYTES_PER_PIX;
-                                int nextnextpixIndex = nextpixIndex + BYTES_PER_PIX;
-                                this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
-                                this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
-                                this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
-                                this.displayPixels[nextpixIndex] = 0xff;
-
-                                this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
-                                this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
-                                this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
-                                this.displayPixels[nextnextpixIndex] = 0xff;
-
-                                // write out blue byte
-                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
-                                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
-
-                                // write out green byte
-                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
-                                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
-
-                                // write out red byte
-                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
-                                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
-
-                                // write out alpha byte
-                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = 0xff;
-                                this.displayPixels[sourceIndex] = 0xff;
+                                depthFrame.CopyFrameDataToArray(this.depthFrameData);
+                                depthFrameProcessed = true;
                             }
                         }
                     }
+
+                    using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                    {
+                        if (colorFrame != null)
+                        {
+                            FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+
+                            if ((colorFrameDescription.Width * colorFrameDescription.Height * BYTES_PER_PIX) == this.colorFrameData.Length)
+                            {
+                                if (colorFrame.RawColorImageFormat == ColorImageFormat.Bgra)
+                                {
+                                    colorFrame.CopyRawFrameDataToArray(this.colorFrameData);
+                                }
+                                else
+                                {
+                                    colorFrame.CopyConvertedFrameDataToArray(this.colorFrameData, ColorImageFormat.Bgra);
+                                }
+
+                                colorFrameProcessed = true;
+                            }
+                        }
+                    }
+
+                    using (BodyIndexFrame bodyIndexFrame = multiSourceFrame.BodyIndexFrameReference.AcquireFrame())
+                    {
+                        if (bodyIndexFrame != null)
+                        {
+                            FrameDescription bodyIndexFrameDescription = bodyIndexFrame.FrameDescription;
+
+                            if ((bodyIndexFrameDescription.Width * bodyIndexFrameDescription.Height) == this.bodyIndexFrameData.Length)
+                            {
+                                bodyIndexFrame.CopyFrameDataToArray(this.bodyIndexFrameData);
+                                bodyIndexFrameProcessed = true;
+                            }
+                        }
+
+                        multiSourceFrameProcessed = true;
+                    }
                 }
 
-                this.colorbitmap.WritePixels(
-                    new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
-                    this.displayPixels,
-                    this.colorbitmap.PixelWidth * BYTES_PER_PIX,
-                    0);
-                fallingbmp.WritePixels(
-                    new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
-                    this.displayPixels,
-                    this.colorbitmap.PixelWidth * BYTES_PER_PIX,
-                    0);
+                // we got all frames
+                if (multiSourceFrameProcessed && depthFrameProcessed && colorFrameProcessed && bodyIndexFrameProcessed)
+                {
+                    this.coordinateMapper.MapColorFrameToDepthSpace(this.depthFrameData, this.depthPoints);
+
+                    Array.Clear(this.displayPixels, 0, this.displayPixels.Length);
+
+                    int length = this.bodyIndexFrameData.Length;
+
+                    DepthSpacePoint depthPoint;
+
+                    var negativeinf = float.NegativeInfinity;
+
+                    int depthX, depthY;
+
+                    int bodyW = 512, bodyH = 424;
+                    int cnt = 0;
+
+                    int colorIndex = 0;
+                    int line = 0;
+
+                    float bodyx = 0;
+                    float bodyline = 0;
+
+                    double scaleX = 1920 / 512;
+                    double scaleY = 1080 / 424;
+
+                    float procline = 2;
+                    int iprocline = 2;
+
+
+
+
+                    //for (int bodyIndex = 0; bodyIndex < length; ++bodyIndex)
+                    //{
+
+                    //    if (cnt == 512)
+                    //    {
+                    //        cnt = 0;
+                    //        ++line;
+                    //        //colorIndex += 100;
+                    //        bodyx = 0;
+                    //        //++bodyline;
+                    //        bodyline += procline;
+                    //        procline = (float)(((bodyline + 1) * scaleY) - (bodyline * scaleY));
+                    //        iprocline = (int)procline;
+                    //        colorIndex = line * (int)procline * 1920;
+                    //    }
+                    //    ++cnt;
+
+                    //    float fprocpix = (float)(((bodyx + 1) * scaleX) - (bodyx * scaleX));
+                    //    int procpix = (int)(fprocpix);
+
+
+                    //    byte player = this.bodyIndexFrameData[bodyIndex];
+
+                    //    // if we're tracking a player for the current pixel, sets its color and alpha to full
+                    //    if (player != 0xff)
+                    //    {
+                    //        // set source for copy to the color pixel
+                    //        int sourceIndex = ((int)bodyx + (int)(bodyline) * 1920) * BYTES_PER_PIX;//colorIndex * BYTES_PER_PIX;
+
+                    //        for (int t = 0; t < iprocline; ++t)
+                    //        {
+
+                    //            for (int i = 0; i < procpix; ++i)
+                    //            {
+                    //                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];//b
+                    //                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];//g
+                    //                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];//r
+                    //                this.displayPixels[sourceIndex++] = 0xff;//a
+                    //            }
+                    //            sourceIndex += 1920 * BYTES_PER_PIX;
+                    //            sourceIndex -= procpix * BYTES_PER_PIX;
+                    //        }
+
+                    //    }
+                    //    colorIndex += procpix;
+                    //    bodyx += fprocpix;
+                    //}
+
+
+
+                    length = this.depthPoints.Length;
+                    // loop over each row and column of the depth
+                    for (colorIndex = 0; colorIndex < length; colorIndex += 2)
+                    //for (int colorIndex = length - 2; colorIndex >= 1000000; colorIndex -= 3)
+                    //for (int colorIndex = length - 2; colorIndex >= 0; colorIndex -= 3)
+                    {
+
+                        //一時変数
+                        depthPoint = this.depthPoints[colorIndex];
+
+                        //if (float.IsNegativeInfinity(depthPoint.X) && !float.IsNegativeInfinity(depthPoint.Y)) ←ゴミ　ゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミ
+                        if (depthPoint.X != negativeinf && depthPoint.Y != negativeinf)
+                        {
+                            // make sure the depth pixel maps to a valid point in color space
+                            depthX = (int)(depthPoint.X);// + 0.5f);
+                            depthY = (int)(depthPoint.Y);// + 0.5f);
+
+                            if ((depthX >= 0) && (depthX < depthWidth) && (depthY >= 0) && (depthY < depthHeight))
+                            {
+                                int depthIndex = (depthY * depthWidth) + depthX;
+                                byte player = this.bodyIndexFrameData[depthIndex];
+
+                                // if we're tracking a player for the current pixel, sets its color and alpha to full
+                                if (player != 0xff)
+                                {
+                                    // set source for copy to the color pixel
+                                    int sourceIndex = colorIndex * BYTES_PER_PIX;
+
+                                    int nextpixIndex = sourceIndex + BYTES_PER_PIX;
+                                    int nextnextpixIndex = nextpixIndex + BYTES_PER_PIX;
+                                    this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
+                                    this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
+                                    this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
+                                    this.displayPixels[nextpixIndex] = 0xff;
+
+                                    this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
+                                    this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
+                                    this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
+                                    this.displayPixels[nextnextpixIndex] = 0xff;
+
+                                    // write out blue byte
+                                    //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
+                                    this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
+
+                                    // write out green byte
+                                    //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
+                                    this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
+
+                                    // write out red byte
+                                    //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
+                                    this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
+
+                                    // write out alpha byte
+                                    //this.displayPixels[sourceIndex + BYTES_PER_PIX] = 0xff;
+                                    this.displayPixels[sourceIndex] = 0xff;
+                                }
+                            }
+                        }
+
+                        //this.colorbitmap.WritePixels(
+                        //    new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                        //    this.displayPixels,
+                        //    this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                        //    0);
+
+
+                    }
+                    fallingbmp.WritePixels(
+                        new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                        this.displayPixels,
+                        this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                        //fallingbmp.PixelWidth * BYTES_PER_PIX,
+                        0);
+
+                    //成功！
+                    waitingforclip = false;
+
+                    //new Int32Rect(0, 0, fallingbmp.PixelWidth, fallingbmp.PixelHeight),
+                    //this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                }
             }
 
             #endregion
+
 
         }
 

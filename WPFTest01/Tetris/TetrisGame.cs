@@ -15,7 +15,7 @@ namespace WPFTest01
     class TetrisGame
     {
         //フィールドの横方向のマス数
-        public const int FIELD_WIDTH = 10;
+        public const int FIELD_WIDTH = 8;//現状2の倍数じゃないといろいろ荒ぶる,はず
         //フィールドの縦方向のマス数
         public static int FIELD_HEIGHT = 20;
         //全マス数
@@ -147,6 +147,11 @@ namespace WPFTest01
             if (gameover)
             {
                 return true;
+            }
+                //クリッピング待ちの間は何もせずリターン
+            else if (GameScene.waitingforclip)
+            {
+                //return false;
             }
 
             //キー入力処理

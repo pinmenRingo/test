@@ -79,6 +79,10 @@ namespace WPFTest01
         /// <returns>生成の成否を返す</returns>
         public bool GenerateNewTetromino()
         {
+            //fallingbmp関連
+            GameScene.waitingforclip = true;
+
+
             //生成フラグ
             bool generated = true;
             //テトリミノのx座標を真ん中,y座標を一番上にとる
