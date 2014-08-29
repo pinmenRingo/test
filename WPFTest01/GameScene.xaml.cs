@@ -73,7 +73,7 @@ namespace WPFTest01
         DrawingImage imageSource; //ここにKIENCT用画像が表示される
         private KinectSensor kinectSensor = null;
         private CoordinateMapper coorinateMapper = null; //座標系変換を扱ってるクラスっぽい
-        private BodyFrameReader bodyFrameReader = null;
+        //private multiFrameSourceReader multiFrameSourceReader = null;
         private Body[] bodies = null;
 
         /// <summary>
@@ -136,6 +136,20 @@ namespace WPFTest01
 
         static Random rand = new Random();//引数無しなのでシード値は時間からいい感じにやってくれるそうです
 
+
+        //追加のキネクト要素
+        private MultiSourceFrameReader multiFrameSourceReader = null;
+        private WriteableBitmap bitmap = null;
+        private int depthWidth, depthHeight;
+        private ushort[] depthFrameData = null;
+        private byte[] colorFrameData = null;
+        private byte[] bodyIndexFrameData = null;
+        private byte[] displayPixels = null;
+        private DepthSpacePoint[] depthPoints = null;
+
+        
+
+
         public GameScene()
         {
             //なんか元からあったやつ,おまじないって認識で
@@ -160,7 +174,7 @@ namespace WPFTest01
 
             this.InitMatchGrid();
 
-            this.bodyFrameReader = this.kinectSensor.BodyFrameSource.OpenReader();
+            //this.multiFrameSourceReader = this.kinectSensor.BodyFrameSource.OpenReader();
 
             #region Boneの初期化
 
@@ -212,6 +226,38 @@ namespace WPFTest01
 
             #endregion
 
+
+
+            #region マルチセンサーの初期化
+
+            //マルチキネクトのあれで追加
+            this.multiFrameSourceReader = this.kinectSensor.OpenMultiSourceFrameReader(FrameSourceTypes.Depth | FrameSourceTypes.Color | FrameSourceTypes.BodyIndex | FrameSourceTypes.Body);
+
+            // 深度センサーの解像度を取得
+            FrameDescription depthFrameDescription = this.kinectSensor.DepthFrameSource.FrameDescription;
+            int depthWidth = depthFrameDescription.Width; int depthHeight = depthFrameDescription.Height;
+            this.depthWidth = depthWidth; this.depthHeight = depthHeight;
+
+            // カラーセンサーの解像度を取得
+            FrameDescription colorFrameDescription = this.kinectSensor.ColorFrameSource.FrameDescription;
+            int colorWidth = colorFrameDescription.Width;
+            int colorHeight = colorFrameDescription.Height;
+
+            //描画用バッファの準備
+            this.displayPixels = new byte[colorWidth * colorHeight * BYTES_PER_PIX];
+            //ようわからん中間バッファの準備
+            this.depthPoints = new DepthSpacePoint[colorWidth * colorHeight];
+
+            //メモリ確保
+            this.depthFrameData = new ushort[depthWidth * depthHeight];
+            this.bodyIndexFrameData = new byte[depthWidth * depthHeight];
+            this.colorFrameData = new byte[colorWidth * colorHeight * BYTES_PER_PIX];
+
+
+
+            #endregion
+
+
             this.kinectSensor.Open();
 
             this.drawingGroup = new DrawingGroup();
@@ -220,6 +266,7 @@ namespace WPFTest01
 
             this.DataContext = this;
             
+
 
             
 
@@ -372,23 +419,18 @@ namespace WPFTest01
             gamebackcanvas = gamebackcanvas_xaml;//gamecanvasの親
             gamecanvas = gamecanvas_xaml;//ゲームキャンバス,ブロックは全部ここのChildlenにAddされる
 
+            #region BitMap
+
             //32*16の画像を生成
             for (int i = 0; i < BLOCK_HEIGHT_PIX*FIELD_WIDTH_PIX; ++i)
             {
-                bytes[i * 4] = 0x00;
-                bytes[i * 4+1] = 0x00;
-                bytes[i * 4+2] = 0x00;
-                bytes[i * 4+3] = 0x00;
+                bytes[i * 4] = 0x00;                bytes[i * 4+1] = 0x00;                bytes[i * 4+2] = 0x00;                bytes[i * 4+3] = 0x00;
             }
             for (int i = 0; i < 20; ++i)
             {
                 rows[i] = new WriteableBitmap(FIELD_WIDTH_PIX, BLOCK_HEIGHT_PIX, 96.0, 96.0, PixelFormats.Bgra32, null);
                 rows[i].WritePixels(
-                    new Int32Rect(0, 0, FIELD_WIDTH_PIX, BLOCK_HEIGHT_PIX),
-                    bytes,
-                    FIELD_WIDTH_PIX * 4,
-                    0);
-
+                    new Int32Rect(0, 0, FIELD_WIDTH_PIX, BLOCK_HEIGHT_PIX),bytes,FIELD_WIDTH_PIX * 4,0);
             }
 
             fallingbmp = new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null);
@@ -397,26 +439,18 @@ namespace WPFTest01
             {
                 byte t = 0x00;
                 if(rand.Next(10)==1){
-                    t = 0xff;
-                    fallingbytes[i * 4] = (byte)rand.Next(256);
-                    fallingbytes[i * 4 + 1] = (byte)rand.Next(256);
-                    fallingbytes[i * 4 + 2] = (byte)rand.Next(256);
+                    t = 0xff; fallingbytes[i * 4] = (byte)rand.Next(256); fallingbytes[i * 4 + 1] = (byte)rand.Next(256); fallingbytes[i * 4 + 2] = (byte)rand.Next(256);
                 }
                 else
                 {
-                    fallingbytes[i * 4] = 0x00;
-                    fallingbytes[i * 4 + 1] = 0x00;
-                    fallingbytes[i * 4 + 2] = 0x00;
+                    fallingbytes[i * 4] = 0x00; fallingbytes[i * 4 + 1] = 0x00; fallingbytes[i * 4 + 2] = 0x00;
                 }
                 fallingbytes[i * 4 + 3] = t;//(rand.Next(3) == 1) ? 0xff : 0x00;
             }
             fallingbmp.WritePixels(
-                new Int32Rect(0,0,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX*4),
-                fallingbytes,
-                BLOCK_WIDTH_PIX*4*4,
-                0);
+                new Int32Rect(0,0,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX*4), fallingbytes, BLOCK_WIDTH_PIX*4*4, 0);
 
-            
+            #endregion
 
             //ゲームのクラスを生成する
             tetris = new TetrisGame();
@@ -683,9 +717,9 @@ namespace WPFTest01
 
         private void GameSceneLoaded(object sender, RoutedEventArgs e)
         {
-            if (this.bodyFrameReader != null)
+            if (this.multiFrameSourceReader != null)
             {
-                this.bodyFrameReader.FrameArrived += bodyFrameReader_FrameArrived;
+                this.multiFrameSourceReader.MultiSourceFrameArrived += multiFrameSourceReader_FrameArrived;
             }
 
             //matchGridの初期化
@@ -694,10 +728,10 @@ namespace WPFTest01
 
         private void GameSceneClosing(object sender, RoutedEventArgs e)
         {
-            if (this.bodyFrameReader != null)
+            if (this.multiFrameSourceReader != null)
             {
-                this.bodyFrameReader.Dispose();
-                this.bodyFrameReader = null;
+                this.multiFrameSourceReader.Dispose();
+                this.multiFrameSourceReader = null;
             }
 
             if (this.kinectSensor != null)
@@ -707,11 +741,18 @@ namespace WPFTest01
             }
         }
 
-        void bodyFrameReader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
+        void multiFrameSourceReader_FrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
         {
+            MultiSourceFrame multiSourceFrame = e.FrameReference.AcquireFrame();
+            
             bool dataReceived = false;
 
-            using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
+            //ここボーン
+
+            #region スケルトンの描画やら
+
+            //using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
+            using (BodyFrame bodyFrame = multiSourceFrame.BodyFrameReference.AcquireFrame())
             {
                 if (bodyFrame != null)
                 {
@@ -830,6 +871,7 @@ namespace WPFTest01
                 }
             }
 
+            #endregion
 
         }
 
@@ -1020,7 +1062,7 @@ namespace WPFTest01
             gamecanvas.Children.Remove(inobj);
         }
 
-
+        #region binding_gamefield
 
         public ImageSource CutImageSource0
         {
@@ -1169,6 +1211,8 @@ namespace WPFTest01
                 return fallingbmp;
             }
         }
+
+#endregion
 
         //public static void ShowMessageaBox(string instr)
         //{
