@@ -124,11 +124,12 @@ namespace WPFTest01
         static WriteableBitmap[] rows = new WriteableBitmap[20];
         public static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
         
+        //カラーセンサーから取得するサイズ
+
         const int BLOCK_WIDTH_PIX = 16;//512/TetrisGame.FIELD_WIDTH;
         const int FIELD_WIDTH_PIX = BLOCK_WIDTH_PIX*TetrisGame.FIELD_WIDTH;
         const int BLOCK_HEIGHT_PIX = 16;//22;
         const int BYTES_PER_PIX = 4;
-        static byte[] bytes = new byte[FIELD_WIDTH_PIX * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
         static byte[] fallingbytes = new byte[BLOCK_HEIGHT_PIX * 4 * BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX];
 
         static byte[] temprowbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
@@ -430,6 +431,7 @@ namespace WPFTest01
             #region BitMap
 
             //32*16の画像を生成
+            byte[] bytes = new byte[FIELD_WIDTH_PIX * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
             for (int i = 0; i < BLOCK_HEIGHT_PIX*FIELD_WIDTH_PIX; ++i)
             {
                 bytes[i * 4] = 0x00;                bytes[i * 4+1] = 0x00;                bytes[i * 4+2] = 0x00;                bytes[i * 4+3] = 0x00;
@@ -490,7 +492,9 @@ namespace WPFTest01
             int tx = (x - 2) < 0 ? 0 : x - 2;
             tx = tx > TetrisGame.FIELD_WIDTH - 4 ? TetrisGame.FIELD_WIDTH - 4 : tx;
 
-            fallingbmp.CopyPixels(new Int32Rect(0,bmpline*BLOCK_HEIGHT_PIX,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX),tempfallingbytes, BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX, 0);
+            //fallingbmp.CopyPixels(new Int32Rect(0,bmpline*BLOCK_HEIGHT_PIX,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX),tempfallingbytes, BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX, 0);
+            fallingbmp.CopyPixels(new Int32Rect(256, bmpline * BLOCK_HEIGHT_PIX, BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX), tempfallingbytes, BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX, 0);
+            //fallingbmp.AddDirtyRect(new Int32Rect(256, 0, 1370, 1080));
 
             Array.Clear(temprowbytes,0, temprowbytes.Length);
 
@@ -498,7 +502,7 @@ namespace WPFTest01
 
             for (int i = BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX - 1; i >= 0; --i)
             {
-                if (temprowbytes[i * 4 + 3] == 0x00 && tempfallingbytes[i * 4 + 3] == 0xff)
+                if (/*temprowbytes[i * 4 + 3] == 0x00 &&*/ tempfallingbytes[i * 4 + 3] == 0xff)
                 //if ( tempfallingbytes[i*4+3] == 0xff)
                 {
                     temprowbytes[i * 4] = tempfallingbytes[i * 4];
@@ -516,29 +520,29 @@ namespace WPFTest01
                 );
 
             //fallingを更新
-            for (int i = 0; i < BLOCK_WIDTH_PIX * BLOCK_HEIGHT_PIX * 4 * 4; ++i)
-            {
-                byte t = 0x00;
-                if (rand.Next(10) == 1)
-                {
-                    t = 0xff;
-                    fallingbytes[i * 4] = (byte)rand.Next(256);
-                    fallingbytes[i * 4 + 1] = (byte)rand.Next(256);
-                    fallingbytes[i * 4 + 2] = (byte)rand.Next(256);
-                }
-                else
-                {
-                    fallingbytes[i * 4] = 0x00;
-                    fallingbytes[i * 4 + 1] = 0x00;
-                    fallingbytes[i * 4 + 2] = 0x00;
-                }
-                fallingbytes[i * 4 + 3] = t;//(rand.Next(3) == 1) ? 0xff : 0x00;
-            }
-            fallingbmp.WritePixels(
-                new Int32Rect(0, 0, BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX * 4),
-                fallingbytes,
-                BLOCK_WIDTH_PIX * 4 * 4,
-                0);
+            //for (int i = 0; i < BLOCK_WIDTH_PIX * BLOCK_HEIGHT_PIX * 4 * 4; ++i)
+            //{
+            //    byte t = 0x00;
+            //    if (rand.Next(10) == 1)
+            //    {
+            //        t = 0xff;
+            //        fallingbytes[i * 4] = (byte)rand.Next(256);
+            //        fallingbytes[i * 4 + 1] = (byte)rand.Next(256);
+            //        fallingbytes[i * 4 + 2] = (byte)rand.Next(256);
+            //    }
+            //    else
+            //    {
+            //        fallingbytes[i * 4] = 0x00;
+            //        fallingbytes[i * 4 + 1] = 0x00;
+            //        fallingbytes[i * 4 + 2] = 0x00;
+            //    }
+            //    fallingbytes[i * 4 + 3] = t;//(rand.Next(3) == 1) ? 0xff : 0x00;
+            //}
+            //fallingbmp.WritePixels(
+            //    new Int32Rect(0, 0, BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX * 4),
+            //    fallingbytes,
+            //    BLOCK_WIDTH_PIX * 4 * 4,
+            //    0);
 
 
         }
@@ -1150,15 +1154,44 @@ namespace WPFTest01
 
 
                     }
-                    fallingbmp.WritePixels(
-                        new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
-                        this.displayPixels,
-                        this.colorbitmap.PixelWidth * BYTES_PER_PIX,
-                        //fallingbmp.PixelWidth * BYTES_PER_PIX,
-                        0);
+
+
+                    using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                    {
+                        if (colorFrame != null)
+                        {
+                            FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+
+                            using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
+                            {
+                                fallingbmp.Lock();
+
+                                // verify data and write the new color frame data to the display bitmap
+                                if ((colorFrameDescription.Width == fallingbmp.PixelWidth) && (colorFrameDescription.Height == fallingbmp.PixelHeight))
+                                {
+                                    colorFrame.CopyConvertedFrameDataToIntPtr(
+                                        fallingbmp.BackBuffer,
+                                        (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
+                                        ColorImageFormat.Bgra);
+
+                                    fallingbmp.AddDirtyRect(new Int32Rect(256, 0, 1370, 1080));
+                                }
+
+                                fallingbmp.Unlock();
+                                waitingforclip = false;
+                            }
+                        }
+                    }
+
+                    //fallingbmp.WritePixels(
+                    //    new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                    //    this.displayPixels,
+                    //    this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                    //    //fallingbmp.PixelWidth * BYTES_PER_PIX,
+                    //    0);
 
                     //成功！
-                    waitingforclip = false;
+                    //waitingforclip = false;
 
                     //new Int32Rect(0, 0, fallingbmp.PixelWidth, fallingbmp.PixelHeight),
                     //this.colorbitmap.PixelWidth * BYTES_PER_PIX,
