@@ -26,46 +26,149 @@ namespace WPFTest01
         }
 
         //テトリミノの種類
-        const int TETROMINO_NUM = 6;//棒,括弧x2,四角,くねくねx2
+        const int TETROMINO_NUM = 19;//棒,括弧x2,四角,くねくねx2
         //テトリミノの色[型(TETROMINO_NUM)]
-        Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen };
+        Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen,Colors.Azure };
         //テトリミノテンプレート[型(TETROMINO_NUM),ブロック番号(4),座標xy(2)]
         //テトリミノの形を配列で定義
         //値はテトリミノの座標からの相対距離
         int[, ,] TETROMINO_TEMPLATE ={
+                                              //T
                                               {
-                                                  {-1,0},
                                                   {0,0},
                                                   {0,1},
+                                                  {-1,1},
+                                                  {1,1}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {0,1},
+                                                  {1,1},
+                                                  {0,2}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {0,1},
+                                                 {-1,1},
+                                                 {0,2}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {-1,0},
+                                                  {1,0},
+                                                  {0,1}
+                                              },
+
+                                               //J
+                                              {
+                                                  {0,0},
+                                                  {0,1},
+                                                  {1,1},
+                                                  {1,2}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {1,0},
+                                                  {1,0},
+                                                  {2,0}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {-1,0},
+                                                  {1,0},
                                                   {1,1}
                                               },
                                               {
-                                                  {1,0},
                                                   {0,0},
+                                                  {0,1},
+                                                  {0,2},
+                                                  {1,2}
+                                              },
+
+                                               //L
+                                              {
+                                                  
+                                                  {0,0},
+                                                  {0,1},
+                                                  {0,2},
+                                                  {1,2}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {-1,0},
+                                                 {1,0},
+                                                 {-1,1}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {1,0},
+                                                 {1,1},
+                                                 {1,2}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {0,1},
+                                                 {-1,1},
+                                                 {-2,1}
+                                              },
+
+                                               //S
+                                              {
+                                                  {0,0},
+                                                  {1,0},
                                                   {0,1},
                                                   {-1,1}
                                               },
+
                                               {
-                                                  {-1,1},
-                                                  {-1,0},
                                                   {0,0},
-                                                  {1,0}
-                                              },
-                                              {
+                                                  {0,1},
                                                   {1,1},
-                                                  {1,0},
-                                                  {0,0},
-                                                  {-1,0}
+                                                  {1,2}
                                               },
+
+                                              //Z                                    
+                                              {
+                                                  {0,0},
+                                                  {-1,0},
+                                                  {0,1},
+                                                  {1,1}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {0,1},
+                                                 {-1,1},
+                                                 {-1,2}
+                                              },
+
+                                              // - 
+                                              {
+                                                  {0,0},
+                                                  {0,1},
+                                                  {0,2},
+                                                  {0,3}
+                                              },
+
                                               {
                                                   {-1,0},
                                                   {0,0},
                                                   {1,0},
                                                   {2,0}
                                               },
+
+                                              //□
                                               {
-                                                  {1,0},
                                                   {0,0},
+                                                  {1,0},
                                                   {0,1},
                                                   {1,1}
                                               }
@@ -86,6 +189,7 @@ namespace WPFTest01
             x = centerx; y = 0;
 
             //生成するテトリミノの番号をランダムに設定
+            //生成するテトリミノの番号 = マッチングテンプレートのインデックス
             int tetrominonum = rand.Next(TETROMINO_NUM);
 
             //System.Windows.MessageBox.Show(tetrominonum.ToString());
@@ -97,7 +201,7 @@ namespace WPFTest01
                 int ty = TETROMINO_TEMPLATE[tetrominonum, i, 1];
 
                 //ブロックを生成
-                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[tetrominonum]);
+                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[0]);
 
                 //他のブロックに被っていないか確かめる
                 if (!blocks[i].CanMove(0, 0))
