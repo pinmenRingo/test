@@ -101,11 +101,8 @@ namespace WPFTest01
         private string rightKneePos = null;
         private string leftKneePos = null;
         private SolidColorBrush matchAlertColor;
-
-        /// <summary>
-        /// Controllerクラスのインスタンス
-        /// </summary>
-        private Control control;
+        private Dictionary<JointType, Brush> jointColors;
+        private Label[,] matchControl;
 
         private int[] useJoints;
 
@@ -123,6 +120,7 @@ namespace WPFTest01
         double gridHeight;
 
 
+<<<<<<< HEAD
         //以下画像制御
         static WriteableBitmap[] rows = new WriteableBitmap[20];
         static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
@@ -139,6 +137,8 @@ namespace WPFTest01
 
         static Random rand = new Random();//引数無しなのでシード値は時間からいい感じにやってくれるそうです
 
+=======
+>>>>>>> develop_bodyMatchPoint
         public GameScene()
         {
             //なんか元からあったやつ,おまじないって認識で
@@ -161,8 +161,7 @@ namespace WPFTest01
             matchGrid.Width = this.displayWidth;
             matchGrid.Height = this.displayHeight;
 
-
-
+            this.InitMatchGrid();
 
             this.bodyFrameReader = this.kinectSensor.BodyFrameSource.OpenReader();
 
@@ -187,6 +186,12 @@ namespace WPFTest01
             this.bones.Add(new Tuple<JointType, JointType>(JointType.WristRight, JointType.ThumbRight));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.ThumbLeft));
 
+            // Left Arm
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft));
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft));
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft));
+            this.bones.Add(new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft));
+
             // Right Leg
             this.bones.Add(new Tuple<JointType, JointType>(JointType.HipRight, JointType.KneeRight));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.KneeRight, JointType.AnkleRight));
@@ -199,6 +204,7 @@ namespace WPFTest01
 
             #endregion
 
+            #region Bone Color
             this.bodyColors = new List<Pen>();
             this.bodyColors.Add(new Pen(Brushes.Red, 6)); //Pen = 図形を中抜き？
             this.bodyColors.Add(new Pen(Brushes.Orange, 6));
@@ -207,13 +213,9 @@ namespace WPFTest01
             this.bodyColors.Add(new Pen(Brushes.Indigo, 6));
             this.bodyColors.Add(new Pen(Brushes.Violet, 6));
 
-            this.kinectSensor.Open();
+            #endregion
 
-            // Left Arm
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ShoulderLeft, JointType.ElbowLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.ElbowLeft, JointType.WristLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.WristLeft, JointType.HandLeft));
-            this.bones.Add(new Tuple<JointType, JointType>(JointType.HandLeft, JointType.HandTipLeft));
+            this.kinectSensor.Open();
 
             this.drawingGroup = new DrawingGroup();
 
@@ -226,16 +228,146 @@ namespace WPFTest01
 
             //マッチング関係
             this.useJoints = new int[5] { (int)JointType.Head, (int)JointType.HandLeft,(int)JointType.HandRight,(int)JointType.KneeRight,(int)JointType.KneeLeft};
-            this.matchingTemplets = new int[,,]{
-                                                    {
-                                                        {0,0,0,0},
-                                                        {0,0,3,0},
-                                                        {0,7,13,11},
-                                                        {0,0,0,0}
-                                                
-                                                    }
-                                                };
 
+            #region MatchTemplate
+            this.matchingTemplets = new int[,,]{
+                                           //T型
+                                           {
+                                               
+                                               {0,0,0,0},
+                                               {0,0,3,0},
+                                               {0,7,13,11},
+                                               {0,0,0,0}
+                                           },
+
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,3,0},
+                                               {0,0,7,11},
+                                               {0,0,13,0}
+                                           },
+
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,3,0},
+                                               {0,7,11,0},
+                                               {0,0,13,0}
+                                           },
+
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,0,0},
+                                               {0,7,3,11},
+                                               {0,0,13,0}
+                                           },
+
+                                           //J
+                                           {
+                                               {0,0,0,0},
+                                               {0,3,0,0},
+                                               {0,7,13,11},
+                                               {0,0,0,0}
+                                           },
+                                           {
+                                               {0,0,0,0},
+                                               {0,3,11,0},
+                                               {0,7,0,0},
+                                               {0,13,0,0}
+                                           },
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,0,0},
+                                               {7,3,11,0},
+                                               {0,0,17,0}
+                                           },
+                                           {
+                                               {0,0,0,0},
+                                               {0,7,0,0},
+                                               {0,3,0,0},
+                                               {13,11,0,0}
+                                           },
+
+                                           //L
+                                           {
+                                               {0,0,0,0},
+                                               {0,11,0,0},
+                                               {0,3,0,0},
+                                               {0,7,17,0},
+                                           },
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,0,0},
+                                               {0,7,3,11},
+                                               {0,13,0,0}
+                                           },
+                                           {
+                                               {0,0,0,0},
+                                               {0,3,11,0},
+                                               {0,0,7,0},
+                                               {0,0,13,0}
+                                           },
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,3,0},
+                                               {7,13,11,0},
+                                               {0,0,0,0 }
+                                           },
+
+                                           //S
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,3,11},
+                                               {0,7,17,0},
+                                               {0,0,0,0}
+                                           },
+
+                                           {
+                                               {0,0,0,0},
+                                               {0,3,0,0},
+                                               {0,7,11,0},
+                                               {0,0,17,0}
+                                           },
+
+                                           //逆S
+                                           {
+                                               {0,0,0,0},
+                                               {0,7,3,0},
+                                               {0,0,17,11},
+                                               {0,0,0,0}
+                                           },
+
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,11,0},
+                                               {0,7,3,0},
+                                               {0,13,0,0}
+                                           },
+
+                                           // l
+                                           {
+                                               {0,0,11,0},
+                                               {0,0,3,0},
+                                               {0,0,7,0},
+                                               {0,0,17,0}
+                                           },
+
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,0,0},
+                                               {7,3,17,11},
+                                               {0,0,0,0}
+                                           },
+
+                                           //□
+                                           {
+                                               {0,0,0,0},
+                                               {0,0,0,0},
+                                               {0,7,3,0,},
+                                               {0,13,11,0}
+                                           }
+
+                                       };
+            #endregion
 
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
@@ -558,6 +690,9 @@ namespace WPFTest01
             {
                 this.bodyFrameReader.FrameArrived += bodyFrameReader_FrameArrived;
             }
+
+            //matchGridの初期化
+            this.InitMatchGrid();
         }
 
         private void GameSceneClosing(object sender, RoutedEventArgs e)
@@ -735,6 +870,28 @@ namespace WPFTest01
             }
 
             return ret;
+        }
+
+        //matchGrid初期化（Labelを配置）
+        private void InitMatchGrid()
+        {
+            int rows = matchGrid.RowDefinitions.Count;
+            int cols = matchGrid.ColumnDefinitions.Count;
+            matchControl = new Label[cols,rows];
+
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < cols; x++)
+                {
+                    matchControl[y, x] = new Label();
+                    matchControl[y, x].Background = Brushes.Blue;
+                    matchControl[y, x].BorderThickness = new Thickness(1, 1, 1, 1);
+                    matchGrid.Children.Add(matchControl[y, x]);
+
+                }
+            }
+
+
         }
 
 

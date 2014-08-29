@@ -24,3 +24,6 @@ C:\Users\Tako\Desktop\gitTest\tetris\tetris\obj\Debug\tetris_MarkupCompile.cache
 C:\Users\Tako\Desktop\gitTest\tetris\tetris\obj\Debug\tetris.g.resources
 C:\Users\Tako\Desktop\gitTest\tetris\tetris\obj\Debug\tetris.Properties.Resources.resources
 C:\Users\Tako\Desktop\gitTest\tetris\tetris\obj\Debug\tetris.csproj.GenerateResource.Cache
+C:\Users\貴久\Documents\test\tetris\tetris\bin\Debug\tetris.exe.config
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.exe
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.pdb
