@@ -120,7 +120,6 @@ namespace WPFTest01
         double gridHeight;
 
 
-<<<<<<< HEAD
         //以下画像制御
         static WriteableBitmap[] rows = new WriteableBitmap[20];
         static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
@@ -137,8 +136,6 @@ namespace WPFTest01
 
         static Random rand = new Random();//引数無しなのでシード値は時間からいい感じにやってくれるそうです
 
-=======
->>>>>>> develop_bodyMatchPoint
         public GameScene()
         {
             //なんか元からあったやつ,おまじないって認識で
