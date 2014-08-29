@@ -110,6 +110,7 @@ namespace WPFTest01
         /// マッチング用のテンプレート
         /// </summary>
         private int[,,] matchingTemplets;
+        const int TEMPLATE_NUM = 19;
         
         //スケール
         double kScaleY = 0.008;
@@ -121,16 +122,22 @@ namespace WPFTest01
 
         //ブラシ
         private Brush headBrush = Brushes.Yellow;
-        private Brush leftHandBrush = Brushes.Violet;
-        private Brush rightHandBrush = Brushes.Turquoise;
-        private Brush rightKneeBrush = Brushes.Tomato;
-        private Brush leftKneeBrush = Brushes.Orange;
+        private Brush leftHandBrush = Brushes.Purple;
+        private Brush rightHandBrush = Brushes.Blue;
+        private Brush rightKneeBrush = Brushes.Green;
+        private Brush leftKneeBrush = Brushes.Pink;
+
+        //マッチングテンプレートアクセス用
+        Random rand = new Random();
+        private int matchTemplateIndex;
+        private int debug_index;
 
 
         public GameScene()
         {
             //なんか元からあったやつ,おまじないって認識で
             InitializeComponent();
+            debug_index = 11;
 
             //kinect
             this.kinectSensor = KinectSensor.GetDefault();
@@ -251,9 +258,9 @@ namespace WPFTest01
 
                                            {
                                                {0,0,0,0},
-                                               {0,0,0,0},
                                                {0,7,3,11},
-                                               {0,0,13,0}
+                                               {0,0,13,0},
+                                               {0,0,0,0}
                                            },
 
                                            //J
@@ -364,8 +371,12 @@ namespace WPFTest01
                                        };
             #endregion
 
+            matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+
             //マッチング用Gridの初期化（Labelを配置）
             this.InitMatchGrid();
+            //ランダムに描画
+            this.SetColorToMatchGrid(debug_index);
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
             grid = grid01;//gamebackcanvasの親
@@ -568,18 +579,13 @@ namespace WPFTest01
 
 #endregion
 
-
+        #region Scene初期化
         private void GameSceneLoaded(object sender, RoutedEventArgs e)
         {
             if (this.bodyFrameReader != null)
             {
                 this.bodyFrameReader.FrameArrived += bodyFrameReader_FrameArrived;
             }
-
-            //matchGridの初期化
-            this.InitMatchGrid();
-            //matchGridに次落とすブロックの描画
-            this.SetColorToMatchGrid();
         }
 
         private void GameSceneClosing(object sender, RoutedEventArgs e)
@@ -596,6 +602,7 @@ namespace WPFTest01
                 this.kinectSensor = null;
             }
         }
+        #endregion
 
         void bodyFrameReader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
         {
@@ -704,7 +711,7 @@ namespace WPFTest01
                             this.DrawBody(joints, jointPoint, dc, drawPen);
 
                             //マッチング処理
-                            bool isMatched = this.isMatching(jointPoint, 0);
+                            bool isMatched = this.isMatching(jointPoint,debug_index);
                             if (isMatched) this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
                             else this.MatchAlertColor = new SolidColorBrush(Colors.Red);
 
@@ -738,8 +745,8 @@ namespace WPFTest01
                 if (x >= 3) x = 3;
                 if (y <= 0) y = 0;
                 if (y >= 3) y = 3;
-
                 if (this.matchingTemplets[templateNum,y,x] == (int)i)
+
                 {
                     matchingCount++;
                 }
