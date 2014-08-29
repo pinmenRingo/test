@@ -65,6 +65,7 @@
     <Compile Include="GameScene.xaml.cs">
       <DependentUpon>GameScene.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tetris\MatchTemplate.cs" />
     <Compile Include="Tetris\Tetromino.cs" />
     <Compile Include="TitleScene.xaml.cs">
       <DependentUpon>TitleScene.xaml</DependentUpon>
