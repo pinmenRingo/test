@@ -119,6 +119,13 @@ namespace WPFTest01
         double gridWidth;
         double gridHeight;
 
+        //ブラシ
+        private Brush headBrush = Brushes.Yellow;
+        private Brush leftHandBrush = Brushes.Violet;
+        private Brush rightHandBrush = Brushes.Turquoise;
+        private Brush rightKneeBrush = Brushes.Tomato;
+        private Brush leftKneeBrush = Brushes.Orange;
+
 
         public GameScene()
         {
@@ -142,7 +149,16 @@ namespace WPFTest01
             matchGrid.Width = this.displayWidth;
             matchGrid.Height = this.displayHeight;
 
-            this.InitMatchGrid();
+            //マッチングの際に表示する各Jointと色の辞書配列
+           
+            this.jointColors = new Dictionary<JointType,Brush>{
+                {JointType.Head,headBrush},
+                {JointType.HandLeft,leftHandBrush},
+                {JointType.HandRight,rightHandBrush},
+                {JointType.KneeRight,rightKneeBrush},
+                {JointType.KneeLeft,leftKneeBrush}
+            };
+
 
             this.bodyFrameReader = this.kinectSensor.BodyFrameSource.OpenReader();
 
@@ -348,6 +364,8 @@ namespace WPFTest01
                                        };
             #endregion
 
+            //マッチング用Gridの初期化（Labelを配置）
+            this.InitMatchGrid();
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
             grid = grid01;//gamebackcanvasの親
@@ -560,6 +578,8 @@ namespace WPFTest01
 
             //matchGridの初期化
             this.InitMatchGrid();
+            //matchGridに次落とすブロックの描画
+            this.SetColorToMatchGrid();
         }
 
         private void GameSceneClosing(object sender, RoutedEventArgs e)
@@ -751,13 +771,66 @@ namespace WPFTest01
                 for (int x = 0; x < cols; x++)
                 {
                     matchControl[y, x] = new Label();
-                    matchControl[y, x].Background = Brushes.Blue;
+                    matchControl[y, x].Background = Brushes.Transparent;
+                    matchControl[y, x].Opacity = 0.5;
                     matchControl[y, x].BorderThickness = new Thickness(1, 1, 1, 1);
-                    matchGrid.Children.Add(matchControl[y, x]);
+                    matchGrid.Children.Add(this.matchControl[y, x]);
+
+                    matchControl[y, x].SetValue(Grid.RowProperty, y);
+                    matchControl[y, x].SetValue(Grid.ColumnProperty, x);
 
                 }
             }
 
+
+        }
+
+        //今回落とすブロックをmatchGridに描画（Labelに色を付ける）
+        private void SetColorToMatchGrid(int matchTemplateNum)
+        {
+            int rows = matchGrid.RowDefinitions.Count;
+            int cols = matchGrid.ColumnDefinitions.Count;
+
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < cols; x++)
+                {
+
+                    switch (this.matchingTemplets[matchTemplateNum, y, x])
+                    {
+                        case (int)JointType.Head:
+                            matchControl[y, x].Background = this.jointColors[JointType.Head];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.HandLeft:
+                            matchControl[y,x].Background = this.jointColors[JointType.HandLeft];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.HandRight:
+                            matchControl[y,x].Background = this.jointColors[JointType.HandRight];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.KneeLeft:
+                            matchControl[y,x].Background = this.jointColors[JointType.KneeLeft];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.KneeRight:
+                            matchControl[y,x].Background = this.jointColors[JointType.KneeRight];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+                    }
+
+                }
+            }
 
         }
 
