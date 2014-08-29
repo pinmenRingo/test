@@ -72,8 +72,8 @@ namespace WPFTest01
 
         DrawingImage imageSource; //ここにKIENCT用画像が表示される
         private KinectSensor kinectSensor = null;
-        private CoordinateMapper coorinateMapper = null; //座標系変換を扱ってるクラスっぽい
-        //private multiFrameSourceReader multiFrameSourceReader = null;
+        private CoordinateMapper coordinateMapper = null; //座標系変換を扱ってるクラスっぽい
+        //private BodyFrameReader bodyFrameReader = null;
         private Body[] bodies = null;
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace WPFTest01
 
         //以下画像制御
         static WriteableBitmap[] rows = new WriteableBitmap[20];
-        static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
+        public static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
         
         const int BLOCK_WIDTH_PIX = 16;
         const int FIELD_WIDTH_PIX = BLOCK_WIDTH_PIX*TetrisGame.FIELD_WIDTH;
@@ -139,13 +139,14 @@ namespace WPFTest01
 
         //追加のキネクト要素
         private MultiSourceFrameReader multiFrameSourceReader = null;
-        private WriteableBitmap bitmap = null;
+        //private WriteableBitmap bitmap = null;
         private int depthWidth, depthHeight;
         private ushort[] depthFrameData = null;
         private byte[] colorFrameData = null;
         private byte[] bodyIndexFrameData = null;
         private byte[] displayPixels = null;
         private DepthSpacePoint[] depthPoints = null;
+        private WriteableBitmap colorbitmap = null;
 
         
 
@@ -157,7 +158,7 @@ namespace WPFTest01
 
             //kinect
             this.kinectSensor = KinectSensor.GetDefault();
-            this.coorinateMapper = this.kinectSensor.CoordinateMapper;
+            this.coordinateMapper = this.kinectSensor.CoordinateMapper;
    
             //フレームサイズ
             FrameDescription frameDescription = this.kinectSensor.DepthFrameSource.FrameDescription;
@@ -168,13 +169,16 @@ namespace WPFTest01
 
             viewBox.Width = this.displayWidth;
             viewBox.Height = this.displayHeight;
+            //viewBox_color.Width = this.displayWidth;
+            //viewBox_color.Height = this.displayHeight;
 
+            // ここうまいこと触る
             matchGrid.Width = this.displayWidth;
             matchGrid.Height = this.displayHeight;
 
             this.InitMatchGrid();
 
-            //this.multiFrameSourceReader = this.kinectSensor.BodyFrameSource.OpenReader();
+            //this.bodyFrameReader = this.kinectSensor.BodyFrameSource.OpenReader();
 
             #region Boneの初期化
 
@@ -252,8 +256,8 @@ namespace WPFTest01
             this.depthFrameData = new ushort[depthWidth * depthHeight];
             this.bodyIndexFrameData = new byte[depthWidth * depthHeight];
             this.colorFrameData = new byte[colorWidth * colorHeight * BYTES_PER_PIX];
-
-
+            this.colorbitmap = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
+            
 
             #endregion
 
@@ -434,6 +438,7 @@ namespace WPFTest01
             }
 
             fallingbmp = new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null);
+            //fallingbmp = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
             //80*80の画像を生成
             for (int i = 0; i < BLOCK_WIDTH_PIX*BLOCK_HEIGHT_PIX*4*4; ++i)
             {
@@ -721,6 +726,10 @@ namespace WPFTest01
             {
                 this.multiFrameSourceReader.MultiSourceFrameArrived += multiFrameSourceReader_FrameArrived;
             }
+            //if (this.bodyFrameReader != null)
+            //{
+            //    this.bodyFrameReader.FrameArrived += bodyFrameReader_FrameArrived;
+            //}
 
             //matchGridの初期化
             this.InitMatchGrid();
@@ -733,6 +742,11 @@ namespace WPFTest01
                 this.multiFrameSourceReader.Dispose();
                 this.multiFrameSourceReader = null;
             }
+            //if (this.bodyFrameReader != null)
+            //{
+            //    this.bodyFrameReader.Dispose();
+            //    this.bodyFrameReader = null;
+            //}
 
             if (this.kinectSensor != null)
             {
@@ -744,15 +758,15 @@ namespace WPFTest01
         void multiFrameSourceReader_FrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
         {
             MultiSourceFrame multiSourceFrame = e.FrameReference.AcquireFrame();
-            
+
             bool dataReceived = false;
 
             //ここボーン
 
             #region スケルトンの描画やら
 
-            //using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
             using (BodyFrame bodyFrame = multiSourceFrame.BodyFrameReference.AcquireFrame())
+            //using (BodyFrame bodyFrame = multiSourceFrame.BodyFrameReference.AcquireFrame())
             {
                 if (bodyFrame != null)
                 {
@@ -771,7 +785,7 @@ namespace WPFTest01
                 using (DrawingContext dc = this.drawingGroup.Open())
                 {
                     //背景の黒い画面を描画
-                    dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(0x11,0x00,0x00,0x00)), null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
 
                     int penIndex = 0;
 
@@ -804,7 +818,7 @@ namespace WPFTest01
                                     position.Z = InferredZPositionClamp;
                                 }
 
-                                DepthSpacePoint depthSpacePoint = this.coorinateMapper.MapCameraPointToDepthSpace(position);
+                                DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(position);
 
                                 jointPoint[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
 
@@ -818,16 +832,16 @@ namespace WPFTest01
 
                                         break;
 
-                                    
+
                                     case JointType.HandLeft:
 
                                         double leftHand_x = jointPoint[JointType.HandLeft].X * kScaleX;
                                         double leftHand_y = jointPoint[JointType.HandLeft].Y * kScaleY;
-                                        this.LeftHandPos = "leftHand_x:" + leftHand_x.ToString() + " " + "leftHand_y:" + leftHand_y.ToString(); 
+                                        this.LeftHandPos = "leftHand_x:" + leftHand_x.ToString() + " " + "leftHand_y:" + leftHand_y.ToString();
                                         break;
 
                                     case JointType.HandRight:
-                                         double rightHand_x = jointPoint[JointType.HandRight].X * kScaleX;
+                                        double rightHand_x = jointPoint[JointType.HandRight].X * kScaleX;
                                         double rightHand_y = jointPoint[JointType.HandRight].Y * kScaleY;
                                         this.RightHandPos = "rightHand_x:" + rightHand_x.ToString() + " " + "rightHand_y:" + rightHand_y.ToString();
 
@@ -844,7 +858,7 @@ namespace WPFTest01
                                         double leftKnee_y = jointPoint[JointType.KneeLeft].X * kScaleY;
                                         this.LeftKneePos = "leftKnee_x:" + leftKnee_x.ToString() + " " + "leftKnee_y" + leftKnee_y.ToString();
                                         break;
-                                   
+
                                     default:
                                         break;
                                 }
@@ -859,9 +873,9 @@ namespace WPFTest01
                             if (isMatched) this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
                             else this.MatchAlertColor = new SolidColorBrush(Colors.Red);
 
-                          
+
                         }
-                      
+
                     }
 
                     //レンダーエリア外に描画しないように防ぐ
@@ -869,6 +883,208 @@ namespace WPFTest01
 
 
                 }
+            }
+
+            #endregion
+
+            #region カラーの描画
+            //using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+            //{
+            //    if (colorFrame != null)
+            //    {
+            //        FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+
+            //        using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
+            //        {
+            //            this.colorbitmap.Lock();
+
+            //            // verify data and write the new color frame data to the display bitmap
+            //            if ((colorFrameDescription.Width == this.colorbitmap.PixelWidth) && (colorFrameDescription.Height == this.colorbitmap.PixelHeight))
+            //            {
+            //                colorFrame.CopyConvertedFrameDataToIntPtr(
+            //                    this.colorbitmap.BackBuffer,
+            //                    (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
+            //                    ColorImageFormat.Bgra);
+
+            //                this.colorbitmap.AddDirtyRect(new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight));
+            //            }
+
+            //            this.colorbitmap.Unlock();
+            //        }
+            //    }
+            //}
+            #endregion
+
+            #region コーディネート系
+           
+            int depthWidth = 0;
+            int depthHeight = 0;
+
+            bool multiSourceFrameProcessed = false;
+            bool colorFrameProcessed = false;
+            bool depthFrameProcessed = false;
+            bool bodyIndexFrameProcessed = false;
+            //こっからコーディネート
+            if (multiSourceFrame != null)
+            {
+                // Frame Acquisition should always occur first when using multiSourceFrameReader
+                using (DepthFrame depthFrame = multiSourceFrame.DepthFrameReference.AcquireFrame())
+                {
+                    if (depthFrame != null)
+                    {
+                        FrameDescription depthFrameDescription = depthFrame.FrameDescription;
+                        depthWidth = depthFrameDescription.Width;
+                        depthHeight = depthFrameDescription.Height;
+
+                        if ((depthWidth * depthHeight) == this.depthFrameData.Length)
+                        {
+                            depthFrame.CopyFrameDataToArray(this.depthFrameData);
+                            depthFrameProcessed = true;
+                        }
+                    }
+                }
+
+                using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                {
+                    if (colorFrame != null)
+                    {
+                        FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+
+                        if ((colorFrameDescription.Width * colorFrameDescription.Height * BYTES_PER_PIX) == this.colorFrameData.Length)
+                        {
+                            if (colorFrame.RawColorImageFormat == ColorImageFormat.Bgra)
+                            {
+                                colorFrame.CopyRawFrameDataToArray(this.colorFrameData);
+                            }
+                            else
+                            {
+                                colorFrame.CopyConvertedFrameDataToArray(this.colorFrameData, ColorImageFormat.Bgra);
+                            }
+
+                            colorFrameProcessed = true;
+                        }
+                    }
+                }
+
+                using (BodyIndexFrame bodyIndexFrame = multiSourceFrame.BodyIndexFrameReference.AcquireFrame())
+                {
+                    if (bodyIndexFrame != null)
+                    {
+                        FrameDescription bodyIndexFrameDescription = bodyIndexFrame.FrameDescription;
+
+                        if ((bodyIndexFrameDescription.Width * bodyIndexFrameDescription.Height) == this.bodyIndexFrameData.Length)
+                        {
+                            bodyIndexFrame.CopyFrameDataToArray(this.bodyIndexFrameData);
+                            bodyIndexFrameProcessed = true;
+                        }
+                    }
+
+                    multiSourceFrameProcessed = true;
+                }
+            }
+
+            // we got all frames
+            if (multiSourceFrameProcessed && depthFrameProcessed && colorFrameProcessed && bodyIndexFrameProcessed)
+            {
+                this.coordinateMapper.MapColorFrameToDepthSpace(this.depthFrameData, this.depthPoints);
+
+                Array.Clear(this.displayPixels, 0, this.displayPixels.Length);
+
+                int length = this.bodyIndexFrameData.Length;
+
+                DepthSpacePoint depthPoint;
+
+                var negativeinf = float.NegativeInfinity;
+
+                int depthX, depthY;
+
+                int bodyW = 512, bodyH = 424;
+                int cnt = 0;
+
+                int colorIndex = 0;
+                int line = 0;
+
+                float bodyx = 0;
+                float bodyline = 0;
+
+                double scaleX = 1920 / 512;
+                double scaleY = 1080 / 424;
+
+                float procline = 2;
+                int iprocline = 2;
+
+
+
+                length = this.depthPoints.Length;
+                // loop over each row and column of the depth
+                for (colorIndex = 0; colorIndex < length; colorIndex += 2)
+                //for (int colorIndex = length - 2; colorIndex >= 1000000; colorIndex -= 3)
+                //for (int colorIndex = length - 2; colorIndex >= 0; colorIndex -= 3)
+                {
+
+                    //一時変数
+                    depthPoint = this.depthPoints[colorIndex];
+
+                    //if (float.IsNegativeInfinity(depthPoint.X) && !float.IsNegativeInfinity(depthPoint.Y)) ←ゴミ　ゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミゴミ
+                    if (depthPoint.X != negativeinf && depthPoint.Y != negativeinf)
+                    {
+                        // make sure the depth pixel maps to a valid point in color space
+                        depthX = (int)(depthPoint.X);// + 0.5f);
+                        depthY = (int)(depthPoint.Y);// + 0.5f);
+
+                        if ((depthX >= 0) && (depthX < depthWidth) && (depthY >= 0) && (depthY < depthHeight))
+                        {
+                            int depthIndex = (depthY * depthWidth) + depthX;
+                            byte player = this.bodyIndexFrameData[depthIndex];
+
+                            // if we're tracking a player for the current pixel, sets its color and alpha to full
+                            if (player != 0xff)
+                            {
+                                // set source for copy to the color pixel
+                                int sourceIndex = colorIndex * BYTES_PER_PIX;
+
+                                int nextpixIndex = sourceIndex + BYTES_PER_PIX;
+                                int nextnextpixIndex = nextpixIndex + BYTES_PER_PIX;
+                                this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
+                                this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
+                                this.displayPixels[nextpixIndex] = this.colorFrameData[nextpixIndex++];
+                                this.displayPixels[nextpixIndex] = 0xff;
+
+                                this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
+                                this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
+                                this.displayPixels[nextnextpixIndex] = this.colorFrameData[nextnextpixIndex++];
+                                this.displayPixels[nextnextpixIndex] = 0xff;
+
+                                // write out blue byte
+                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
+                                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
+
+                                // write out green byte
+                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
+                                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
+
+                                // write out red byte
+                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = this.colorFrameData[sourceIndex + BYTES_PER_PIX];
+                                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];
+
+                                // write out alpha byte
+                                //this.displayPixels[sourceIndex + BYTES_PER_PIX] = 0xff;
+                                this.displayPixels[sourceIndex] = 0xff;
+                            }
+                        }
+                    }
+                }
+
+                this.colorbitmap.WritePixels(
+                    new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                    this.displayPixels,
+                    this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                    0);
+                fallingbmp.WritePixels(
+                    new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                    this.displayPixels,
+                    this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                    0);
             }
 
             #endregion
@@ -1062,8 +1278,15 @@ namespace WPFTest01
             gamecanvas.Children.Remove(inobj);
         }
 
-        #region binding_gamefield
+        #region ぴんめんのばいでぃんぐ
 
+        public ImageSource CutImageSource
+        {
+            get
+            {
+                return this.colorbitmap;
+            }
+        }
         public ImageSource CutImageSource0
         {
             get
@@ -1221,6 +1444,9 @@ namespace WPFTest01
     }
 }
 
+#region ゴミ箱
+
+
 //色の変更
 /*
 if( bf )
@@ -1228,3 +1454,183 @@ if( bf )
 else
     rectangle01.Fill = new SolidColorBrush(Color.FromArgb(50,255,196,175));
 bf = !bf;*/
+
+
+
+/*
+void bodyFrameReader_FrameArrived(object sender, BodyFrameArrivedEventArgs e)
+{
+    bool dataReceived = false;
+
+    //ここボーン
+
+
+    using (BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
+    //using (BodyFrame bodyFrame = multiSourceFrame.BodyFrameReference.AcquireFrame())
+    {
+        if (bodyFrame != null)
+        {
+            if (this.bodies == null)
+            {
+                this.bodies = new Body[bodyFrame.BodyCount];
+            }
+
+            bodyFrame.GetAndRefreshBodyData(this.bodies);
+            dataReceived = true;
+        }
+    }
+
+    if (dataReceived)
+    {
+        using (DrawingContext dc = this.drawingGroup.Open())
+        {
+            //背景の黒い画面を描画
+            dc.DrawRectangle(new SolidColorBrush(Color.FromArgb(0x11,0x00,0x00,0x00)), null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+
+            int penIndex = 0;
+
+            foreach (Body body in this.bodies)
+            {
+                Pen drawPen = this.bodyColors[penIndex++];
+
+                if (body.IsTracked)
+                {
+                    this.DrawClippedEdges(body, dc);
+
+                    //ジョイントの辞書配列
+                    //joint名:key
+                    IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
+
+                    //CameraSpacePoint point =  body.Joints[JointType.HandLeft].Position;
+
+                    //jointのポイントをディスプレイに変換
+
+                    //ジョイントごとの座標をいれる辞書配列
+                    //key:ジョント名
+                    Dictionary<JointType, Point> jointPoint = new Dictionary<JointType, Point>();
+
+
+                    foreach (JointType jointType in joints.Keys)
+                    {
+                        CameraSpacePoint position = joints[jointType].Position;
+                        if (position.Z < 0)
+                        {
+                            position.Z = InferredZPositionClamp;
+                        }
+
+                        DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(position);
+
+                        jointPoint[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+
+                        switch (jointType)
+                        {
+
+                            case JointType.Head:
+                                double head_x = jointPoint[JointType.Head].X * kScaleX;
+                                double head_y = jointPoint[JointType.Head].Y * kScaleY;
+                                this.HeadPos = "head_x:" + head_x.ToString() + " " + "head_y" + head_y.ToString();
+
+                                break;
+
+
+                            case JointType.HandLeft:
+
+                                double leftHand_x = jointPoint[JointType.HandLeft].X * kScaleX;
+                                double leftHand_y = jointPoint[JointType.HandLeft].Y * kScaleY;
+                                this.LeftHandPos = "leftHand_x:" + leftHand_x.ToString() + " " + "leftHand_y:" + leftHand_y.ToString();
+                                break;
+
+                            case JointType.HandRight:
+                                double rightHand_x = jointPoint[JointType.HandRight].X * kScaleX;
+                                double rightHand_y = jointPoint[JointType.HandRight].Y * kScaleY;
+                                this.RightHandPos = "rightHand_x:" + rightHand_x.ToString() + " " + "rightHand_y:" + rightHand_y.ToString();
+
+                                break;
+
+                            case JointType.KneeRight:
+                                double rightKnee_x = jointPoint[JointType.KneeRight].X * kScaleX;
+                                double rightKnee_y = jointPoint[JointType.KneeRight].Y * kScaleY;
+                                this.RightKneePos = "rightKnee_x:" + rightKnee_x.ToString() + " " + "rightKnee_y" + rightKnee_y.ToString();
+                                break;
+
+                            case JointType.KneeLeft:
+                                double leftKnee_x = jointPoint[JointType.KneeLeft].X * kScaleX;
+                                double leftKnee_y = jointPoint[JointType.KneeLeft].X * kScaleY;
+                                this.LeftKneePos = "leftKnee_x:" + leftKnee_x.ToString() + " " + "leftKnee_y" + leftKnee_y.ToString();
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    }
+
+                    //体を描画
+                    this.DrawBody(joints, jointPoint, dc, drawPen);
+
+                    //マッチング処理
+                    bool isMatched = this.isMatching(jointPoint, 0);
+                    if (isMatched) this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
+                    else this.MatchAlertColor = new SolidColorBrush(Colors.Red);
+
+
+                }
+
+            }
+
+            //レンダーエリア外に描画しないように防ぐ
+            this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+
+
+        }
+    }
+}*/
+
+//for (int bodyIndex = 0; bodyIndex < length; ++bodyIndex)
+//{
+
+//    if (cnt == 512)
+//    {
+//        cnt = 0;
+//        ++line;
+//        //colorIndex += 100;
+//        bodyx = 0;
+//        //++bodyline;
+//        bodyline += procline;
+//        procline = (float)(((bodyline + 1) * scaleY) - (bodyline * scaleY));
+//        iprocline = (int)procline;
+//        colorIndex = line * (int)procline * 1920;
+//    }
+//    ++cnt;
+
+//    float fprocpix = (float)(((bodyx + 1) * scaleX) - (bodyx * scaleX));
+//    int procpix = (int)(fprocpix);
+
+
+//    byte player = this.bodyIndexFrameData[bodyIndex];
+
+//    // if we're tracking a player for the current pixel, sets its color and alpha to full
+//    if (player != 0xff)
+//    {
+//        // set source for copy to the color pixel
+//        int sourceIndex = ((int)bodyx + (int)(bodyline) * 1920) * BYTES_PER_PIX;//colorIndex * BYTES_PER_PIX;
+
+//        for (int t = 0; t < iprocline; ++t)
+//        {
+
+//            for (int i = 0; i < procpix; ++i)
+//            {
+//                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];//b
+//                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];//g
+//                this.displayPixels[sourceIndex] = this.colorFrameData[sourceIndex++];//r
+//                this.displayPixels[sourceIndex++] = 0xff;//a
+//            }
+//            sourceIndex += 1920 * BYTES_PER_PIX;
+//            sourceIndex -= procpix * BYTES_PER_PIX;
+//        }
+
+//    }
+//    colorIndex += procpix;
+//    bodyx += fprocpix;
+//}
+#endregion
