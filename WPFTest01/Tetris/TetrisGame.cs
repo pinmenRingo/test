@@ -60,6 +60,9 @@ namespace WPFTest01
             //{
             //    bmps[i] = new List<WriteableBitmap>();
             //}
+
+            //一応
+            ResetGame();
         }
 
         /// <summary>
@@ -67,6 +70,7 @@ namespace WPFTest01
         /// </summary>
         public void ResetGame()
         {
+            GameScene.ResetRows();
 
             //フィールド上のブロックやフラグを初期化
             for (int y = 0; y < FIELD_HEIGHT; ++y)

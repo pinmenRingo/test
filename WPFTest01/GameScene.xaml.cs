@@ -121,16 +121,18 @@ namespace WPFTest01
 
 
         //以下画像制御
-        static WriteableBitmap[] rows = new WriteableBitmap[20];
+        public static WriteableBitmap[] rows = new WriteableBitmap[20];
         public static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
         
         //カラーセンサーから取得するサイズ
+        const int COLOR_PIXELS_WIDTH = 1380;
+        const int COLOR_PIXELS_HEIGHT = 1080;
 
-        const int BLOCK_WIDTH_PIX = 16;//512/TetrisGame.FIELD_WIDTH;
+        const int BLOCK_WIDTH_PIX = COLOR_PIXELS_WIDTH / 4;//16;//512/TetrisGame.FIELD_WIDTH;
         const int FIELD_WIDTH_PIX = BLOCK_WIDTH_PIX*TetrisGame.FIELD_WIDTH;
-        const int BLOCK_HEIGHT_PIX = 16;//22;
+        const int BLOCK_HEIGHT_PIX = COLOR_PIXELS_HEIGHT/4;//16;//22;
         const int BYTES_PER_PIX = 4;
-        static byte[] fallingbytes = new byte[BLOCK_HEIGHT_PIX * 4 * BLOCK_WIDTH_PIX * 4 * BYTES_PER_PIX];
+        static byte[] fallingbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * 4 * BYTES_PER_PIX];
 
         static byte[] temprowbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
         static byte[] tempfallingbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
@@ -430,7 +432,7 @@ namespace WPFTest01
 
             #region BitMap
 
-            //32*16の画像を生成
+            //rowsを初期化
             byte[] bytes = new byte[FIELD_WIDTH_PIX * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
             for (int i = 0; i < BLOCK_HEIGHT_PIX*FIELD_WIDTH_PIX; ++i)
             {
@@ -545,6 +547,20 @@ namespace WPFTest01
             //    0);
 
 
+        }
+
+        public static void ResetRows()
+        {
+            byte[] bytes = new byte[FIELD_WIDTH_PIX * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
+            for (int i = 0; i < BLOCK_HEIGHT_PIX * FIELD_WIDTH_PIX; ++i)
+            {
+                bytes[i * 4] = 0x00; bytes[i * 4 + 1] = 0x00; bytes[i * 4 + 2] = 0x00; bytes[i * 4 + 3] = 0x00;
+            }
+            for (int i = 0; i < 20; ++i)
+            {
+                rows[i].WritePixels(
+                    new Int32Rect(0, 0, FIELD_WIDTH_PIX, BLOCK_HEIGHT_PIX), bytes, FIELD_WIDTH_PIX * 4, 0);
+            }
         }
 
         #region Kienct
@@ -1156,42 +1172,42 @@ namespace WPFTest01
                     }
 
 
-                    using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
-                    {
-                        if (colorFrame != null)
-                        {
-                            FrameDescription colorFrameDescription = colorFrame.FrameDescription;
+                    //using (ColorFrame colorFrame = multiSourceFrame.ColorFrameReference.AcquireFrame())
+                    //{
+                    //    if (colorFrame != null)
+                    //    {
+                    //        FrameDescription colorFrameDescription = colorFrame.FrameDescription;
 
-                            using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
-                            {
-                                fallingbmp.Lock();
+                    //        using (KinectBuffer colorBuffer = colorFrame.LockRawImageBuffer())
+                    //        {
+                    //            fallingbmp.Lock();
 
-                                // verify data and write the new color frame data to the display bitmap
-                                if ((colorFrameDescription.Width == fallingbmp.PixelWidth) && (colorFrameDescription.Height == fallingbmp.PixelHeight))
-                                {
-                                    colorFrame.CopyConvertedFrameDataToIntPtr(
-                                        fallingbmp.BackBuffer,
-                                        (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
-                                        ColorImageFormat.Bgra);
+                    //            // verify data and write the new color frame data to the display bitmap
+                    //            if ((colorFrameDescription.Width == fallingbmp.PixelWidth) && (colorFrameDescription.Height == fallingbmp.PixelHeight))
+                    //            {
+                    //                colorFrame.CopyConvertedFrameDataToIntPtr(
+                    //                    fallingbmp.BackBuffer,
+                    //                    (uint)(colorFrameDescription.Width * colorFrameDescription.Height * 4),
+                    //                    ColorImageFormat.Bgra);
 
-                                    fallingbmp.AddDirtyRect(new Int32Rect(256, 0, 1370, 1080));
-                                }
+                    //                fallingbmp.AddDirtyRect(new Int32Rect(256, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT));
+                    //            }
 
-                                fallingbmp.Unlock();
-                                waitingforclip = false;
-                            }
-                        }
-                    }
+                    //            fallingbmp.Unlock();
+                    //            waitingforclip = false;
+                    //        }
+                    //    }
+                    //}
 
-                    //fallingbmp.WritePixels(
-                    //    new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
-                    //    this.displayPixels,
-                    //    this.colorbitmap.PixelWidth * BYTES_PER_PIX,
-                    //    //fallingbmp.PixelWidth * BYTES_PER_PIX,
-                    //    0);
+                    fallingbmp.WritePixels(
+                        new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                        this.displayPixels,
+                        this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                        //fallingbmp.PixelWidth * BYTES_PER_PIX,
+                        0);
 
                     //成功！
-                    //waitingforclip = false;
+                    waitingforclip = false;
 
                     //new Int32Rect(0, 0, fallingbmp.PixelWidth, fallingbmp.PixelHeight),
                     //this.colorbitmap.PixelWidth * BYTES_PER_PIX,

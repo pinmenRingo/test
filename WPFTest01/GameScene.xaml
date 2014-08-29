@@ -13,65 +13,65 @@
             <Canvas x:Name="gamecanvas_xaml" Height="320.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="160.0" Background="#88535353">
 
                 <StackPanel>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource0}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource0}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource1}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource1}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource2}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource2}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource3}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource3}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource4}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource4}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource5}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource5}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource6}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource6}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource7}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource7}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource8}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource8}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource9}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource9}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                    <Image Source="{Binding CutImageSource10}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                    <Image Source="{Binding CutImageSource10}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource11}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource11}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource12}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource12}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource13}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource13}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource14}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource14}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource15}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource15}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource16}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource16}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource17}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource17}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource18}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource18}" Stretch="Fill" />
                     </Viewbox>
-                    <Viewbox>
-                        <Image Source="{Binding CutImageSource19}" Stretch="UniformToFill" />
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                        <Image Source="{Binding CutImageSource19}" Stretch="Fill" />
                     </Viewbox>
                 </StackPanel>
                 <Canvas.BindingGroup>
