@@ -67,14 +67,14 @@ namespace WPFTest01
                                                   {0,0},
                                                   {0,1},
                                                   {1,1},
-                                                  {1,2}
+                                                  {2,1}
                                               },
 
                                               {
                                                   {0,0},
                                                   {1,0},
-                                                  {1,0},
-                                                  {2,0}
+                                                  {0,1},
+                                                  {0,2}
                                               },
 
                                               {
@@ -108,9 +108,9 @@ namespace WPFTest01
 
                                               {
                                                  {0,0},
-                                                 {1,0},
-                                                 {1,1},
-                                                 {1,2}
+                                                 {-1,0},
+                                                 {0,1},
+                                                 {0,2}
                                               },
 
                                               {
@@ -186,11 +186,38 @@ namespace WPFTest01
             bool generated = true;
             //テトリミノのx座標を真ん中,y座標を一番上にとる
             int centerx = TetrisGame.FIELD_WIDTH / 2;
-            x = centerx; y = 0;
+            x = centerx; 
 
             //生成するテトリミノの番号をランダムに設定
             //生成するテトリミノの番号 = マッチングテンプレートのインデックス
             int tetrominonum = rand.Next(TETROMINO_NUM);
+
+            //回転の際にテトリミノの中心で回すため、
+            //特定のテトリミノは座標を調整
+            //闇
+            
+            if (tetrominonum == 3 || 
+                tetrominonum == 17||
+                tetrominonum == 6)
+            {
+                y = 0;
+            }
+            else if (tetrominonum == 11)
+            {
+                y = 1;
+                x--;
+            }
+            else if (tetrominonum == 4)
+            {
+                y = 1;
+                x++;
+            }
+            else
+            {
+                y = 1;
+            }
+
+            
 
             //System.Windows.MessageBox.Show(tetrominonum.ToString());
             //各ブロック生成可能か判定する
@@ -201,7 +228,7 @@ namespace WPFTest01
                 int ty = TETROMINO_TEMPLATE[tetrominonum, i, 1];
 
                 //ブロックを生成
-                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[0]);
+                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[tetrominonum%7]);
 
                 //他のブロックに被っていないか確かめる
                 if (!blocks[i].CanMove(0, 0))
