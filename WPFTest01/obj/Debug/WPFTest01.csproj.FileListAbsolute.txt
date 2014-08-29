@@ -87,3 +87,6 @@ C:\Users\貴久\Documents\test\WPFTest01\obj\Debug\WPFTest01.Properties.Resource
 C:\Users\貴久\Documents\test\WPFTest01\obj\Debug\WPFTest01.csproj.GenerateResource.Cache
 C:\Users\貴久\Documents\test\WPFTest01\obj\Debug\WPFTest01.exe
 C:\Users\貴久\Documents\test\WPFTest01\obj\Debug\WPFTest01.pdb
+C:\Users\amiNote\Documents\test\WPFTest01\bin\Debug\WPFTest01.exe.config
+C:\Users\amiNote\Documents\test\WPFTest01\obj\Debug\WPFTest01.exe
+C:\Users\amiNote\Documents\test\WPFTest01\obj\Debug\WPFTest01.pdb

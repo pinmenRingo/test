@@ -8,7 +8,7 @@
 	Title="TitleScene">
 
     <Grid Background="White">
-    	<Label Content="ヒトリス（仮）" HorizontalAlignment="Center" Height="55" Margin="0,150,0,0" VerticalAlignment="Top" Width="226" FontSize="32"/>
+    	<Label Content="ヒトリス（）" HorizontalAlignment="Center" Height="55" Margin="0,150,0,0" VerticalAlignment="Top" Width="226" FontSize="32"/>
     	<Button Content="はじめる" Click="Button_Click" HorizontalAlignment="Center" Height="50" Margin="0,300,0,0" VerticalAlignment="Top" Width="200"/>
         
     </Grid>
