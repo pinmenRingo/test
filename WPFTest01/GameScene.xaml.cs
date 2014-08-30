@@ -461,11 +461,11 @@ namespace WPFTest01
                 0
                 );
 
-                //fallingbmp = new WriteableBitmap(BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX * 4, 96.0, 96.0, PixelFormats.Bgra32, null);
-            fallingbmp = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
-            //fallingbmp = new WriteableBitmap(COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT, 96.0, 96.0, PixelFormats.Bgra32, null);
+            //fallingbmp = new WriteableBitmap(BLOCK_WIDTH_PIX * 4, BLOCK_HEIGHT_PIX * 4, 96.0, 96.0, PixelFormats.Bgra32, null);
+            //fallingbmp = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
+            fallingbmp = new WriteableBitmap(COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT, 96.0, 96.0, PixelFormats.Bgra32, null);
             //80*80の画像を生成
-            for (int i = 0; i < BLOCK_WIDTH_PIX*BLOCK_HEIGHT_PIX*4*4; ++i)
+            for (int i = 0; i < COLOR_PIXELS_WIDTH*COLOR_PIXELS_HEIGHT; ++i)
             {
                 byte t = 0x00;
                 if(rand.Next(10)==1){
@@ -478,9 +478,9 @@ namespace WPFTest01
                 fallingbytes[i * 4 + 3] = t;//(rand.Next(3) == 1) ? 0xff : 0x00;
             }
             fallingbmp.WritePixels(
-                new Int32Rect(0,0,BLOCK_WIDTH_PIX*4,BLOCK_HEIGHT_PIX*4),
+                new Int32Rect(0,0,COLOR_PIXELS_WIDTH,COLOR_PIXELS_HEIGHT),
                 fallingbytes,
-                BLOCK_WIDTH_PIX*4*4,
+                COLOR_PIXELS_WIDTH*BYTES_PER_PIX,
                 0);
 
             
@@ -588,7 +588,7 @@ namespace WPFTest01
                 gety = BLOCK_HEIGHT_PIX*4;
             }
 
-            fallingbmp.CopyPixels(new Int32Rect(256, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), tbytes1, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
+            fallingbmp.CopyPixels(new Int32Rect(0, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), tbytes1, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
             //fieldbmp.CopyPixels(new Int32Rect(sx, y * BLOCK_HEIGHT_PIX, COLOR_PIXELS_WIDTH/*FIELD_WIDTH_PIX - sx*/, COLOR_PIXELS_HEIGHT/*FIELD_HEIGHT_PIX - y * BLOCK_HEIGHT_PIX*/), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
             //fieldbmp.CopyPixels(new Int32Rect(sx, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
             fieldbmp.CopyPixels(new Int32Rect(sx, y * BLOCK_HEIGHT_PIX, getx, gety), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
