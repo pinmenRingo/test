@@ -34,6 +34,9 @@ namespace WPFTest01
         //マッチングできていたかどうか
         private bool isMatched;
 
+        //現在テトリミノを落としている
+        private bool isExecuted;
+
         //現在指定しているテンプレート
         private int currentGridTempleteIndex;
 
@@ -58,6 +61,7 @@ namespace WPFTest01
             //fallingTet = new Tetromino();
 
             this.isMatched = false;
+            this.isExecuted = false;
         }
 
         /// <summary>
@@ -124,14 +128,21 @@ namespace WPFTest01
             if (this.isMatched)
             {
                 //fallingTetがなかった新たに生成
+
                 if (fallingTet == null)
                 {
                     //ここでテンプレートインデックスを使ってランダムに
+                    this.getIsExecute = true;
                     fallingTet = new Tetromino(this.currentGridTempleteIndex);
                 }
 
                 //今落ちているブロックが着地していたら
-                
+                if (!fallingTet.canMove(0,1))
+                {
+                    //新しいテトリミノを作成
+                    //fallingTet.GenerateNewTetromino(this.currentGridTempleteIndex);
+
+                }
 
                 //通常処理
 
@@ -214,6 +225,10 @@ namespace WPFTest01
                         //    //ゲームオーバーなのでtrueを返す
                         //    return true;
                         //}
+
+                        this.isMatched = false;
+                        this.fallingTet = null;
+                        this.isExecuted = false;
                     }
                 }
                 #endregion
@@ -317,6 +332,18 @@ namespace WPFTest01
             this.currentGridTempleteIndex = index;
         }
 
+        public bool getIsExecute
+        {
+            get
+            {
+                return this.isExecuted;
+            }
+
+            set
+            {
+                this.isExecuted = value;
+            }
+        }
         /// <summary>
         /// 消える行を探索,削除する
         /// </summary>

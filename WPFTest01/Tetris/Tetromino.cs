@@ -282,6 +282,18 @@ namespace WPFTest01
 
         }
 
+        public bool canMove(int dx, int dy)
+        {
+            bool canMove = true;
+
+            for (int i = 0; i < 4; ++i)
+            {
+               canMove =  blocks[i].CanMove(dx, dy);
+            }
+
+            return canMove;
+        }
+
         /// <summary>
         /// 回転
         /// </summary>
