@@ -87,7 +87,6 @@ namespace WPFTest01
             {
                GameScene.DeleteRect(fallingTet.blocks[i].GetRect());
             }
-            fallingTet = new Tetromino();
             //落下カウントもリセット
             framecount = fallframe;
         }
@@ -122,13 +121,13 @@ namespace WPFTest01
         public bool Proc()
         {
             //マッチングできていたら
-            if (!this.isMatched)
+            if (this.isMatched)
             {
                 //fallingTetがなかった新たに生成
                 if (fallingTet == null)
                 {
                     //ここでテンプレートインデックスを使ってランダムに
-                    fallingTet = new Tetromino();
+                    fallingTet = new Tetromino(this.currentGridTempleteIndex);
                 }
 
                 //今落ちているブロックが着地していたら
@@ -204,17 +203,17 @@ namespace WPFTest01
                         //行の削除処理(埋まった行があれば削除する)
                         DeleteFilledLine(fallingTet);
 
-                        //着地時,新たにテトリミノを生成する
-                        if (!fallingTet.GenerateNewTetromino())
-                        {
-                            //生成できなかった(=ゲームオーバー)
-                            gameover = true;//temp,boolを返して外でやるべき
-                            //背景を真っ赤に
-                            GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
+                        ////着地時,新たにテトリミノを生成する
+                        //if (!fallingTet.GenerateNewTetromino())
+                        //{
+                        //    //生成できなかった(=ゲームオーバー)
+                        //    gameover = true;//temp,boolを返して外でやるべき
+                        //    //背景を真っ赤に
+                        //    GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
 
-                            //ゲームオーバーなのでtrueを返す
-                            return true;
-                        }
+                        //    //ゲームオーバーなのでtrueを返す
+                        //    return true;
+                        //}
                     }
                 }
                 #endregion

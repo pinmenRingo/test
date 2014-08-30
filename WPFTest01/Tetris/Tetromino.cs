@@ -19,10 +19,10 @@ namespace WPFTest01
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public Tetromino()
+        public Tetromino(int index)
         {
             //最初落下するテトリミノ(ブロック4つ)を生成する
-            GenerateNewTetromino();
+            GenerateNewTetromino(index);
         }
 
         //テトリミノの種類
@@ -180,7 +180,7 @@ namespace WPFTest01
         /// 新たにテトリミノ(ブロック4つ)を生成する
         /// </summary>
         /// <returns>生成の成否を返す</returns>
-        public bool GenerateNewTetromino()
+        public bool GenerateNewTetromino(int index)
         {
             //生成フラグ
             bool generated = true;
@@ -190,7 +190,8 @@ namespace WPFTest01
 
             //生成するテトリミノの番号をランダムに設定
             //生成するテトリミノの番号 = マッチングテンプレートのインデックス
-            int tetrominonum = rand.Next(TETROMINO_NUM);
+            //int tetrominonum = rand.Next(TETROMINO_NUM);
+            int tetrominonum = index;
 
             //回転の際にテトリミノの中心で回すため、
             //特定のテトリミノは座標を調整

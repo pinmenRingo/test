@@ -138,7 +138,7 @@ namespace WPFTest01
         {
             //なんか元からあったやつ,おまじないって認識で
             InitializeComponent();
-            debug_index = 11;
+            debug_index = 0;
 
             //kinect
             this.kinectSensor = KinectSensor.GetDefault();
@@ -722,7 +722,7 @@ namespace WPFTest01
                                 this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
 
                                 this.tetris.setMatchingStatus(this.isMatched);
-                                this.tetris.setCurrentMatchGridIndex(matchTemplateIndex);
+                                this.tetris.setCurrentMatchGridIndex(debug_index);
 
                                 //マッチ用のグリッドを更新
                                 this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
