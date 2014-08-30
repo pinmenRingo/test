@@ -31,6 +31,12 @@ namespace WPFTest01
         //プレイヤーが操作しているやつ
         public Tetromino fallingTet;
 
+        //マッチングできていたかどうか
+        private bool isMatched;
+
+        //現在指定しているテンプレート
+        private int currentGridTempleteIndex;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -49,7 +55,9 @@ namespace WPFTest01
                 bUsing[FIELD_HEIGHT, x] = true;
             }
             //落下中のブロックを生成する
-            fallingTet = new Tetromino();
+            //fallingTet = new Tetromino();
+
+            this.isMatched = false;
         }
 
         /// <summary>
@@ -113,6 +121,105 @@ namespace WPFTest01
         /// <returns>ゲームオーバー時にtrueを返す</returns>
         public bool Proc()
         {
+            //マッチングできていたら
+            if (!this.isMatched)
+            {
+                //fallingTetがなかった新たに生成
+                if (fallingTet == null)
+                {
+                    //ここでテンプレートインデックスを使ってランダムに
+                    fallingTet = new Tetromino();
+                }
+
+                //今落ちているブロックが着地していたら
+                
+
+                //通常処理
+
+                //ゲームオーバー時は何もせずリターン
+                if (gameover)
+                {
+                    return true;
+                }
+
+                #region Key処理
+                //キー入力処理
+                if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Right))
+                {
+                    //落下中のテトリミノを右へ
+                    fallingTet.Move(1, 0);
+                }
+                if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Left))
+                {
+                    //落下中のテトリミノを左へ
+                    fallingTet.Move(-1, 0);
+                }
+                //右回転：押された瞬間のみ反応するようフラグで管理(長押し無効)
+                if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Up) || System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Z))
+                {
+                    if (!spacepushing)
+                    {
+                        fallingTet.Turn(true);
+                        spacepushing = true;
+                    }
+                }
+                //左回転：押された瞬間のみ反応するようフラグで管理(長押し無効)
+                else if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.X))
+                {
+                    if (!spacepushing)
+                    {
+                        fallingTet.Turn(false);
+                        spacepushing = true;
+                    }
+                }
+                else
+                {
+                    //キーが話されたらフラグをリセット
+                    spacepushing = false;
+                }
+                if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Down))
+                {
+                    //下に移動する
+                    fallingTet.Move(0, 1);
+                }
+                #endregion
+
+                //カウントを進める
+                #region フレーム更新
+                if (--framecount == 0)
+                {
+                    //fallspeedフレーム経過した
+
+                    //カウンターリセット
+                    framecount = fallframe;
+
+                    //1マス下がる
+                    if (!fallingTet.Move(0, 1))
+                    {
+                        //着地した場合
+
+                        //落下地点をフィールドに登録
+                        RegisterTetromino(fallingTet);
+
+                        //行の削除処理(埋まった行があれば削除する)
+                        DeleteFilledLine(fallingTet);
+
+                        //着地時,新たにテトリミノを生成する
+                        if (!fallingTet.GenerateNewTetromino())
+                        {
+                            //生成できなかった(=ゲームオーバー)
+                            gameover = true;//temp,boolを返して外でやるべき
+                            //背景を真っ赤に
+                            GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
+
+                            //ゲームオーバーなのでtrueを返す
+                            return true;
+                        }
+                    }
+                }
+                #endregion
+
+            }
 
             //ゲームオーバー時は何もせずリターン
             if (gameover)
@@ -120,6 +227,7 @@ namespace WPFTest01
                 return true;
             }
 
+            /*
             //キー入力処理
             if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.Right))
             {
@@ -160,6 +268,7 @@ namespace WPFTest01
                 fallingTet.Move(0, 1);
             }
 
+            
             //カウントを進める
             if (--framecount == 0)
             {
@@ -192,10 +301,23 @@ namespace WPFTest01
                     }
                 }
             }
+             */
+            
 
             //通常終了
             return false;
         }
+
+        public void setMatchingStatus(bool match)
+        {
+            this.isMatched = match;
+        }
+
+        public void setCurrentMatchGridIndex(int index)
+        {
+            this.currentGridTempleteIndex = index;
+        }
+
         /// <summary>
         /// 消える行を探索,削除する
         /// </summary>

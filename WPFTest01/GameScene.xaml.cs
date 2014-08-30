@@ -131,6 +131,7 @@ namespace WPFTest01
         Random rand = new Random();
         private int matchTemplateIndex;
         private int debug_index;
+        private bool isMatched;
 
 
         public GameScene()
@@ -371,7 +372,10 @@ namespace WPFTest01
                                        };
             #endregion
 
+            //マッチング関係
+            this.isMatched = false;
             matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+
 
             //マッチング用Gridの初期化（Labelを配置）
             this.InitMatchGrid();
@@ -711,9 +715,25 @@ namespace WPFTest01
                             this.DrawBody(joints, jointPoint, dc, drawPen);
 
                             //マッチング処理
-                            bool isMatched = this.isMatching(jointPoint,debug_index);
-                            if (isMatched) this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
-                            else this.MatchAlertColor = new SolidColorBrush(Colors.Red);
+                            this.isMatched = this.isMatching(jointPoint,debug_index);
+
+                            if (this.isMatched)
+                            {
+                                this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
+
+                                this.tetris.setMatchingStatus(this.isMatched);
+                                this.tetris.setCurrentMatchGridIndex(matchTemplateIndex);
+
+                                //マッチ用のグリッドを更新
+                                this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+                                this.SetColorToMatchGrid(this.matchTemplateIndex);
+                            }
+
+                            else
+                            {
+                                this.MatchAlertColor = new SolidColorBrush(Colors.Red);
+                            }
+
 
                           
                         }
@@ -948,7 +968,10 @@ namespace WPFTest01
         //毎フレーム呼ばれる関数
         void timer_Tick(object sender, EventArgs e)
         {
+
+            //マッチングがとれていたら
             //テトリスゲームを1フレーム進める
+
             tetris.Proc();//ゲームオーバー時はtrueが返ってくる
         }
 
