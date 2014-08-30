@@ -28,7 +28,7 @@ namespace WPFTest01
         //テトリミノの種類
         const int TETROMINO_NUM = 6;//棒,括弧x2,四角,くねくねx2
         //テトリミノの色[型(TETROMINO_NUM)]
-        Color[] TETROMINO_COLOR = { Color.FromArgb(0x33,0xff,0x00,0x00), Color.FromArgb(0x33,0x00,0xff,0xff), Color.FromArgb(0x33,0xff,0xff,0x00), Color.FromArgb(0x33,0xee,0x82,0xee), Color.FromArgb(0x33,0xff,0xc0,0xcb), Color.FromArgb(0x33,0x98,0xfb,0x98) };
+        Color[] TETROMINO_COLOR = { Color.FromArgb(0x88,0xff,0x00,0x00), Color.FromArgb(0x88,0x00,0xff,0xff), Color.FromArgb(0x88,0xff,0xff,0x00), Color.FromArgb(0x88,0xee,0x82,0xee), Color.FromArgb(0x88,0xff,0xc0,0xcb), Color.FromArgb(0x88,0x98,0xfb,0x98) };
         //テトリミノテンプレート[型(TETROMINO_NUM),ブロック番号(4),座標xy(2)]
         //テトリミノの形を配列で定義
         //値はテトリミノの座標からの相対距離
@@ -151,6 +151,8 @@ namespace WPFTest01
                 }
                 //テトリミノの座標を移動させる
                 x += dx; y += dy;
+                //落下キャンバスも移動させる
+                GameScene.fallingbmpcanvas.Margin = new System.Windows.Thickness((x - 2) * Block.BLOCK_WIDTH, (y) * Block.BLOCK_HEIGHT, 0, 0);
             }
 
             return bCanMove;

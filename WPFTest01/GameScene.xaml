@@ -9,14 +9,38 @@
 
     <Grid x:Name="grid01" Background="White">
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="86.8,0,0,195.8" VerticalAlignment="Bottom" Width="208"/>
-        <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="396.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="#91000000">
-            <Canvas x:Name="gamecanvas_xaml" Height="540.0" Canvas.Left="35.986" Canvas.Top="44.29" Width="276.0" Background="#88535353">
 
-                <!--<StackPanel>-->
-                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="540" Width="276">
-                        <Image Source="{Binding FieldImageSource}" Stretch="Fill" />
-                    </Viewbox>
-                    <!--<Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+        <Viewbox x:Name="viewBox_color" HorizontalAlignment="Left" Margin="248,28,0,0" VerticalAlignment="Top" Height="424">
+            <Image Source="{Binding CutImageSource}" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Viewbox>
+        <Viewbox x:Name="viewBox" HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
+            <Image Source="{Binding ImageSource}" Stretch="UniformToFill"  x:Name="kinectImage"/>
+        </Viewbox>
+        <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="372.673,28,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+        </Grid>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,164.2" TextWrapping="Wrap" Text="{Binding HeadPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,132.6" TextWrapping="Wrap" Text="{Binding LeftHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,101" TextWrapping="Wrap" Text="{Binding RightHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,69.4" TextWrapping="Wrap" Text="{Binding RightKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,37.8" TextWrapping="Wrap" Text="{Binding LeftKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="{Binding MatchAlertColor,ElementName=Root}"/>
+        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,190.8" TextWrapping="Wrap" Text="{Binding WIDTHHEIGHT, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
+        <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="396.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="#91000000">
+        	<Canvas x:Name="gamecanvas_xaml" Height="540.0" Canvas.Left="35.986" Canvas.Top="44.29" Width="276.0" Background="#88535353">
+
+                <!--<Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
                         <Image Source="{Binding CutImageSource0}" Stretch="Fill" />
                     </Viewbox>
                     <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
@@ -77,55 +101,30 @@
                         <Image Source="{Binding CutImageSource19}" Stretch="Fill" />
                     </Viewbox>
                 </StackPanel>-->
-                <Canvas.BindingGroup>
-                    <BindingGroup/>
-                </Canvas.BindingGroup>
-                <Canvas.CacheMode>
-                    <BitmapCache/>
-                </Canvas.CacheMode>
-                <Canvas.ContextMenu>
-                    <ContextMenu/>
-                </Canvas.ContextMenu>
-            </Canvas>
-            <Rectangle Fill="#FFF4F4F5" Height="320" Canvas.Left="200.986" Stroke="Black" Canvas.Top="44.29" Width="12.948"/>
-            <Rectangle Fill="#FFF4F4F5" Height="20" Canvas.Left="21.304" Stroke="Black" Canvas.Top="344.29" Width="9.682"/>
-        </Canvas>
-
-        <Viewbox x:Name="viewBox_color" HorizontalAlignment="Left" Margin="248,28,0,0" VerticalAlignment="Top" Height="424">
-            <Image Source="{Binding CutImageSource}" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        </Viewbox>
-        <Viewbox x:Name="viewBox" HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
-            <Image Source="{Binding ImageSource}" Stretch="UniformToFill"  x:Name="kinectImage"/>
-        </Viewbox>
-        <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="372.673,28,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-        </Grid>
-        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,164.2" TextWrapping="Wrap" Text="{Binding HeadPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,132.6" TextWrapping="Wrap" Text="{Binding LeftHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,101" TextWrapping="Wrap" Text="{Binding RightHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,69.4" TextWrapping="Wrap" Text="{Binding RightKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,37.8" TextWrapping="Wrap" Text="{Binding LeftKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="{Binding MatchAlertColor,ElementName=Root}"/>
-        <Canvas x:Name="fallingbmpcanvas" HorizontalAlignment="Left" Height="39.053" Margin="433.806,334.841,0,0" VerticalAlignment="Top" Width="47.042">
-            <!--<Image Source="{Binding FallingBitmap}" Stretch="UniformToFill" />-->
-
-            <Viewbox x:Name="viewbox_falling" HorizontalAlignment="Left" VerticalAlignment="Top" Height="200" Width="500" Canvas.Left="-111" Canvas.Top="212">
-                <Image Source="{Binding FallingBitmap}" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Viewbox>
-            <!--<Viewbox x:Name="viewbox_source" HorizontalAlignment="Left" VerticalAlignment="Top" Height="64" Width="64" Canvas.Left="178" Canvas.Top="190">
+        		<Canvas.BindingGroup>
+        			<BindingGroup/>
+        		</Canvas.BindingGroup>
+        		<Canvas.CacheMode>
+        			<BitmapCache/>
+        		</Canvas.CacheMode>
+        		<Canvas.ContextMenu>
+        			<ContextMenu/>
+        		</Canvas.ContextMenu>
+            <!--<StackPanel>-->
+        		<Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="540" Width="276">
+        			<Image Source="{Binding FieldImageSource}" Stretch="Fill" />
+        		</Viewbox>
+        		<Canvas x:Name="fallingbmpcanvas_xaml" HorizontalAlignment="Left" VerticalAlignment="Top" Width="47.042" Canvas.Left="0" Canvas.Top="0">
+        			<!--<Viewbox x:Name="viewbox_source" HorizontalAlignment="Left" VerticalAlignment="Top" Height="64" Width="64" Canvas.Left="178" Canvas.Top="190">
                 <Image x:Name="bmpsource" Source="pack://siteoforigin:,,,/512_424.bmp" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Viewbox>-->
+    <!--<Image Source="{Binding FallingBitmap}" Stretch="UniformToFill" />-->
+
+        			<Viewbox x:Name="viewbox_falling" HorizontalAlignment="Left" VerticalAlignment="Top" Height="135" Width="138.0" Canvas.Left="0" Canvas.Top="0">
+        				<Image x:Name="image_falling"  Source="{Binding FallingBitmap}" Stretch="Fill" />
+        			</Viewbox>
+        		</Canvas>
+        	</Canvas>
         </Canvas>
     </Grid>
 </Page>

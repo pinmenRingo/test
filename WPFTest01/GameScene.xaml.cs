@@ -33,9 +33,12 @@ namespace WPFTest01
         public static Grid grid;
         public static Canvas gamebackcanvas;//背景とか追加予定のキャンバス
         public static Canvas gamecanvas;//テトリスのブロックが登録されるキャンバス,gamebackcanvasの子
+        public static Canvas fallingbmpcanvas;
 
         //テトリスのフィールドを管理するクラス
         TetrisGame tetris;
+
+        static bool fallingbmpupdated = false;
 
         /// キネクト用>
      
@@ -100,6 +103,7 @@ namespace WPFTest01
         private string rightHandPos = null;
         private string rightKneePos = null;
         private string leftKneePos = null;
+        private string widthheight = null;
         private SolidColorBrush matchAlertColor;
         private Dictionary<JointType, Brush> jointColors;
         private Label[,] matchControl;
@@ -119,6 +123,7 @@ namespace WPFTest01
         double gridWidth;
         double gridHeight;
 
+        static Image imgfalling = null;
 
         //以下画像制御
         public static WriteableBitmap[] rows = new WriteableBitmap[20];
@@ -432,6 +437,8 @@ namespace WPFTest01
             grid = grid01;//gamebackcanvasの親
             gamebackcanvas = gamebackcanvas_xaml;//gamecanvasの親
             gamecanvas = gamecanvas_xaml;//ゲームキャンバス,ブロックは全部ここのChildlenにAddされる
+            fallingbmpcanvas = fallingbmpcanvas_xaml;
+            //imgfalling = image_falling;
 
             #region BitMap
 
@@ -482,8 +489,9 @@ namespace WPFTest01
                 fallingbytes,
                 COLOR_PIXELS_WIDTH*BYTES_PER_PIX,
                 0);
-
-            
+            //NotifyPropertyChanged("image_falling");
+            //PropertyChanged(this,)
+            PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
 
             #endregion
 
@@ -569,18 +577,22 @@ namespace WPFTest01
         public static void AddBMPField( int x, int y )
         {
 
-            x -= 1;//無回転
+            x -= 2;//無回転
             int sx = x * BLOCK_WIDTH_PIX;
-            if (sx < 0) sx = 0;
             int getx = FIELD_WIDTH_PIX - x * BLOCK_WIDTH_PIX;
             if (getx > BLOCK_WIDTH_PIX * 4)
             {
                 getx = BLOCK_WIDTH_PIX * 4;
             }
+            if (sx < 0)
+            {
+                getx += sx;
+                sx = 0;
+            }
 
             byte[] tbytes1 = new byte[COLOR_PIXELS_WIDTH * COLOR_PIXELS_HEIGHT * BYTES_PER_PIX];
             byte[] tbytes2 = new byte[COLOR_PIXELS_WIDTH * COLOR_PIXELS_HEIGHT * BYTES_PER_PIX];
-            y -= 1;//無回転
+            //y -= 1;//無回転
             if (y < 0) y = 0;
             int gety = FIELD_HEIGHT_PIX - y * BLOCK_HEIGHT_PIX;
             if (gety > BLOCK_HEIGHT_PIX * 4)
@@ -588,9 +600,10 @@ namespace WPFTest01
                 gety = BLOCK_HEIGHT_PIX*4;
             }
 
-            fallingbmp.CopyPixels(new Int32Rect(0, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), tbytes1, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
-            //fieldbmp.CopyPixels(new Int32Rect(sx, y * BLOCK_HEIGHT_PIX, COLOR_PIXELS_WIDTH/*FIELD_WIDTH_PIX - sx*/, COLOR_PIXELS_HEIGHT/*FIELD_HEIGHT_PIX - y * BLOCK_HEIGHT_PIX*/), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
-            //fieldbmp.CopyPixels(new Int32Rect(sx, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
+            fallingbmp.CopyPixels(new Int32Rect(0, 0, fallingbmp.PixelWidth, fallingbmp.PixelHeight), tbytes1, fallingbmp.PixelWidth* BYTES_PER_PIX, 0);
+            //fallingbmp.CopyPixels(new Int32Rect(0, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), tbytes1, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
+            ////fieldbmp.CopyPixels(new Int32Rect(sx, y * BLOCK_HEIGHT_PIX, COLOR_PIXELS_WIDTH/*FIELD_WIDTH_PIX - sx*/, COLOR_PIXELS_HEIGHT/*FIELD_HEIGHT_PIX - y * BLOCK_HEIGHT_PIX*/), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
+            ////fieldbmp.CopyPixels(new Int32Rect(sx, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
             fieldbmp.CopyPixels(new Int32Rect(sx, y * BLOCK_HEIGHT_PIX, getx, gety), tbytes2, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
 
             //1に落ちてきたの入ってる
@@ -599,11 +612,11 @@ namespace WPFTest01
             //合成する
             for( int i=length-1; i>=0; --i ){
                 ti = i*4;
-                if( tbytes1[ti+3] == 0xff ){
+                if( tbytes1[ti+3] != 0x00 ){
                     tbytes2[ti] = tbytes1[ti];
                     tbytes2[ti+1] = tbytes1[ti+1];
                     tbytes2[ti+2] = tbytes1[ti+2];
-                    tbytes2[ti+3] = 0xff;
+                    tbytes2[ti+3] = tbytes1[ti+3];
                 }
             }
             
@@ -612,6 +625,7 @@ namespace WPFTest01
                 new Int32Rect(sx, y * BLOCK_HEIGHT_PIX, getx, gety),
                 tbytes2,
                 COLOR_PIXELS_WIDTH * BYTES_PER_PIX,
+                //fallingbmp.PixelWidth * BYTES_PER_PIX,
                 0
                 );
 
@@ -628,6 +642,43 @@ namespace WPFTest01
 
         public static void TurnFallingBMP(bool right)
         {
+            int twidth = fallingbmp.PixelWidth, theight = fallingbmp.PixelHeight;
+            int tlength = twidth*theight;
+
+            fallingbmp.CopyPixels(fallingbytes, twidth * BYTES_PER_PIX, 0);
+
+
+            byte[] tbytes = new byte[twidth * theight * BYTES_PER_PIX];
+
+            Array.Copy(fallingbytes, tbytes, fallingbytes.Length);
+
+
+            if (right)
+            {
+                for (int y = 0; y < theight; ++y)
+                {
+                    for (int x = 0; x < twidth; ++x)
+                    {
+                        int t1 = x*(theight)+((theight-1) - y);
+                        int t2 = y * (twidth) + x;
+                        t1 *= 4;
+                        t2 *= 4;
+                        fallingbytes[t1] = tbytes[t2];
+                        fallingbytes[t1+1] = tbytes[t2+1];
+                        fallingbytes[t1+2] = tbytes[t2+2];
+                        fallingbytes[t1+3] = tbytes[t2+3];
+                    }
+                }
+            }
+
+
+
+            //fallingbmp = new WriteableBitmap(theight, twidth, 96.0, 96.0, PixelFormats.Bgra32, null);
+
+            fallingbmp.WritePixels(new Int32Rect(0, 0, theight, twidth), fallingbytes, theight * BYTES_PER_PIX, 0);
+            //PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
+            fallingbmpupdated = true;
+
 
         }
 
@@ -1290,13 +1341,44 @@ namespace WPFTest01
                     //    }
                     //}
 
-                    //fallingbmp = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
-                    fallingbmp.WritePixels(
-                        new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
-                        this.displayPixels,
-                        this.colorbitmap.PixelWidth * BYTES_PER_PIX,
-                        //fallingbmp.PixelWidth * BYTES_PER_PIX,
-                        0);
+                    ////fallingbmp = new WriteableBitmap(colorWidth, colorHeight, 96.0, 96.0, PixelFormats.Bgra32, null);
+                    //fallingbmp = new WriteableBitmap(COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT, 96.0, 96.0, PixelFormats.Bgra32, null);
+
+                    if (fallingbmp.PixelWidth > fallingbmp.PixelHeight)
+                    {
+                        fallingbmp.WritePixels(
+                            new Int32Rect(0, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT),
+                            //new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                            this.displayPixels,
+                            //COLOR_PIXELS_WIDTH*BYTES_PER_PIX,
+                            this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                            //this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                            //fallingbmp.PixelWidth * BYTES_PER_PIX,
+                            0);
+
+                    }
+                    else
+                    {
+                        fallingbmp.WritePixels(
+                            new Int32Rect(0, 0, COLOR_PIXELS_HEIGHT, COLOR_PIXELS_WIDTH),
+                            //new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+                            this.displayPixels,
+                            COLOR_PIXELS_HEIGHT * BYTES_PER_PIX,
+                            //this.colorbitmap.PixelWidth * BYTES_PER_PIX,
+                            //fallingbmp.PixelWidth * BYTES_PER_PIX,
+                            0);
+                    }
+
+                    //テスト
+                    //fallingbmp.WritePixels(
+                    //        new Int32Rect(0, 0, fallingbmp.PixelWidth, fallingbmp.PixelHeight),
+                    //        this.displayPixels,
+                    //        fallingbmp.PixelWidth * BYTES_PER_PIX,
+                    //        0);
+
+
+                    PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
+                
 
                     //成功！
                     waitingforclip = false;
@@ -1479,30 +1561,61 @@ namespace WPFTest01
             //テトリスゲームを1フレーム進める
             tetris.Proc();//ゲームオーバー時はtrueが返ってくる
 
+            this.WIDTHHEIGHT = "( " + fallingbmp.PixelWidth + ", " + fallingbmp.PixelHeight + " )";
 
-            if (waitingforclip)
+            if (fallingbmpupdated)
             {
-                waitingforclip = false;
-
-                byte color1 = (byte)rand.Next(256);
-                byte color2 = (byte)rand.Next(256);
-                byte color3 = (byte)rand.Next(256);
-                int length = displayPixels.Length / 4;
-                for (int i = 0; i < length; ++i)
-                {
-                    displayPixels[i * 4] = color1;
-                    displayPixels[i * 4 + 1] = color2;
-                    displayPixels[i * 4 + 2] = color3;
-                    displayPixels[i * 4 + 3] = 0xff;
-                }
-
-                fallingbmp.WritePixels(
-                    new Int32Rect(0, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT),
-                    //new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
-                    this.displayPixels,
-                    COLOR_PIXELS_WIDTH * BYTES_PER_PIX,
-                    0);
+                fallingbmpupdated=false;
+                PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
             }
+
+            //キネクト無い時用
+            //if (waitingforclip)
+            //{
+            //    waitingforclip = false;
+
+            //    byte color1 = (byte)rand.Next(256);
+            //    byte color2 = (byte)rand.Next(256);
+            //    byte color3 = (byte)rand.Next(256);
+            //    int length = displayPixels.Length / 4;
+            //    for (int i = 0; i < length; ++i)
+            //    {
+            //        displayPixels[i * 4] = color1;
+            //        displayPixels[i * 4 + 1] = color2;
+            //        displayPixels[i * 4 + 2] = color3;
+            //        displayPixels[i * 4 + 3] = 0xff;
+            //    }
+
+            //    for (int y = 0; y < 30; ++y)
+            //    {
+            //        for (int x = 0; x < 30; ++x)
+            //        {
+            //            int index = y * fallingbmp.PixelWidth + x;
+            //            displayPixels[index * 4] = 0x00;
+            //            displayPixels[index * 4+1] = 0x00;
+            //            displayPixels[index * 4+2] = 0x00;
+            //            displayPixels[index * 4+3] = 0xff;
+            //        }
+            //    }
+
+            //        //落下するブロックの画像
+            //        fallingbmp.WritePixels(
+            //                new Int32Rect(0, 0, fallingbmp.PixelWidth, fallingbmp.PixelHeight),
+            //            //new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+            //                this.displayPixels,
+            //                fallingbmp.PixelWidth * BYTES_PER_PIX,
+            //                0);
+            //        //PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
+
+            //    //fallingbmp = new WriteableBitmap(COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT, 96.0, 96.0, PixelFormats.Bgra32, null);
+            //    ////落下後登録される画像
+            //    //fallingbmp.WritePixels(
+            //    //    new Int32Rect(0, 0, fallingbmp.PixelWidth, fallingbmp.PixelHeight),
+            //    //    //new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
+            //    //    this.displayPixels,
+            //    //    fallingbmp.PixelWidth * BYTES_PER_PIX,
+            //    //    0);
+            //}
         }
 
         //ボタンが押された場合に呼ばれる
@@ -1685,6 +1798,39 @@ namespace WPFTest01
             {
                 return fieldbmp;
             }
+            //set
+            //{
+            //    if (fallingbmp != value)
+            //    {
+            //        fallingbmp = (WriteableBitmap)value;
+
+            //        if (this.PropertyChanged != null)
+            //        {
+            //            this.PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
+            //        }
+            //    }
+            //}
+        }
+
+        public string WIDTHHEIGHT
+        {
+            get
+            {
+                return this.widthheight;
+            }
+            set
+            {
+                if (this.widthheight != value)
+                {
+                    this.widthheight = value;
+
+                    if (this.PropertyChanged != null)
+                    {
+                        this.PropertyChanged(this, new PropertyChangedEventArgs("widthheight"));
+                    }
+                }
+            }
+
         }
 #endregion
 
