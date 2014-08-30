@@ -1320,12 +1320,25 @@ namespace WPFTest01
                         }
                     }
 
-
-                        fallingbmp.WritePixels(
+                    WriteableBitmap tempbmp = new WriteableBitmap(1920, 1080, 96.0, 96.0, PixelFormats.Bgra32, null);
+                    tempbmp.WritePixels(new Int32Rect(0, 0, 1920, 1080), displayPixels, 1920 * 4, 0);
+                    tempbmp.CopyPixels(new Int32Rect(256, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT),fallingbytes, COLOR_PIXELS_WIDTH * BYTES_PER_PIX, 0);
+                    fallingbmp.WritePixels(
                             new Int32Rect(0, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT),
-                            this.displayPixels,
+                            fallingbytes,
                             COLOR_PIXELS_WIDTH * BYTES_PER_PIX,
-                            0);
+                            0
+                        );
+
+                    //これコメントアウト消すと分身出てきます
+                        //fallingbmp.WritePixels(
+                        //    new Int32Rect(0, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT),
+                        //    this.displayPixels,
+                        //    COLOR_PIXELS_WIDTH * BYTES_PER_PIX,
+                        //    0);
+
+
+
                     //new Int32Rect(0, 0, this.colorbitmap.PixelWidth, this.colorbitmap.PixelHeight),
                     //COLOR_PIXELS_WIDTH*BYTES_PER_PIX,
                     //this.colorbitmap.PixelWidth * BYTES_PER_PIX,
