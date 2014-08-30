@@ -10,10 +10,13 @@
     <Grid x:Name="grid01" Background="White">
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="86.8,0,0,195.8" VerticalAlignment="Bottom" Width="208"/>
         <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="396.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="#91000000">
-            <Canvas x:Name="gamecanvas_xaml" Height="320.592" Canvas.Left="35.986" Canvas.Top="44.29" Width="160.0" Background="#88535353">
+            <Canvas x:Name="gamecanvas_xaml" Height="540.0" Canvas.Left="35.986" Canvas.Top="44.29" Width="276.0" Background="#88535353">
 
-                <StackPanel>
-                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
+                <!--<StackPanel>-->
+                    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="540" Width="276">
+                        <Image Source="{Binding FieldImageSource}" Stretch="Fill" />
+                    </Viewbox>
+                    <!--<Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
                         <Image Source="{Binding CutImageSource0}" Stretch="Fill" />
                     </Viewbox>
                     <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
@@ -73,7 +76,7 @@
                     <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="16" Width="160">
                         <Image Source="{Binding CutImageSource19}" Stretch="Fill" />
                     </Viewbox>
-                </StackPanel>
+                </StackPanel>-->
                 <Canvas.BindingGroup>
                     <BindingGroup/>
                 </Canvas.BindingGroup>
@@ -84,6 +87,8 @@
                     <ContextMenu/>
                 </Canvas.ContextMenu>
             </Canvas>
+            <Rectangle Fill="#FFF4F4F5" Height="320" Canvas.Left="200.986" Stroke="Black" Canvas.Top="44.29" Width="12.948"/>
+            <Rectangle Fill="#FFF4F4F5" Height="20" Canvas.Left="21.304" Stroke="Black" Canvas.Top="344.29" Width="9.682"/>
         </Canvas>
 
         <Viewbox x:Name="viewBox_color" HorizontalAlignment="Left" Margin="248,28,0,0" VerticalAlignment="Top" Height="424">

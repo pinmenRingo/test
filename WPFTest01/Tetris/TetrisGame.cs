@@ -17,7 +17,7 @@ namespace WPFTest01
         //フィールドの横方向のマス数
         public const int FIELD_WIDTH = 8;//現状2の倍数じゃないといろいろ荒ぶる,はず
         //フィールドの縦方向のマス数
-        public static int FIELD_HEIGHT = 20;
+        public const int FIELD_HEIGHT = 20;
         //全マス数
         static int BLOCK_MAX = FIELD_WIDTH*FIELD_HEIGHT;
 
@@ -117,10 +117,10 @@ namespace WPFTest01
             {
                 if (intet.y + i < 20)
                 {
-                    GameScene.AddBMP(intet.x, intet.y + i, i);
+                    //GameScene.AddBMP(intet.x, intet.y + i, i);
                 }
             }
-
+            GameScene.AddBMPField(intet.x, intet.y);
 
             for (int i = 0; i < 4; ++i)
             {

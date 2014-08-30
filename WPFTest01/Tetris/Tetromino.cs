@@ -83,6 +83,9 @@ namespace WPFTest01
             GameScene.waitingforclip = true;
 
 
+
+
+
             //生成フラグ
             bool generated = true;
             //テトリミノのx座標を真ん中,y座標を一番上にとる
@@ -199,6 +202,11 @@ namespace WPFTest01
                 {
                     blocks[i].MoveTo(prex[i], prey[i]);
                 }
+            }
+                //成功していた場合画像を回転させる
+            else
+            {
+                GameScene.TurnFallingBMP(right);
             }
 
             return suc;
