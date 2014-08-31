@@ -1566,6 +1566,7 @@ namespace WPFTest01
             foreach (JointType jointType in joints.Keys)
             {
                 Brush drawBrush = null;
+                
 
                 TrackingState trackingState = joints[jointType].TrackingState;
 
@@ -1577,7 +1578,8 @@ namespace WPFTest01
                     case TrackingState.NotTracked:
                         break;
                     case TrackingState.Tracked:
-                        drawBrush = this.trackedJointBrush;
+                        //drawBrush = this.trackedJointBrush;
+                        drawBrush = Brushes.Purple;
                         break;
                     default:
                         break;
