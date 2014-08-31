@@ -4,19 +4,20 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-      d:DesignHeight="906" d:DesignWidth="1000"
+      d:DesignHeight="720" d:DesignWidth="1280"
 	Title="GameScene" Loaded="GameSceneLoaded" x:Name="Root">
 
     <Grid x:Name="grid01" Background="White">
+        <Image HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Source="Images/bg.jpg" Stretch="Fill"/>
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="86.8,0,0,195.8" VerticalAlignment="Bottom" Width="208"/>
 
-        <Viewbox x:Name="viewBox_color" HorizontalAlignment="Left" Margin="248,73,0,0" VerticalAlignment="Top" Height="424">
+        <Viewbox x:Name="viewBox_color" HorizontalAlignment="Left" Margin="380,140,0,0" VerticalAlignment="Top" Height="424">
             <Image Source="{Binding CutImageSource}" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Viewbox>
-        <Viewbox x:Name="viewBox" HorizontalAlignment="Left" Width="201.747" Margin="376,73,0,0" VerticalAlignment="Top" Height="203">
+        <Viewbox x:Name="viewBox" HorizontalAlignment="Left" Width="201.747" Margin="514,140,0,0" VerticalAlignment="Top" Height="203">
             <Image Source="{Binding ImageSource}" Stretch="UniformToFill"  x:Name="kinectImage"/>
         </Viewbox>
-        <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="376,73,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
+        <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="514,140,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -35,10 +36,10 @@
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,101" TextWrapping="Wrap" Text="{Binding RightHandPos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,69.4" TextWrapping="Wrap" Text="{Binding RightKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,37.8" TextWrapping="Wrap" Text="{Binding LeftKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="{Binding MatchAlertColor,ElementName=Root}"/>
+        <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="{Binding MatchAlertColor, ElementName=Root}"/>
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,190.8" TextWrapping="Wrap" Text="{Binding WIDTHHEIGHT, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="476.102" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="#FDFFFFFF">
-            <Canvas x:Name="gamecanvas_xaml" Height="540.0" Canvas.Left="35.986" Canvas.Top="44.29" Width="276.0" Background="#88535353">
+        <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="476.102" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="#00000000">
+            <Canvas x:Name="gamecanvas_xaml" Height="540.0" Canvas.Left="35.986" Canvas.Top="44.29" Width="276.0" Background="#FF535353">
 
 
                 <Canvas.BindingGroup>
@@ -62,5 +63,6 @@
                 <Image Source="{Binding FieldImageSource}" Stretch="Fill" />
             </Viewbox>
         </Canvas>
+        <Image HorizontalAlignment="Left" Height="423" Margin="1055,297,0,0" VerticalAlignment="Top" Width="245.91" Source="Images/ringo_resize.png"/>
     </Grid>
 </Page>

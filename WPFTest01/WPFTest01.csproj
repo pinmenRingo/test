@@ -164,7 +164,9 @@
   <ItemGroup>
     <Resource Include="512_424.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\ringo_resize.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\bg.jpg" />
   </ItemGroup>

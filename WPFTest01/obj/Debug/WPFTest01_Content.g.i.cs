@@ -8,11 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/bg2.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/clear.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/newgame_green.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/newgame_red.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/ringo.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/title.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/ringo_resize.png")]
 
 
