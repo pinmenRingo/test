@@ -61,7 +61,7 @@ namespace WPFTest01
         /// <summary>
         /// Brush used for drawing joints that are currently inferred
         /// </summary>        
-        private readonly Brush inferredJointBrush = Brushes.Yellow;
+        private readonly Brush inferredJointBrush = Brushes.Transparent;
 
         /// <summary>
         /// Pen used for drawing bones that are currently inferred
@@ -1574,7 +1574,35 @@ namespace WPFTest01
             foreach (JointType jointType in joints.Keys)
             {
                 Brush drawBrush = null;
-                
+                Brush drawJointColor = null;
+
+                switch (jointType)
+                {
+                    case JointType.HandLeft:
+                        drawJointColor = this.jointColors[jointType];
+                        break;
+                    case JointType.HandRight:
+                        drawJointColor = this.jointColors[jointType];
+
+                        break;
+                   
+                    case JointType.Head:
+                        drawJointColor = this.jointColors[jointType];
+
+                        break;
+
+                    case JointType.KneeLeft:
+                        drawJointColor = this.jointColors[jointType];
+
+                        break;
+                    case JointType.KneeRight:
+                        drawJointColor = this.jointColors[jointType];
+
+                        break;
+                 
+                    default:
+                        break;
+                }
 
                 TrackingState trackingState = joints[jointType].TrackingState;
 
@@ -1587,7 +1615,7 @@ namespace WPFTest01
                         break;
                     case TrackingState.Tracked:
                         //drawBrush = this.trackedJointBrush;
-                        drawBrush = Brushes.Purple;
+                        drawBrush = drawJointColor;
                         break;
                     default:
                         break;
@@ -1595,7 +1623,7 @@ namespace WPFTest01
 
                 if (drawBrush != null)
                 {
-                    dc.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
+                    dc.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness*4, JointThickness*4);
                 }
             }
         }
