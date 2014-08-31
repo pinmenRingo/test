@@ -29,7 +29,9 @@ namespace WPFTest01
         const int TETROMINO_NUM = 19;//棒,括弧x2,四角,くねくねx2
         //テトリミノの色[型(TETROMINO_NUM)]
         //Color[] TETROMINO_COLOR = { Color.FromArgb(0x55,0xff,0x00,0x00), Color.FromArgb(0x55,0x00,0xff,0xff), Color.FromArgb(0x55,0xff,0xff,0x00), Color.FromArgb(0x55,0xee,0x82,0xee), Color.FromArgb(0x55,0xff,0xc0,0xcb), Color.FromArgb(0x55,0x98,0xfb,0x98) };
-       Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen,Colors.Azure };
+       //Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen,Colors.Azure };
+        Color[] TETROMINO_COLOR = {Colors.AliceBlue , Colors.AntiqueWhite, Colors.Aqua, Colors.Aquamarine, Colors.Azure, Colors.Beige, Colors.Bisque, Colors.Black,Colors.Blue, Colors.BlueViolet,
+                                  Colors.CadetBlue,Colors.Coral,Colors.Cyan, Colors.DarkGreen,Colors.DarkKhaki,Colors.DarkOrange,Colors.DarkRed,Colors.Yellow};
         //Color[] TETROMINO_COLOR = { Color.FromArgb(0x88,0xff,0x00,0x00), Color.FromArgb(0x88,0x00,0xff,0xff), Color.FromArgb(0x88,0xff,0xff,0x00), Color.FromArgb(0x88,0xee,0x82,0xee), Color.FromArgb(0x88,0xff,0xc0,0xcb), Color.FromArgb(0x88,0x98,0xfb,0x98) };
         //テトリミノテンプレート[型(TETROMINO_NUM),ブロック番号(4),座標xy(2)]
         //テトリミノの形を配列で定義
@@ -238,7 +240,7 @@ namespace WPFTest01
                 int ty = TETROMINO_TEMPLATE[tetrominonum, i, 1];
 
                 //ブロックを生成
-                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[tetrominonum%7]);
+                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[tetrominonum]);
 
                 //他のブロックに被っていないか確かめる
                 if (!blocks[i].CanMove(0, 0))
