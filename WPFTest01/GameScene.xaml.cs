@@ -181,11 +181,29 @@ namespace WPFTest01
         public static bool waitingforclip = false;//ブロックが落下した際にtrueになり次のキネクトフレーム更新時にfallingbmpにクリップ画像を渡す
         //static bool completeclip = false;//クリップ画像が渡されたらtrueになる
 
+        //状態管理
+        public enum STEP
+        {
+            NONE = -1,
+            GAME = 0,
+            KINECT_LOAD,
+            GAME_OVER
+        };
+
+        private STEP step = STEP.NONE;
+        private STEP next_step = STEP.NONE;
+        private double step_timer;
+
+        private bool isKinectLoaded = false;
+        private bool isGameOver = false;
+
         public GameScene()
         {
             //なんか元からあったやつ,おまじないって認識で
             InitializeComponent();
             debug_index = 18;
+
+            this.step = STEP.KINECT_LOAD;
 
             //kinect
             this.kinectSensor = KinectSensor.GetDefault();
@@ -310,10 +328,6 @@ namespace WPFTest01
 
             this.DataContext = this;
             
-
-
-            
-
             //マッチング関係
             this.useJoints = new int[5] { (int)JointType.Head, (int)JointType.HandLeft,(int)JointType.HandRight,(int)JointType.KneeRight,(int)JointType.KneeLeft};
 
@@ -465,7 +479,7 @@ namespace WPFTest01
             //マッチング用Gridの初期化（Labelを配置）
             this.InitMatchGrid();
             //ランダムに描画
-            this.SetColorToMatchGrid(matchTemplateIndex);
+           // this.SetColorToMatchGrid(matchTemplateIndex);
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
             grid = grid01;//gamebackcanvasの親
@@ -818,6 +832,7 @@ namespace WPFTest01
         }
          */
 
+
         //Debug用
         /*
         public string HeadPos
@@ -1027,6 +1042,9 @@ namespace WPFTest01
 
                         if (body.IsTracked)
                         {
+                            //認識されたら
+                            this.isKinectLoaded = true;
+
                             this.DrawClippedEdges(body, dc);
 
                             //ジョイントの辞書配列
@@ -1691,18 +1709,94 @@ namespace WPFTest01
         //毎フレーム呼ばれる関数
         void timer_Tick(object sender, EventArgs e)
         {
+            this.step_timer += 0.1;
 
-            //マッチングがとれていたら
-            //テトリスゲームを1フレーム進める
-
-            tetris.Proc();//ゲームオーバー時はtrueが返ってくる
-
-            this.WIDTHHEIGHT = "( " + fallingbmp.PixelWidth + ", " + fallingbmp.PixelHeight + " )";
-
-            if (fallingbmpupdated)
+            //次の状態が決まってなければ、状態の変化を調べる
+            if (this.next_step == STEP.NONE)
             {
-                fallingbmpupdated=false;
-                //PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
+                switch (this.step)
+                {
+                    case STEP.NONE:
+                        break;
+                    case STEP.GAME:
+                        //gameover = trueだったらゲームオーバーへ
+                        if (this.isGameOver)
+                        {
+                            this.next_step = STEP.GAME_OVER;
+                        }
+
+                        break;
+
+                    case STEP.KINECT_LOAD:
+                        //キネクトがロードされて準備ができたら
+                        //GAMEへ
+                        if (this.isKinectLoaded)
+                        {
+                            if (this.step_timer > 20)
+                            {
+                                this.next_step = STEP.GAME;
+                            }
+                        }
+                        break;
+
+                    case STEP.GAME_OVER:
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //「状態が遷移した時の各状態の初期化
+            while (this.next_step != STEP.NONE)
+            {
+                this.step = this.next_step;
+                this.next_step = STEP.NONE;
+                switch (this.step)
+                {
+                    case STEP.NONE:
+                        break;
+
+                    case STEP.GAME:
+                        this.SetColorToMatchGrid(matchTemplateIndex);
+                        break;
+
+                    case STEP.KINECT_LOAD:
+                        break;
+                    case STEP.GAME_OVER:
+                        break;
+                    default:
+                        break;
+                }
+
+                this.step_timer = 0;
+            }
+
+            //状態ごとの、毎フレームの更新処理
+            switch (this.step)
+            {
+                case STEP.NONE:
+                    break;
+                case STEP.GAME:
+                    //Procを呼ぶ
+                    this.isGameOver =tetris.Proc();//ゲームオーバー時はtrueが返ってくる
+
+                     this.WIDTHHEIGHT = "( " + fallingbmp.PixelWidth + ", " + fallingbmp.PixelHeight + " )";
+
+                    if (fallingbmpupdated)
+                    {
+                        fallingbmpupdated=false;
+                        //PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
+                    }
+
+                    break;
+
+
+                case STEP.KINECT_LOAD:
+                    break;
+                case STEP.GAME_OVER:
+                    break;
+                default:
+                    break;
             }
 
             //キネクト無い時用
