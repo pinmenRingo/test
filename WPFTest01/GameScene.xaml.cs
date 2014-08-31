@@ -161,9 +161,30 @@ namespace WPFTest01
         private byte[] displayPixels = null;
         private DepthSpacePoint[] depthPoints = null;
 
-        
+        #region シーンコントロール
+        //シーンコントロール用
+        public enum STEP
+        {
+            NONE = -1,
+            GAME = 0,
+            KINECT_LOAD,
+            GAME_OVER,
+            NUM
+        };
 
+        private double stepTimer = 0.0;
+        private STEP step = STEP.NONE;
+        private STEP next_step = STEP.NONE;
 
+        #endregion
+
+        //Kinectで体が読み込まれたか
+        private bool isLoadedBody = false;
+
+        //GameOverか
+        private bool isGameOver = false;
+
+        #region コンストラクタ
         public GameScene()
         {
             //なんか元からあったやつ,おまじないって認識で
@@ -444,8 +465,7 @@ namespace WPFTest01
 
             //マッチング用Gridの初期化（Labelを配置）
             this.InitMatchGrid();
-            //ランダムに描画
-            this.SetColorToMatchGrid(matchTemplateIndex);
+            
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
             grid = grid01;//gamebackcanvasの親
@@ -493,8 +513,12 @@ namespace WPFTest01
             timer.Interval = new TimeSpan(0, 0, 0, 0, 16);//1秒60フレームに設定,1000/60=16.6666...
             timer.Tick += timer_Tick;//デリゲートを追加？的な
             timer.Start();//タイマースタート
+
+            //最初の状態はKinectLoad
+            this.step = STEP.KINECT_LOAD;
             
         }
+        #endregion
 
         /// <summary>
         /// rows[line]にfallingbmpに(BLOCK_HEIGHT_PIX*line,0)(BLOCK_HEIGHT_PIX*(line+1),BLOCK_WIDTH_PIX*4)の部分を合成する
@@ -812,6 +836,9 @@ namespace WPFTest01
 
                         if (body.IsTracked)
                         {
+                            //無事読み込まれた
+                            this.isLoadedBody = true;
+
                             this.DrawClippedEdges(body, dc);
 
                             //ジョイントの辞書配列
@@ -1152,15 +1179,96 @@ namespace WPFTest01
 
 
 
-
         //毎フレーム呼ばれる関数
         void timer_Tick(object sender, EventArgs e)
         {
+            //状態制御
+            this.stepTimer += 0.1;
 
-            //マッチングがとれていたら
-            //テトリスゲームを1フレーム進める
+            //次ぎの状態が決まっていなければ、状態の変化を調べる
+            if (this.next_step == STEP.NONE)
+            {
+                switch (this.step)
+                {
+           
+                    case STEP.GAME:
+                        if (this.isGameOver)
+                        {
+                            //GameOver
+                            this.next_step = STEP.GAME_OVER;
+                        }
 
-            tetris.Proc();//ゲームオーバー時はtrueが返ってくる
+                        break;
+
+                    case STEP.KINECT_LOAD:
+                        if (this.isLoadedBody)
+                        {
+                            //ここでちょっとまっていいかも
+                            //UIの更新（ラベルとか)
+                            if (this.stepTimer > 20)
+                            {
+                                this.next_step = STEP.GAME;
+
+                            }
+                        }
+                        break;
+
+                    case STEP.GAME_OVER:
+                        
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            //状態が変化したときの、それぞれの状態での初期化
+            while (this.next_step != STEP.NONE)
+            {
+                //stepを更新
+                this.step = this.next_step;
+                this.next_step = STEP.NONE;
+
+                switch (this.step)
+                {
+                    case STEP.GAME:
+                        //ランダムに描画
+                        this.SetColorToMatchGrid(matchTemplateIndex);
+                        break;
+
+                    case STEP.KINECT_LOAD:
+                        break;
+                    case STEP.GAME_OVER:
+                        break;
+
+                    default:
+                        break;
+                }
+
+                this.stepTimer = 0;
+            }
+
+            //状態の更新
+            switch (this.step)
+            {
+                case STEP.NONE:
+                    break;
+                case STEP.GAME:
+                    this.isGameOver = tetris.Proc();//ゲームオーバー時はtrueが返ってくる
+                    break;
+
+                case STEP.KINECT_LOAD:
+                    break;
+                case STEP.GAME_OVER:
+                    break;
+                case STEP.NUM:
+                    break;
+                default:
+                    break;
+            }
+
+
+
         }
 
         //ボタンが押された場合に呼ばれる
