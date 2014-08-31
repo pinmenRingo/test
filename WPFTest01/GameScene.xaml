@@ -37,31 +37,30 @@
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,37.8" TextWrapping="Wrap" Text="{Binding LeftKneePos, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
         <TextBlock HorizontalAlignment="Left" Height="19.333" Margin="86.8,0,0,13.467" TextWrapping="Wrap" Text="{Binding MatchStatus, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="{Binding MatchAlertColor,ElementName=Root}"/>
         <TextBlock  HorizontalAlignment="Left" Height="26.6" Margin="86.8,0,0,190.8" TextWrapping="Wrap" Text="{Binding WIDTHHEIGHT, ElementName=Root}" VerticalAlignment="Bottom" Width="208" Background="#FF0BFF28"/>
-        <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="396.702" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="#91000000">
-        	<Canvas x:Name="gamecanvas_xaml" Height="540.0" Canvas.Left="35.986" Canvas.Top="44.29" Width="276.0" Background="#88535353">
+        <Canvas x:Name="gamebackcanvas_xaml" HorizontalAlignment="Left" Height="476.102" Margin="29.066,26.298,0,0" VerticalAlignment="Top" Width="315.571" Background="#FDFFFFFF">
+            <Canvas x:Name="gamecanvas_xaml" Height="540.0" Canvas.Left="35.986" Canvas.Top="44.29" Width="276.0" Background="#88535353">
 
-                
-        		<Canvas.BindingGroup>
-        			<BindingGroup/>
-        		</Canvas.BindingGroup>
-        		<Canvas.CacheMode>
-        			<BitmapCache/>
-        		</Canvas.CacheMode>
-        		<Canvas.ContextMenu>
-        			<ContextMenu/>
-        		</Canvas.ContextMenu>
-                
-        		<Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="540" Width="276">
-        			<Image Source="{Binding FieldImageSource}" Stretch="Fill" />
-        		</Viewbox>
-        		<Canvas x:Name="fallingbmpcanvas_xaml" HorizontalAlignment="Left" VerticalAlignment="Top" Width="47.042" Canvas.Left="0" Canvas.Top="0">
-        			
 
-        			<Viewbox x:Name="viewbox_falling" HorizontalAlignment="Left" VerticalAlignment="Top" Height="135" Width="138.0" Canvas.Left="0" Canvas.Top="0">
-        				<Image x:Name="image_falling"  Source="{Binding FallingBitmap}" Stretch="Fill" />
-        			</Viewbox>
-        		</Canvas>
-        	</Canvas>
+                <Canvas.BindingGroup>
+                    <BindingGroup/>
+                </Canvas.BindingGroup>
+                <Canvas.CacheMode>
+                    <BitmapCache/>
+                </Canvas.CacheMode>
+                <Canvas.ContextMenu>
+                    <ContextMenu/>
+                </Canvas.ContextMenu>
+                <Canvas x:Name="fallingbmpcanvas_xaml" HorizontalAlignment="Left" VerticalAlignment="Top" Width="47.042" Canvas.Left="0" Canvas.Top="0">
+
+
+                    <Viewbox x:Name="viewbox_falling" HorizontalAlignment="Left" VerticalAlignment="Top" Height="135" Width="138.0" Canvas.Left="0" Canvas.Top="0">
+                        <Image x:Name="image_falling"  Source="{Binding FallingBitmap}" Stretch="Fill" />
+                    </Viewbox>
+                </Canvas>
+            </Canvas>
+            <Viewbox x:Name="fielbmpbmp" HorizontalAlignment="Left" VerticalAlignment="Top" Height="540" Width="276" Canvas.Left="35.986" Canvas.Top="44.29">
+                <Image Source="{Binding FieldImageSource}" Stretch="Fill" />
+            </Viewbox>
         </Canvas>
     </Grid>
 </Page>
