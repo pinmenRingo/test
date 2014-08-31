@@ -251,6 +251,38 @@ namespace WPFTest01
             return generated;
         }
 
+        public bool isGenerateNextTet(int index)
+        {
+            //生成フラグ
+            bool generated = true;
+            //テトリミノのx座標を真ん中,y座標を一番上にとる
+            int centerx = TetrisGame.FIELD_WIDTH / 2;
+            x = centerx;
+
+            //各ブロック生成可能か判定する
+            for (int i = 0; i < 4; ++i)
+            {
+                //TETROMINO_TEMPLATEのtetrominonum番目のテトリミノのi番目のブロックの座標を得る
+                int tx = centerx + TETROMINO_TEMPLATE[index, i, 0];
+                int ty = TETROMINO_TEMPLATE[index, i, 1];
+
+                //ブロックを生成
+                blocks[i] = new Block(tx, ty, TETROMINO_COLOR[index % 7]);
+
+                //他のブロックに被っていないか確かめる
+                if (!blocks[i].CanMove(0, 0))
+                {
+                    //ブロックを生成したい場所に既にブロックがおいてあった場合
+                    generated = false;//フラグを折る
+                    break;
+                }
+            }
+
+            return generated;
+
+
+        }
+
         /// <summary>
         /// テトリミノを移動する
         /// </summary>

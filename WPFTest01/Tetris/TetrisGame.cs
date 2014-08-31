@@ -40,6 +40,9 @@ namespace WPFTest01
         //現在指定しているテンプレート
         private int currentGridTempleteIndex;
 
+        //次に作成予定のテトリミノ
+        private int nextGridTTemplateIndex;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -215,16 +218,16 @@ namespace WPFTest01
                         DeleteFilledLine(fallingTet);
 
                         ////着地時,新たにテトリミノを生成する
-                        //if (!fallingTet.GenerateNewTetromino())
-                        //{
-                        //    //生成できなかった(=ゲームオーバー)
-                        //    gameover = true;//temp,boolを返して外でやるべき
-                        //    //背景を真っ赤に
-                        //    GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
-
-                        //    //ゲームオーバーなのでtrueを返す
-                        //    return true;
-                        //}
+                        if (!fallingTet.isGenerateNextTet(this.nextGridTTemplateIndex))
+                        {
+                            //生成できなかった(=ゲームオーバー)
+                            gameover = true;//temp,boolを返して外でやるべき
+                            //背景を真っ赤に
+                            GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
+                            this.isExecuted = false;
+                            //ゲームオーバーなのでtrueを返す
+                            return true;
+                        }
 
                         this.isMatched = false;
                         this.fallingTet = null;
@@ -322,6 +325,7 @@ namespace WPFTest01
             return false;
         }
 
+
         public void setMatchingStatus(bool match)
         {
             this.isMatched = match;
@@ -330,6 +334,11 @@ namespace WPFTest01
         public void setCurrentMatchGridIndex(int index)
         {
             this.currentGridTempleteIndex = index;
+        }
+
+        public void setNextMatchGridIndex(int index)
+        {
+            this.nextGridTTemplateIndex = index;
         }
 
         public bool getIsExecute

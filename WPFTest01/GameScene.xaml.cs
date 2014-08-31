@@ -731,7 +731,9 @@ namespace WPFTest01
                                     //次ぎのマッチングテトリミノを描画
                                     this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
                                     this.SetColorToMatchGrid(this.matchTemplateIndex);
-
+                                    
+                                    //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
+                                    this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
                                 }
 
                                 else
