@@ -71,7 +71,7 @@ namespace WPFTest01 {
             {
             case 1:
             
-            #line 12 "..\..\TitleScene.xaml"
+            #line 65 "..\..\TitleScene.xaml"
             ((System.Windows.Controls.Button)(target)).Click += new System.Windows.RoutedEventHandler(this.Button_Click);
             
             #line default

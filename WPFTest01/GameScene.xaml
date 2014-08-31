@@ -4,19 +4,19 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       mc:Ignorable="d" 
-      d:DesignHeight="630" d:DesignWidth="906"
+      d:DesignHeight="906" d:DesignWidth="1000"
 	Title="GameScene" Loaded="GameSceneLoaded" x:Name="Root">
 
     <Grid x:Name="grid01" Background="White">
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="86.8,0,0,195.8" VerticalAlignment="Bottom" Width="208"/>
 
-        <Viewbox x:Name="viewBox_color" HorizontalAlignment="Left" Margin="248,28,0,0" VerticalAlignment="Top" Height="424">
+        <Viewbox x:Name="viewBox_color" HorizontalAlignment="Left" Margin="248,73,0,0" VerticalAlignment="Top" Height="424">
             <Image Source="{Binding CutImageSource}" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Viewbox>
-        <Viewbox x:Name="viewBox" HorizontalAlignment="Left" Width="201.747" Margin="376,28,0,0" VerticalAlignment="Top" Height="203">
+        <Viewbox x:Name="viewBox" HorizontalAlignment="Left" Width="201.747" Margin="376,73,0,0" VerticalAlignment="Top" Height="203">
             <Image Source="{Binding ImageSource}" Stretch="UniformToFill"  x:Name="kinectImage"/>
         </Viewbox>
-        <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="372.673,28,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
+        <Grid x:Name="matchGrid" HorizontalAlignment="Left" Width="201.74" Margin="376,73,0,0" VerticalAlignment="Top" Height="203" ShowGridLines="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
