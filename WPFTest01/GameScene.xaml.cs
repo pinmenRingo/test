@@ -96,6 +96,7 @@ namespace WPFTest01
         /// <summary>
         /// Current status text to display
         /// </summary>
+        /*
         private string statusText = null;
         private string matchStatus = null;
         private string headPos = null;
@@ -103,6 +104,7 @@ namespace WPFTest01
         private string rightHandPos = null;
         private string rightKneePos = null;
         private string leftKneePos = null;
+        */
         private string widthheight = null;
         private SolidColorBrush matchAlertColor;
         private Dictionary<JointType, Brush> jointColors;
@@ -770,6 +772,7 @@ namespace WPFTest01
                 return this.imageSource;
             }
         }
+        /*
 
         public string StatusText
         {
@@ -813,7 +816,10 @@ namespace WPFTest01
                 }
             }
         }
+         */
 
+        //Debug用
+        /*
         public string HeadPos
         {
             get
@@ -940,6 +946,7 @@ namespace WPFTest01
 
             }
         }
+        */
 
 #endregion
 
@@ -1047,6 +1054,7 @@ namespace WPFTest01
 
                                 jointPoint[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
 
+                                /*
                                 switch (jointType)
                                 {
 
@@ -1086,7 +1094,7 @@ namespace WPFTest01
 
                                     default:
                                         break;
-                                }
+                                }*/
 
                             }
 
@@ -1101,7 +1109,7 @@ namespace WPFTest01
 
                                 if (this.isMatched)
                                 {
-                                    this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
+                                    //this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
 
                                     this.tetris.setMatchingStatus(this.isMatched);
                                     this.tetris.setCurrentMatchGridIndex(this.matchTemplateIndex);
@@ -1117,7 +1125,7 @@ namespace WPFTest01
 
                                 else
                                 {
-                                    this.MatchAlertColor = new SolidColorBrush(Colors.Red);
+                                   // this.MatchAlertColor = new SolidColorBrush(Colors.Red);
                                     //this.tetris.setMatchingStatus(this.isMatched);
                                 } 
                             }
