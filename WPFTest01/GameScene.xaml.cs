@@ -110,6 +110,7 @@ namespace WPFTest01
         /// マッチング用のテンプレート
         /// </summary>
         private int[,,] matchingTemplets;
+        const int TEMPLATE_NUM = 19;
         
         //スケール
         double kScaleY = 0.008;
@@ -118,6 +119,19 @@ namespace WPFTest01
         //各Gridのサイズ
         double gridWidth;
         double gridHeight;
+
+        //ブラシ
+        private Brush headBrush = Brushes.Yellow;
+        private Brush leftHandBrush = Brushes.Purple;
+        private Brush rightHandBrush = Brushes.Blue;
+        private Brush rightKneeBrush = Brushes.Green;
+        private Brush leftKneeBrush = Brushes.Pink;
+
+        //マッチングテンプレートアクセス用
+        //Random rand = new Random();
+        private int matchTemplateIndex;
+        private int debug_index;
+        private bool isMatched;
 
 
         //以下画像制御
@@ -154,6 +168,7 @@ namespace WPFTest01
         {
             //なんか元からあったやつ,おまじないって認識で
             InitializeComponent();
+            debug_index = 18;
 
             //kinect
             this.kinectSensor = KinectSensor.GetDefault();
@@ -172,7 +187,16 @@ namespace WPFTest01
             matchGrid.Width = this.displayWidth;
             matchGrid.Height = this.displayHeight;
 
-            this.InitMatchGrid();
+            //マッチングの際に表示する各Jointと色の辞書配列
+           
+            this.jointColors = new Dictionary<JointType,Brush>{
+                {JointType.Head,headBrush},
+                {JointType.HandLeft,leftHandBrush},
+                {JointType.HandRight,rightHandBrush},
+                {JointType.KneeRight,rightKneeBrush},
+                {JointType.KneeLeft,leftKneeBrush}
+            };
+
 
             //this.multiFrameSourceReader = this.kinectSensor.BodyFrameSource.OpenReader();
 
@@ -300,9 +324,9 @@ namespace WPFTest01
 
                                            {
                                                {0,0,0,0},
-                                               {0,0,0,0},
                                                {0,7,3,11},
-                                               {0,0,13,0}
+                                               {0,0,13,0},
+                                               {0,0,0,0}
                                            },
 
                                            //J
@@ -320,29 +344,29 @@ namespace WPFTest01
                                            },
                                            {
                                                {0,0,0,0},
-                                               {0,0,0,0},
                                                {7,3,11,0},
-                                               {0,0,17,0}
+                                               {0,0,17,0},
+                                               {0,0,0,0}
                                            },
                                            {
-                                               {0,0,0,0},
-                                               {0,7,0,0},
-                                               {0,3,0,0},
-                                               {13,11,0,0}
+                                               {0,0,7,0},
+                                               {0,0,3,0},
+                                               {0,13,11,0},
+                                               {0,0,0,0}
                                            },
 
                                            //L
                                            {
-                                               {0,0,0,0},
                                                {0,11,0,0},
                                                {0,3,0,0},
                                                {0,7,17,0},
+                                               {0,0,0,0},
                                            },
                                            {
                                                {0,0,0,0},
-                                               {0,0,0,0},
                                                {0,7,3,11},
-                                               {0,13,0,0}
+                                               {0,13,0,0},
+                                               {0,0,0,0}
                                            },
                                            {
                                                {0,0,0,0},
@@ -366,10 +390,10 @@ namespace WPFTest01
                                            },
 
                                            {
-                                               {0,0,0,0},
                                                {0,3,0,0},
                                                {0,7,11,0},
-                                               {0,0,17,0}
+                                               {0,0,17,0},
+                                               {0,0,0,0}
                                            },
 
                                            //逆S
@@ -381,10 +405,10 @@ namespace WPFTest01
                                            },
 
                                            {
-                                               {0,0,0,0},
                                                {0,0,11,0},
                                                {0,7,3,0},
-                                               {0,13,0,0}
+                                               {0,13,0,0},
+                                               {0,0,0,0}
                                            },
 
                                            // l
@@ -398,21 +422,30 @@ namespace WPFTest01
                                            {
                                                {0,0,0,0},
                                                {0,0,0,0},
-                                               {7,3,17,11},
+                                               {7,13,17,11},
                                                {0,0,0,0}
                                            },
 
                                            //□
                                            {
                                                {0,0,0,0},
-                                               {0,0,0,0},
-                                               {0,7,3,0,},
-                                               {0,13,11,0}
+                                               {0,7,3,0},
+                                               {0,13,11,0,},
+                                               {0,0,0,0}
                                            }
 
                                        };
             #endregion
 
+            //マッチング関係
+            this.isMatched = false;
+            //matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+            matchTemplateIndex = debug_index;
+
+            //マッチング用Gridの初期化（Labelを配置）
+            this.InitMatchGrid();
+            //ランダムに描画
+            this.SetColorToMatchGrid(matchTemplateIndex);
 
             //要素に静的メソッド以外からでもアクセスできるように小細工
             grid = grid01;//gamebackcanvasの親
@@ -714,16 +747,13 @@ namespace WPFTest01
 
 #endregion
 
-
+        #region Scene初期化
         private void GameSceneLoaded(object sender, RoutedEventArgs e)
         {
             if (this.multiFrameSourceReader != null)
             {
                 this.multiFrameSourceReader.MultiSourceFrameArrived += multiFrameSourceReader_FrameArrived;
             }
-
-            //matchGridの初期化
-            this.InitMatchGrid();
         }
 
         private void GameSceneClosing(object sender, RoutedEventArgs e)
@@ -740,6 +770,7 @@ namespace WPFTest01
                 this.kinectSensor = null;
             }
         }
+        #endregion
 
         void multiFrameSourceReader_FrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
         {
@@ -854,10 +885,36 @@ namespace WPFTest01
                             //体を描画
                             this.DrawBody(joints, jointPoint, dc, drawPen);
 
-                            //マッチング処理
-                            bool isMatched = this.isMatching(jointPoint, 0);
-                            if (isMatched) this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
-                            else this.MatchAlertColor = new SolidColorBrush(Colors.Red);
+                            if (!this.tetris.getIsExecute)
+                            {
+
+                                //マッチング処理
+                                this.isMatched = this.isMatching(jointPoint, this.matchTemplateIndex);
+
+                                if (this.isMatched)
+                                {
+                                    this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
+
+                                    this.tetris.setMatchingStatus(this.isMatched);
+                                    this.tetris.setCurrentMatchGridIndex(this.matchTemplateIndex);
+
+                                    //マッチ用のグリッドを更新
+                                    //次ぎのマッチングテトリミノを描画
+                                    this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+                                    this.SetColorToMatchGrid(this.matchTemplateIndex);
+                                    
+                                    //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
+                                    this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
+                                }
+
+                                else
+                                {
+                                    this.MatchAlertColor = new SolidColorBrush(Colors.Red);
+                                    //this.tetris.setMatchingStatus(this.isMatched);
+                                } 
+                            }
+
+                            
 
                           
                         }
@@ -890,8 +947,8 @@ namespace WPFTest01
                 if (x >= 3) x = 3;
                 if (y <= 0) y = 0;
                 if (y >= 3) y = 3;
-
                 if (this.matchingTemplets[templateNum,y,x] == (int)i)
+
                 {
                     matchingCount++;
                 }
@@ -923,13 +980,72 @@ namespace WPFTest01
                 for (int x = 0; x < cols; x++)
                 {
                     matchControl[y, x] = new Label();
-                    matchControl[y, x].Background = Brushes.Blue;
+                    matchControl[y, x].Background = Brushes.Transparent;
+                    matchControl[y, x].Opacity = 0.5;
                     matchControl[y, x].BorderThickness = new Thickness(1, 1, 1, 1);
-                    matchGrid.Children.Add(matchControl[y, x]);
+                    matchGrid.Children.Add(this.matchControl[y, x]);
+
+                    matchControl[y, x].SetValue(Grid.RowProperty, y);
+                    matchControl[y, x].SetValue(Grid.ColumnProperty, x);
 
                 }
             }
 
+
+        }
+
+        //今回落とすブロックをmatchGridに描画（Labelに色を付ける）
+        private void SetColorToMatchGrid(int matchTemplateNum)
+        {
+            int rows = matchGrid.RowDefinitions.Count;
+            int cols = matchGrid.ColumnDefinitions.Count;
+
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < cols; x++)
+                {
+
+                    switch (this.matchingTemplets[matchTemplateNum, y, x])
+                    {
+                        case (int)JointType.Head:
+                            matchControl[y, x].Background = this.jointColors[JointType.Head];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.HandLeft:
+                            matchControl[y,x].Background = this.jointColors[JointType.HandLeft];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.HandRight:
+                            matchControl[y,x].Background = this.jointColors[JointType.HandRight];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.KneeLeft:
+                            matchControl[y,x].Background = this.jointColors[JointType.KneeLeft];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        case (int)JointType.KneeRight:
+                            matchControl[y,x].Background = this.jointColors[JointType.KneeRight];
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;
+
+                        default:
+                            matchControl[y, x].Background = Brushes.Transparent;
+                            matchControl[y, x].SetValue(Grid.RowProperty, y);
+                            matchControl[y, x].SetValue(Grid.ColumnProperty, x);
+                            break;  
+                    }
+
+                }
+            }
 
         }
 
@@ -1040,7 +1156,10 @@ namespace WPFTest01
         //毎フレーム呼ばれる関数
         void timer_Tick(object sender, EventArgs e)
         {
+
+            //マッチングがとれていたら
             //テトリスゲームを1フレーム進める
+
             tetris.Proc();//ゲームオーバー時はtrueが返ってくる
         }
 

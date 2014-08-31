@@ -19,53 +19,157 @@ namespace WPFTest01
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public Tetromino()
+        public Tetromino(int index)
         {
             //最初落下するテトリミノ(ブロック4つ)を生成する
-            GenerateNewTetromino();
+            GenerateNewTetromino(index);
         }
 
         //テトリミノの種類
-        const int TETROMINO_NUM = 6;//棒,括弧x2,四角,くねくねx2
+        const int TETROMINO_NUM = 19;//棒,括弧x2,四角,くねくねx2
         //テトリミノの色[型(TETROMINO_NUM)]
-        Color[] TETROMINO_COLOR = { Color.FromArgb(0x55,0xff,0x00,0x00), Color.FromArgb(0x55,0x00,0xff,0xff), Color.FromArgb(0x55,0xff,0xff,0x00), Color.FromArgb(0x55,0xee,0x82,0xee), Color.FromArgb(0x55,0xff,0xc0,0xcb), Color.FromArgb(0x55,0x98,0xfb,0x98) };
+        //Color[] TETROMINO_COLOR = { Color.FromArgb(0x55,0xff,0x00,0x00), Color.FromArgb(0x55,0x00,0xff,0xff), Color.FromArgb(0x55,0xff,0xff,0x00), Color.FromArgb(0x55,0xee,0x82,0xee), Color.FromArgb(0x55,0xff,0xc0,0xcb), Color.FromArgb(0x55,0x98,0xfb,0x98) };
+        Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen,Colors.Azure };
         //テトリミノテンプレート[型(TETROMINO_NUM),ブロック番号(4),座標xy(2)]
         //テトリミノの形を配列で定義
         //値はテトリミノの座標からの相対距離
         int[, ,] TETROMINO_TEMPLATE ={
+                                              //T
                                               {
-                                                  {-1,0},
                                                   {0,0},
                                                   {0,1},
+                                                  {-1,1},
+                                                  {1,1}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {0,1},
+                                                  {1,1},
+                                                  {0,2}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {0,1},
+                                                 {-1,1},
+                                                 {0,2}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {-1,0},
+                                                  {1,0},
+                                                  {0,1}
+                                              },
+
+                                               //J
+                                              {
+                                                  {0,0},
+                                                  {0,1},
+                                                  {1,1},
+                                                  {2,1}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {1,0},
+                                                  {0,1},
+                                                  {0,2}
+                                              },
+
+                                              {
+                                                  {0,0},
+                                                  {-1,0},
+                                                  {1,0},
                                                   {1,1}
                                               },
                                               {
-                                                  {1,0},
                                                   {0,0},
+                                                  {0,1},
+                                                  {0,2},
+                                                  {1,2}
+                                              },
+
+                                               //L
+                                              {
+                                                  
+                                                  {0,0},
+                                                  {0,1},
+                                                  {0,2},
+                                                  {1,2}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {-1,0},
+                                                 {1,0},
+                                                 {-1,1}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {-1,0},
+                                                 {0,1},
+                                                 {0,2}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {0,1},
+                                                 {-1,1},
+                                                 {-2,1}
+                                              },
+
+                                               //S
+                                              {
+                                                  {0,0},
+                                                  {1,0},
                                                   {0,1},
                                                   {-1,1}
                                               },
+
                                               {
-                                                  {-1,1},
-                                                  {-1,0},
                                                   {0,0},
-                                                  {1,0}
-                                              },
-                                              {
+                                                  {0,1},
                                                   {1,1},
-                                                  {1,0},
-                                                  {0,0},
-                                                  {-1,0}
+                                                  {1,2}
                                               },
+
+                                              //Z                                    
+                                              {
+                                                  {0,0},
+                                                  {-1,0},
+                                                  {0,1},
+                                                  {1,1}
+                                              },
+
+                                              {
+                                                 {0,0},
+                                                 {0,1},
+                                                 {-1,1},
+                                                 {-1,2}
+                                              },
+
+                                              // - 
+                                              {
+                                                  {0,0},
+                                                  {0,1},
+                                                  {0,2},
+                                                  {0,3}
+                                              },
+
                                               {
                                                   {-1,0},
                                                   {0,0},
                                                   {1,0},
                                                   {2,0}
                                               },
+
+                                              //□
                                               {
-                                                  {1,0},
                                                   {0,0},
+                                                  {1,0},
                                                   {0,1},
                                                   {1,1}
                                               }
@@ -77,16 +181,45 @@ namespace WPFTest01
         /// 新たにテトリミノ(ブロック4つ)を生成する
         /// </summary>
         /// <returns>生成の成否を返す</returns>
-        public bool GenerateNewTetromino()
+        public bool GenerateNewTetromino(int index)
         {
             //生成フラグ
             bool generated = true;
             //テトリミノのx座標を真ん中,y座標を一番上にとる
             int centerx = TetrisGame.FIELD_WIDTH / 2;
-            x = centerx; y = 0;
+            x = centerx; 
 
             //生成するテトリミノの番号をランダムに設定
-            int tetrominonum = rand.Next(TETROMINO_NUM);
+            //生成するテトリミノの番号 = マッチングテンプレートのインデックス
+            //int tetrominonum = rand.Next(TETROMINO_NUM);
+            int tetrominonum = index;
+
+            //回転の際にテトリミノの中心で回すため、
+            //特定のテトリミノは座標を調整
+            //闇
+            
+            if (tetrominonum == 3 || 
+                tetrominonum == 17||
+                tetrominonum == 6)
+            {
+                y = 0;
+            }
+            else if (tetrominonum == 11)
+            {
+                y = 1;
+                x--;
+            }
+            else if (tetrominonum == 4)
+            {
+                y = 1;
+                x++;
+            }
+            else
+            {
+                y = 1;
+            }
+
+            
 
             //System.Windows.MessageBox.Show(tetrominonum.ToString());
             //各ブロック生成可能か判定する
@@ -97,7 +230,7 @@ namespace WPFTest01
                 int ty = TETROMINO_TEMPLATE[tetrominonum, i, 1];
 
                 //ブロックを生成
-                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[tetrominonum]);
+                blocks[i] = new Block( tx, ty, TETROMINO_COLOR[tetrominonum%7]);
 
                 //他のブロックに被っていないか確かめる
                 if (!blocks[i].CanMove(0, 0))
@@ -117,6 +250,38 @@ namespace WPFTest01
             }
 
             return generated;
+        }
+
+        public bool isGenerateNextTet(int index)
+        {
+            //生成フラグ
+            bool generated = true;
+            //テトリミノのx座標を真ん中,y座標を一番上にとる
+            int centerx = TetrisGame.FIELD_WIDTH / 2;
+            x = centerx;
+
+            //各ブロック生成可能か判定する
+            for (int i = 0; i < 4; ++i)
+            {
+                //TETROMINO_TEMPLATEのtetrominonum番目のテトリミノのi番目のブロックの座標を得る
+                int tx = centerx + TETROMINO_TEMPLATE[index, i, 0];
+                int ty = TETROMINO_TEMPLATE[index, i, 1];
+
+                //ブロックを生成
+                blocks[i] = new Block(tx, ty, TETROMINO_COLOR[index % 7]);
+
+                //他のブロックに被っていないか確かめる
+                if (!blocks[i].CanMove(0, 0))
+                {
+                    //ブロックを生成したい場所に既にブロックがおいてあった場合
+                    generated = false;//フラグを折る
+                    break;
+                }
+            }
+
+            return generated;
+
+
         }
 
         /// <summary>
@@ -148,6 +313,18 @@ namespace WPFTest01
 
             return bCanMove;
 
+        }
+
+        public bool canMove(int dx, int dy)
+        {
+            bool canMove = true;
+
+            for (int i = 0; i < 4; ++i)
+            {
+               canMove =  blocks[i].CanMove(dx, dy);
+            }
+
+            return canMove;
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿<NavigationWindow x:Class="WPFTest01.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ヒトリス" Height="2000" Width="2000" ShowsNavigationUI="False" Source="TitleScene.xaml">
+        Title="ヒトリス" Height="630" Width="903" ShowsNavigationUI="False" Source="TitleScene.xaml">
    
 </NavigationWindow>

@@ -27,3 +27,13 @@ C:\Users\Tako\Desktop\gitTest\tetris\tetris\obj\Debug\tetris.csproj.GenerateReso
 C:\Users\貴久\Documents\test\tetris\tetris\bin\Debug\tetris.exe.config
 C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.exe
 C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.pdb
+C:\Users\貴久\Documents\test\tetris\tetris\bin\Debug\tetris.exe
+C:\Users\貴久\Documents\test\tetris\tetris\bin\Debug\tetris.pdb
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.csprojResolveAssemblyReference.cache
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\MainWindow.baml
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\MainWindow.g.cs
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\App.g.cs
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris_MarkupCompile.cache
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.g.resources
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.Properties.Resources.resources
+C:\Users\貴久\Documents\test\tetris\tetris\obj\Debug\tetris.csproj.GenerateResource.Cache
