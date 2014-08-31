@@ -29,7 +29,8 @@ namespace WPFTest01
         const int TETROMINO_NUM = 19;//棒,括弧x2,四角,くねくねx2
         //テトリミノの色[型(TETROMINO_NUM)]
         //Color[] TETROMINO_COLOR = { Color.FromArgb(0x55,0xff,0x00,0x00), Color.FromArgb(0x55,0x00,0xff,0xff), Color.FromArgb(0x55,0xff,0xff,0x00), Color.FromArgb(0x55,0xee,0x82,0xee), Color.FromArgb(0x55,0xff,0xc0,0xcb), Color.FromArgb(0x55,0x98,0xfb,0x98) };
-        Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen,Colors.Azure };
+       // Color[] TETROMINO_COLOR = { Colors.Red, Colors.Aqua, Colors.Yellow, Colors.Violet, Colors.Pink, Colors.PaleGreen,Colors.Azure };
+        Color[] TETROMINO_COLOR = { Color.FromArgb(0x88,0xff,0x00,0x00), Color.FromArgb(0x88,0x00,0xff,0xff), Color.FromArgb(0x88,0xff,0xff,0x00), Color.FromArgb(0x88,0xee,0x82,0xee), Color.FromArgb(0x88,0xff,0xc0,0xcb), Color.FromArgb(0x88,0x98,0xfb,0x98) };
         //テトリミノテンプレート[型(TETROMINO_NUM),ブロック番号(4),座標xy(2)]
         //テトリミノの形を配列で定義
         //値はテトリミノの座標からの相対距離
@@ -183,6 +184,13 @@ namespace WPFTest01
         /// <returns>生成の成否を返す</returns>
         public bool GenerateNewTetromino(int index)
         {
+            //fallingbmp関連
+            GameScene.waitingforclip = true;
+
+
+
+
+
             //生成フラグ
             bool generated = true;
             //テトリミノのx座標を真ん中,y座標を一番上にとる
@@ -309,6 +317,8 @@ namespace WPFTest01
                 }
                 //テトリミノの座標を移動させる
                 x += dx; y += dy;
+                //落下キャンバスも移動させる
+                GameScene.fallingbmpcanvas.Margin = new System.Windows.Thickness((x - 2) * Block.BLOCK_WIDTH, (y) * Block.BLOCK_HEIGHT, 0, 0);
             }
 
             return bCanMove;
@@ -372,6 +382,11 @@ namespace WPFTest01
                 {
                     blocks[i].MoveTo(prex[i], prey[i]);
                 }
+            }
+                //成功していた場合画像を回転させる
+            else
+            {
+                GameScene.TurnFallingBMP(right);
             }
 
             return suc;

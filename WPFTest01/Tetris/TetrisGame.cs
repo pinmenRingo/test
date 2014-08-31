@@ -15,9 +15,9 @@ namespace WPFTest01
     class TetrisGame
     {
         //フィールドの横方向のマス数
-        public const int FIELD_WIDTH = 10;
+        public const int FIELD_WIDTH = 8;//現状2の倍数じゃないといろいろ荒ぶる,はず
         //フィールドの縦方向のマス数
-        public static int FIELD_HEIGHT = 20;
+        public const int FIELD_HEIGHT = 20;
         //全マス数
         static int BLOCK_MAX = FIELD_WIDTH*FIELD_HEIGHT;
 
@@ -75,6 +75,8 @@ namespace WPFTest01
 
             this.isMatched = false;
             this.isExecuted = false;
+            //一応
+           // ResetGame();
         }
 
         /// <summary>
@@ -82,6 +84,7 @@ namespace WPFTest01
         /// </summary>
         public void ResetGame()
         {
+            GameScene.ResetRows();
 
             //フィールド上のブロックやフラグを初期化
             for (int y = 0; y < FIELD_HEIGHT; ++y)
@@ -127,10 +130,10 @@ namespace WPFTest01
             {
                 if (intet.y + i < 20)
                 {
-                    GameScene.AddBMP(intet.x, intet.y + i, i);
+                    //GameScene.AddBMP(intet.x, intet.y + i, i);
                 }
             }
-
+            GameScene.AddBMPField(intet.x, intet.y);
 
             for (int i = 0; i < 4; ++i)
             {
@@ -168,13 +171,13 @@ namespace WPFTest01
                     fallingTet = new Tetromino(this.currentGridTempleteIndex);
                 }
 
-                //今落ちているブロックが着地していたら
-                if (!fallingTet.canMove(0,1))
-                {
-                    //新しいテトリミノを作成
-                    //fallingTet.GenerateNewTetromino(this.currentGridTempleteIndex);
+                ////今落ちているブロックが着地していたら
+                //if (!fallingTet.canMove(0,1))
+                //{
+                //    //新しいテトリミノを作成
+                //    //fallingTet.GenerateNewTetromino(this.currentGridTempleteIndex);
 
-                }
+                //}
 
                 //通常処理
 
@@ -271,6 +274,11 @@ namespace WPFTest01
             if (gameover)
             {
                 return true;
+            }
+                //クリッピング待ちの間は何もせずリターン
+            else if (GameScene.waitingforclip)
+            {
+                //return false;
             }
 
             /*

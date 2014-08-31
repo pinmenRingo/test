@@ -108,3 +108,4 @@ C:\Users\PinThink\Desktop\hackday\WPFTest01\obj\Debug\WPFTest01.csproj.GenerateR
 C:\Users\PinThink\Desktop\hackday\WPFTest01\obj\Debug\WPFTest01.exe
 C:\Users\PinThink\Desktop\hackday\WPFTest01\obj\Debug\WPFTest01.pdb
 C:\Users\PinThink\Desktop\hackday\WPFTest01\obj\Debug\WPFTest01.csprojResolveAssemblyReference.cache
+C:\Users\貴久\Documents\test\WPFTest01\bin\Debug\512_424.bmp
