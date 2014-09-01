@@ -181,7 +181,6 @@
     <Resource Include="Images\title.png" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Resource Include="Images\start.png" />
   </ItemGroup>
   <ItemGroup>
@@ -192,7 +191,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\gameover.png" />
-=======
     <Content Include="Sounds\BGM.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -202,7 +200,6 @@
     <Content Include="Sounds\vanish_se.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
->>>>>>> develop_Sound
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

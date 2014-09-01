@@ -135,3 +135,7 @@ C:\Users\Yasutomo\Documents\test\WPFTest01\obj\Debug\WPFTest01_MarkupCompile.cac
 C:\Users\Yasutomo\Documents\test\WPFTest01\obj\Debug\WPFTest01.g.resources
 C:\Users\Yasutomo\Documents\test\WPFTest01\obj\Debug\WPFTest01.Properties.Resources.resources
 C:\Users\Yasutomo\Documents\test\WPFTest01\obj\Debug\WPFTest01.csproj.GenerateResource.Cache
+C:\Users\貴久\Documents\test\WPFTest01\bin\Debug\Sounds\BGM.mp3
+C:\Users\貴久\Documents\test\WPFTest01\bin\Debug\Sounds\rotate_se.wav
+C:\Users\貴久\Documents\test\WPFTest01\bin\Debug\Sounds\vanish_se.wav
+C:\Users\貴久\Documents\test\WPFTest01\obj\Debug\WPFTest01_Content.g.cs
