@@ -245,7 +245,7 @@ namespace WPFTest01
 
                 if (IsTimeOver)
                 {
-                    fallframe = 5;
+                    fallframe = 2;
                 }
                 else
                 {

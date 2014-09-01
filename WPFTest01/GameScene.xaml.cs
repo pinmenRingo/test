@@ -1809,6 +1809,7 @@ namespace WPFTest01
                     case STEP.KINECT_LOAD:
                         break;
                     case STEP.GAME_OVER:
+                        gameover_canvas.Visibility = System.Windows.Visibility.Visible;
                         break;
                     default:
                         break;
@@ -1860,12 +1861,6 @@ namespace WPFTest01
                     //Procを呼ぶ
                     this.isGameOver =tetris.Proc();//ゲームオーバー時はtrueが返ってくる
 
-                    if (this.isGameOver)
-                    {
-                        System.Windows.MessageBox.Show("gameover");
-                        gamebackcanvas.Visibility = System.Windows.Visibility.Visible;
-
-                    }
 
                     this.WIDTHHEIGHT = "( " + fallingbmp.PixelWidth + ", " + fallingbmp.PixelHeight + " )";
 
