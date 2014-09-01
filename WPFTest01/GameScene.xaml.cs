@@ -1783,6 +1783,7 @@ namespace WPFTest01
                         MatchingCountDown = 10;
                         MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
                         CountDownTimer.Start();
+                        this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
                         this.SetColorToMatchGrid(matchTemplateIndex);
                         break;
                     case STEP.NONE:
@@ -1820,7 +1821,7 @@ namespace WPFTest01
 
                             //マッチ用のグリッドを更新
                             //次ぎのマッチングテトリミノを描画
-                            this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+                            //this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
                             this.SetColorToMatchGrid(this.matchTemplateIndex);
 
                             //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
