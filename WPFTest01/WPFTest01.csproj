@@ -28,7 +28,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <ExpressionBlendVersion>12.0.50429.0</ExpressionBlendVersion>
+    <ExpressionBlendVersion>12.0.41002.1</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -132,6 +132,9 @@
     <None Include="512_424.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Images\title.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -163,20 +166,31 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="512_424.png" />
+    <Resource Include="Images\match.png" />
+    <Resource Include="Images\start.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\gameover.png" />
     <Resource Include="Images\ringo_resize.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\bg.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\bg2.png" />
     <Resource Include="Images\clear.png" />
     <Resource Include="Images\newgame_green.png" />
     <Resource Include="Images\newgame_red.png" />
     <Resource Include="Images\ringo.png" />
-    <Resource Include="Images\title.png" />
+    <Resource Include="Images\subtitle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="title.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\match2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\toumei.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

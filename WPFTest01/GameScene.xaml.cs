@@ -1139,6 +1139,11 @@ namespace WPFTest01
                                     
                                     //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
                                     this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
+
+                                    //match画像を表示// 
+                                    matching.Source = new BitmapImage(new Uri("matchi2.png", UriKind.RelativeOrAbsolute));
+
+
                                 }
 
                                 else
@@ -1722,6 +1727,9 @@ namespace WPFTest01
                         //gameover = trueだったらゲームオーバーへ
                         if (this.isGameOver)
                         {
+                            //gameover画像を表示//
+                            result.Source = new BitmapImage(new Uri("gameover.png", UriKind.RelativeOrAbsolute));
+
                             this.next_step = STEP.GAME_OVER;
                         }
 

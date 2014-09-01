@@ -32,9 +32,7 @@
                                             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)" Storyboard.TargetName="grid">
                                                 <EasingDoubleKeyFrame KeyTime="0" Value="0.95"/>
                                             </DoubleAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="image">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
-                                            </ObjectAnimationUsingKeyFrames>
+
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="image1">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
                                             </ObjectAnimationUsingKeyFrames>
@@ -43,8 +41,7 @@
                                     <VisualState x:Name="Disabled"/>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <Image x:Name="image" Width="250" VerticalAlignment="Bottom" Stretch="Fill" Source="Images/newgame_red.png" Height="70" HorizontalAlignment="Center" Visibility="Collapsed"/>
-                            <Image x:Name="image1" Width="250" VerticalAlignment="Bottom" Stretch="Fill" Source="Images/newgame_green.png" Margin="-1.25,-1.25,1.25,1.25" Height="70" HorizontalAlignment="Center"/>
+                            <Image x:Name="image1" Width="250" VerticalAlignment="Bottom" Stretch="Fill" Source="Images/start.png" Margin="-1.25,-1.25,1.25,1.25" Height="70" HorizontalAlignment="Center"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True"/>
@@ -61,8 +58,8 @@
 
     <Grid Background="White">
         <Image Source="Images/bg.jpg" Stretch="Fill"/>
-        <Image Source="Images/bg2.png" Stretch="Fill" Margin="-1,0,1,0"/>
-        <Button Content="Button" Click="Button_Click" Margin="175,278,175,52" Style="{DynamicResource NewGameButtonStyle}"/>
-        <Image Source="Images/title.png" Stretch="Fill" Margin="239,264,241,90"/>
+        <Image Source="Images/subtitle.png" Margin="291,378,297,38"/>
+        <Button Content="Button" Click="Button_Click" Margin="175,284,175,46" Style="{DynamicResource NewGameButtonStyle}"/>
+        <Image Margin="230,108,233,206" Source="title.png" />
     </Grid>
 </Page>
