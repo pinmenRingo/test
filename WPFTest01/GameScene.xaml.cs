@@ -1792,11 +1792,12 @@ namespace WPFTest01
                 {
                     case STEP.MATCHING:
                         this.tetris.IsTimeOver = false;
-                        MatchingCountDown = 1;
+                        MatchingCountDown = 5;
                         MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
                         CountDownTimer.Start();
                         this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
                         this.SetColorToMatchGrid(matchTemplateIndex);
+                        matchImage.Visibility = System.Windows.Visibility.Collapsed;
                         break;
                     case STEP.NONE:
                         break;
@@ -1842,7 +1843,7 @@ namespace WPFTest01
                             MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
 
                             //match画像を表示
-                            matching.Source = new BitmapImage(new Uri("mathi2.png", UriKind.RelativeOrAbsolute));
+                            matchImage.Visibility = System.Windows.Visibility.Visible;
 
                             this.next_step = STEP.GAME;
                         }

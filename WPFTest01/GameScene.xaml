@@ -68,7 +68,7 @@
         <Image HorizontalAlignment="Left" Height="423" Margin="1055,297,0,0" VerticalAlignment="Top" Width="245.91" Source="Images/ringo_resize.png"/>
         <TextBlock x:Name="MatchingCountDown_textblock" Visibility="Collapsed" FontSize="80" Text="{Binding MatchingCountDown, ElementName=Root}" Foreground="Red" FontWeight="Black" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,140,160,0"/>
         <Image x:Name="result" Margin="280,142,278,156" Source="Images/toumei.png" Stretch="Fill"/>
-        <Image x:Name="matching" Margin="610,46,450,602" Source="Images/toumei.png" Stretch="Fill"/>
+        <Image x:Name="matchImage" HorizontalAlignment="Left" Height="88.322" Margin="674.7,26.298,0,0" VerticalAlignment="Top" Width="230.4" Source="Images/match2.png" Stretch="Fill" Visibility="Hidden"/>
         <Canvas x:Name="gameover_canvas" HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Background="#BA000000" Visibility="Collapsed">
         	<Image HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Source="Images/gameover.png" Stretch="Fill" OpacityMask="#FF6C3232"/>
         </Canvas>
