@@ -1767,6 +1767,7 @@ namespace WPFTest01
                         break;
 
                     case STEP.GAME_OVER:
+
                         break;
                     default:
                         break;
@@ -1782,7 +1783,7 @@ namespace WPFTest01
                 {
                     case STEP.MATCHING:
                         this.tetris.IsTimeOver = false;
-                        MatchingCountDown = 10;
+                        MatchingCountDown = 1;
                         MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
                         CountDownTimer.Start();
                         this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
@@ -1849,6 +1850,13 @@ namespace WPFTest01
                 case STEP.GAME:
                     //Procを呼ぶ
                     this.isGameOver =tetris.Proc();//ゲームオーバー時はtrueが返ってくる
+
+                    if (this.isGameOver)
+                    {
+                        System.Windows.MessageBox.Show("gameover");
+                        gamebackcanvas.Visibility = System.Windows.Visibility.Visible;
+
+                    }
 
                     this.WIDTHHEIGHT = "( " + fallingbmp.PixelWidth + ", " + fallingbmp.PixelHeight + " )";
 
