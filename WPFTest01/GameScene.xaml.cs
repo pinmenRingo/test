@@ -1148,30 +1148,30 @@ namespace WPFTest01
                                 //マッチング処理
                                 this.isMatched = this.isMatching(jointPoint, this.matchTemplateIndex);
 
-                                if (this.isMatched)
-                                {
-                                    //this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
+                                //if (this.isMatched)
+                                //{
+                                //    //this.MatchAlertColor = new SolidColorBrush(Colors.Blue);
 
-                                    this.tetris.setMatchingStatus(this.isMatched);
-                                    this.tetris.setCurrentMatchGridIndex(this.matchTemplateIndex);
+                                //    this.tetris.setMatchingStatus(this.isMatched);
+                                //    this.tetris.setCurrentMatchGridIndex(this.matchTemplateIndex);
 
-                                    //マッチ用のグリッドを更新
-                                    //次ぎのマッチングテトリミノを描画
-                                    this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
-                                    this.SetColorToMatchGrid(this.matchTemplateIndex);
+                                //    //マッチ用のグリッドを更新
+                                //    //次ぎのマッチングテトリミノを描画
+                                //    this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+                                //    this.SetColorToMatchGrid(this.matchTemplateIndex);
                                     
-                                    //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
-                                    this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
-                                    MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
-                                    //遷移
-                                    this.next_step = STEP.GAME;
-                                }
+                                //    //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
+                                //    this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
+                                //    MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
+                                //    //遷移
+                                //    this.next_step = STEP.GAME;
+                                //}
 
-                                else
-                                {
-                                   // this.MatchAlertColor = new SolidColorBrush(Colors.Red);
-                                    //this.tetris.setMatchingStatus(this.isMatched);
-                                }
+                                //else
+                                //{
+                                //   // this.MatchAlertColor = new SolidColorBrush(Colors.Red);
+                                //    //this.tetris.setMatchingStatus(this.isMatched);
+                                //}
                             }
 
                         }
@@ -1737,10 +1737,10 @@ namespace WPFTest01
                 switch (this.step)
                 {
                     case STEP.MATCHING:
-                        this.tetris.IsTimeOver = false;
-                        MatchingCountDown = 10;
-                        MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
-                        CountDownTimer.Start();
+                        //this.tetris.IsTimeOver = false;
+                        //MatchingCountDown = 10;
+                        //MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
+                        //CountDownTimer.Start();
                         break;
                     case STEP.NONE:
                         break;
@@ -1809,11 +1809,24 @@ namespace WPFTest01
             {
                 case STEP.MATCHING:
 
-                    if (isMatched)
+                    if (this.isMatched)
                     {
                         if (MatchingCountDown >= 0)
                         {
                             this.tetris.IsTimeOver = false;
+
+                            this.tetris.setMatchingStatus(this.isMatched);
+                            this.tetris.setCurrentMatchGridIndex(this.matchTemplateIndex);
+
+                            //マッチ用のグリッドを更新
+                            //次ぎのマッチングテトリミノを描画
+                            this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+                            this.SetColorToMatchGrid(this.matchTemplateIndex);
+
+                            //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
+                            this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
+                            MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
+
                             this.next_step = STEP.GAME;
                         }
                     }
@@ -1838,6 +1851,13 @@ namespace WPFTest01
                         fallingbmpupdated=false;
                         //PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
                     }
+
+                    if (!IsExecutedAtGame)
+                    {
+                        this.next_step = STEP.MATCHING;
+                    }
+
+
                     break;
 
 
