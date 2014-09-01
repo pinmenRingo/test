@@ -1764,7 +1764,7 @@ namespace WPFTest01
                         //gameover = trueだったらゲームオーバーへ gameover画面を表示
                         if (this.isGameOver)
                         {
-                           // result.Source = new BitmapImage(new Uri("gameover.png", UriKind.RelativeOrAbsolute));
+                            // result.Source = new BitmapImage(new Uri("gameover.png", UriKind.RelativeOrAbsolute));
                             
                             this.next_step = STEP.GAME_OVER;
                         }
@@ -1824,6 +1824,11 @@ namespace WPFTest01
                     case STEP.KINECT_LOAD:
                         break;
                     case STEP.GAME_OVER:
+                        BGM_MediaElement.Stop();
+                        BGM_MediaElement.Source = new Uri("Sounds/gameover.mp3", UriKind.Relative);
+                        BGM_MediaElement.Position = new TimeSpan(0, 0, 0);
+                        BGM_MediaElement.MediaEnded -= MediaElement_MediaEnded;
+                        BGM_MediaElement.Play();
                         gameover_canvas.Visibility = System.Windows.Visibility.Visible;
                         break;
                     default:

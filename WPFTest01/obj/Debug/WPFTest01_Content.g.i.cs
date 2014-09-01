@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sounds/bgm.mp3")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sounds/gameover.mp3")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sounds/rotate_se.wav")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sounds/vanish_se.wav")]
 
