@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/ringo_resize.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/gameover.png")]
 
 

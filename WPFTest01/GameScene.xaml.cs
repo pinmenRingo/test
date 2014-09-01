@@ -1745,9 +1745,11 @@ namespace WPFTest01
                     case STEP.NONE:
                         break;
                     case STEP.GAME:
-                        //gameover = trueだったらゲームオーバーへ
+                        //gameover = trueだったらゲームオーバーへ gameover画面を表示
                         if (this.isGameOver)
                         {
+                           // result.Source = new BitmapImage(new Uri("gameover.png", UriKind.RelativeOrAbsolute));
+                            
                             this.next_step = STEP.GAME_OVER;
                         }
                         break;
@@ -1828,6 +1830,9 @@ namespace WPFTest01
                             this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
                             MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
 
+                            //match画像を表示
+                            matching.Source = new BitmapImage(new Uri("mathi2.png", UriKind.RelativeOrAbsolute));
+
                             this.next_step = STEP.GAME;
                         }
                     }
@@ -1865,6 +1870,9 @@ namespace WPFTest01
                 case STEP.KINECT_LOAD:
                     break;
                 case STEP.GAME_OVER:
+
+                    result.Source = new BitmapImage(new Uri("gameover.png", UriKind.RelativeOrAbsolute));
+
                     break;
                 default:
                     break;

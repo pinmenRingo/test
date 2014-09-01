@@ -171,12 +171,26 @@
     <Resource Include="Images\bg.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\bg2.png" />
     <Resource Include="Images\clear.png" />
     <Resource Include="Images\newgame_green.png" />
     <Resource Include="Images\newgame_red.png" />
     <Resource Include="Images\ringo.png" />
+    <Resource Include="Images\subtitle.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Images\title.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\toumei.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\match2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\gameover.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
