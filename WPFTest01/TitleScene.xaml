@@ -35,15 +35,13 @@
                                             <!-- <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="image">
                                                 <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/> 
                                             </ObjectAnimationUsingKeyFrames> -->
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="image1">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
-                                            </ObjectAnimationUsingKeyFrames>
+                                            
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Disabled"/>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
-                            <Image x:Name="image1" Width="250" VerticalAlignment="Bottom" Stretch="Fill" Source="Images/start.png" Margin="-1.25,-1.25,1.25,1.25" Height="70" HorizontalAlignment="Center"/>
+                            <Image Width="250" VerticalAlignment="Bottom" Stretch="Fill" Source="Images/start.png" Margin="-1.25,-1.25,1.25,1.25" Height="70" HorizontalAlignment="Center"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsFocused" Value="True"/>
@@ -60,7 +58,6 @@
 
     <Grid Background="White">
         <Image Source="Images/bg.jpg" Stretch="Fill"/>
-        <Image Source="Images/subtitle.png" Margin="285.209,362.8,284.791,14"/>
         <Image Source="Images/title.png"  Margin="220,94,214,220.4"/>
         <Button Content="Button" Click="Button_Click" Margin="175,291,175,39.4" Style="{DynamicResource NewGameButtonStyle}"/>
     </Grid>
