@@ -8,6 +8,7 @@
 	Title="GameScene" Loaded="GameSceneLoaded" x:Name="Root">
 
     <Grid x:Name="grid01" Background="White">
+        <MediaElement x:Name="BGM_MediaElement" Source="Sounds/BGM.mp3" LoadedBehavior="Manual" MediaEnded="MediaElement_MediaEnded" />
         <Image HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Source="Images/bg.jpg" Stretch="Fill"/>
         <Button x:Name="button01" Click="button01_Click" Content="リセット！" HorizontalAlignment="Left" Height="53" Margin="86.8,0,0,195.8" VerticalAlignment="Bottom" Width="208"/>
 

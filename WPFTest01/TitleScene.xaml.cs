@@ -23,11 +23,18 @@ namespace WPFTest01
         public TitleScene()
         {
             InitializeComponent();
+            BGM_MediaElement.Play();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new GameScene());
+        }
+
+        private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            BGM_MediaElement.Position = new TimeSpan(0, 0, 0);
+            BGM_MediaElement.Play();
         }
     }
 }
