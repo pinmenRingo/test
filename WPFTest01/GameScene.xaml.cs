@@ -217,6 +217,9 @@ namespace WPFTest01
         {
             //なんか元からあったやつ,おまじないって認識で
             InitializeComponent();
+
+            BGM_MediaElement.Play();
+
             debug_index = 18;
 
             this.step = STEP.KINECT_LOAD;
@@ -580,6 +583,12 @@ namespace WPFTest01
         void CountDownTimer_Tick(object sender, EventArgs e)
         {
             MatchingCountDown--;
+        }
+
+        private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            BGM_MediaElement.Position = new TimeSpan(0, 0, 0);
+            BGM_MediaElement.Play();
         }
 
         /// <summary>

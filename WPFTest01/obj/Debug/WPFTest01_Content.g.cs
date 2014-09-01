@@ -8,12 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-<<<<<<< HEAD
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("images/gameover.png")]
-=======
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sounds/bgm.mp3")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sounds/rotate_se.wav")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("sounds/vanish_se.wav")]
->>>>>>> develop_Sound
 
 

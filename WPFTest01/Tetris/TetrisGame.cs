@@ -23,6 +23,9 @@ namespace WPFTest01
         //全マス数
         static int BLOCK_MAX = FIELD_WIDTH*FIELD_HEIGHT;
 
+        public System.Media.SoundPlayer ROTATE = new System.Media.SoundPlayer("Sounds/rotate_se.wav");
+        public System.Media.SoundPlayer VANISH = new System.Media.SoundPlayer("Sounds/vanish_se.wav");
+
         
         //[HEIGHT,WIDTH]で配列を作る
         //着地したブロックを登録するクラス
@@ -210,6 +213,7 @@ namespace WPFTest01
                 {
                     if (!spacepushing)
                     {
+                        ROTATE.Play();
                         fallingTet.Turn(true);
                         spacepushing = true;
                     }
@@ -219,6 +223,7 @@ namespace WPFTest01
                 {
                     if (!spacepushing)
                     {
+                        ROTATE.Play();
                         fallingTet.Turn(false);
                         spacepushing = true;
                     }
@@ -434,6 +439,7 @@ namespace WPFTest01
                 {
                     //y行目が詰まっていた(消える)場合
                     //削除行を覚えての最適化はしない,バグやら手間のため
+                    VANISH.Play();
                     DeleteLine(y);
                     tDeletedLine++;
                 }

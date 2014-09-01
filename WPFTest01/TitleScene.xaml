@@ -57,6 +57,7 @@
     </Page.Resources>
 
     <Grid Background="White">
+        <MediaElement x:Name="BGM_MediaElement" Source="Sounds/BGM.mp3" LoadedBehavior="Manual" MediaEnded="MediaElement_MediaEnded" />
         <Image Source="Images/bg.jpg" Stretch="Fill"/>
         <Image Source="Images/title.png"  Margin="220,94,214,220.4"/>
         <Button Content="Button" Click="Button_Click" Margin="175,291,175,39.4" Style="{DynamicResource NewGameButtonStyle}"/>
