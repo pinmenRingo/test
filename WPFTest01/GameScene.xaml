@@ -65,5 +65,6 @@
             </Viewbox>
         </Canvas>
         <Image HorizontalAlignment="Left" Height="423" Margin="1055,297,0,0" VerticalAlignment="Top" Width="245.91" Source="Images/ringo_resize.png"/>
+        <TextBlock x:Name="MatchingCountDown_textblock" Visibility="Collapsed" FontSize="80" Text="{Binding MatchingCountDown, ElementName=Root}" Foreground="Red" FontWeight="Black" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,140,160,0"/>
     </Grid>
 </Page>

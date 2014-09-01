@@ -7,6 +7,8 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+using WPFTest01;
+
 namespace WPFTest01
 {
     /// <summary>
@@ -47,6 +49,8 @@ namespace WPFTest01
         //次に作成予定のテトリミノ
         private int nextGridTTemplateIndex;
 
+        public bool IsTimeOver = false;
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -75,6 +79,7 @@ namespace WPFTest01
 
             this.isMatched = false;
             this.isExecuted = false;
+            GameScene.IsExecutedAtGame = this.isExecuted;
             //一応
            // ResetGame();
         }
@@ -167,8 +172,9 @@ namespace WPFTest01
                 if (fallingTet == null)
                 {
                     //ここでテンプレートインデックスを使ってランダムに
-                    this.getIsExecute = true;
+                    GameScene.IsExecutedAtGame = true;
                     fallingTet = new Tetromino(this.currentGridTempleteIndex);
+
                 }
 
                 ////今落ちているブロックが着地していたら
@@ -231,6 +237,16 @@ namespace WPFTest01
 
                 //カウントを進める
                 #region フレーム更新
+
+                if (IsTimeOver)
+                {
+                    fallframe = 5;
+                }
+                else
+                {
+                    fallframe = 10;
+                }
+
                 if (--framecount == 0)
                 {
                     //fallspeedフレーム経過した
@@ -256,14 +272,13 @@ namespace WPFTest01
                             gameover = true;//temp,boolを返して外でやるべき
                             //背景を真っ赤に
                             GameScene.gamecanvas.Background = new SolidColorBrush(Colors.Red);
-                            this.isExecuted = false;
                             //ゲームオーバーなのでtrueを返す
                             return true;
                         }
 
                         this.isMatched = false;
                         this.fallingTet = null;
-                        this.isExecuted = false;
+                        GameScene.IsExecutedAtGame = false;
                     }
                 }
                 #endregion

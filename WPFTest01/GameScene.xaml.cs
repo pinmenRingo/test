@@ -163,6 +163,7 @@ namespace WPFTest01
 
         static Random rand = new Random();//引数無しなのでシード値は時間からいい感じにやってくれるそうです
 
+        public static bool IsExecutedAtGame = false;
 
         //追加のキネクト要素
         private MultiSourceFrameReader multiFrameSourceReader = null;
@@ -187,7 +188,8 @@ namespace WPFTest01
             NONE = -1,
             GAME = 0,
             KINECT_LOAD,
-            GAME_OVER
+            GAME_OVER,
+            MATCHING
         };
 
         private STEP step = STEP.NONE;
@@ -197,6 +199,20 @@ namespace WPFTest01
         private bool isKinectLoaded = false;
         private bool isGameOver = false;
 
+        private DispatcherTimer CountDownTimer = new DispatcherTimer()
+        {
+            Interval = new TimeSpan(0, 0, 1),
+        };
+        // マッチングのカウントダウン用変数
+        public int MatchingCountDown
+        {
+            get { return (int)GetValue(MatchingCountDownProperty); }
+            set { SetValue(MatchingCountDownProperty, value); }
+        }
+        public static readonly DependencyProperty MatchingCountDownProperty =
+            DependencyProperty.Register("MatchingCountDown", typeof(int), typeof(GameScene), new PropertyMetadata(0));
+
+        
         public GameScene()
         {
             //なんか元からあったやつ,おまじないって認識で
@@ -556,7 +572,14 @@ namespace WPFTest01
             timer.Interval = new TimeSpan(0, 0, 0, 0, 16);//1秒60フレームに設定,1000/60=16.6666...
             timer.Tick += timer_Tick;//デリゲートを追加？的な
             timer.Start();//タイマースタート
-         
+
+            // マッチングのタイマー準備
+            CountDownTimer.Tick += CountDownTimer_Tick;
+        }
+
+        void CountDownTimer_Tick(object sender, EventArgs e)
+        {
+            MatchingCountDown--;
         }
 
         /// <summary>
@@ -774,7 +797,7 @@ namespace WPFTest01
             );
         }
 
-        #region Kienct
+        #region Kinect
         public event PropertyChangedEventHandler PropertyChanged;
 
 #region バインディング
@@ -1119,7 +1142,7 @@ namespace WPFTest01
                             //体を描画
                             this.DrawBody(joints, jointPoint, dc, drawPen);
 
-                            if (!this.tetris.getIsExecute)
+                            if (!GameScene.IsExecutedAtGame && !this.tetris.getIsExecute)
                             {
 
                                 //マッチング処理
@@ -1139,17 +1162,17 @@ namespace WPFTest01
                                     
                                     //次ぎ描画予定のテトリミノをTetrisGameクラスに知らせる
                                     this.tetris.setNextMatchGridIndex(this.matchTemplateIndex);
+                                    MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
+                                    //遷移
+                                    this.next_step = STEP.GAME;
                                 }
 
                                 else
                                 {
                                    // this.MatchAlertColor = new SolidColorBrush(Colors.Red);
                                     //this.tetris.setMatchingStatus(this.isMatched);
-                                } 
+                                }
                             }
-
-                            
-
 
                         }
 
@@ -1703,9 +1726,6 @@ namespace WPFTest01
 
         #endregion
 
-
-
-
         //毎フレーム呼ばれる関数
         void timer_Tick(object sender, EventArgs e)
         {
@@ -1716,6 +1736,12 @@ namespace WPFTest01
             {
                 switch (this.step)
                 {
+                    case STEP.MATCHING:
+                        this.tetris.IsTimeOver = false;
+                        MatchingCountDown = 10;
+                        MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
+                        CountDownTimer.Start();
+                        break;
                     case STEP.NONE:
                         break;
                     case STEP.GAME:
@@ -1724,7 +1750,6 @@ namespace WPFTest01
                         {
                             this.next_step = STEP.GAME_OVER;
                         }
-
                         break;
 
                     case STEP.KINECT_LOAD:
@@ -1734,7 +1759,7 @@ namespace WPFTest01
                         {
                             if (this.step_timer > 20)
                             {
-                                this.next_step = STEP.GAME;
+                                this.next_step = STEP.MATCHING;
                             }
                         }
                         break;
@@ -1753,11 +1778,19 @@ namespace WPFTest01
                 this.next_step = STEP.NONE;
                 switch (this.step)
                 {
+                    case STEP.MATCHING:
+                        this.tetris.IsTimeOver = false;
+                        MatchingCountDown = 10;
+                        MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
+                        CountDownTimer.Start();
+                        this.SetColorToMatchGrid(matchTemplateIndex);
+                        break;
                     case STEP.NONE:
                         break;
 
                     case STEP.GAME:
-                        this.SetColorToMatchGrid(matchTemplateIndex);
+                        CountDownTimer.Stop();
+                        MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Collapsed;
                         break;
 
                     case STEP.KINECT_LOAD:
@@ -1774,20 +1807,37 @@ namespace WPFTest01
             //状態ごとの、毎フレームの更新処理
             switch (this.step)
             {
+                case STEP.MATCHING:
+
+                    if (isMatched)
+                    {
+                        if (MatchingCountDown >= 0)
+                        {
+                            this.tetris.IsTimeOver = false;
+                            this.next_step = STEP.GAME;
+                        }
+                    }
+                    if (MatchingCountDown < 0)
+                    {
+                        this.tetris.setMatchingStatus(true);
+                        this.tetris.setCurrentMatchGridIndex(this.matchTemplateIndex);
+                        this.tetris.IsTimeOver = true;
+                        this.next_step = STEP.GAME;
+                    }
+                    break;
                 case STEP.NONE:
                     break;
                 case STEP.GAME:
                     //Procを呼ぶ
                     this.isGameOver =tetris.Proc();//ゲームオーバー時はtrueが返ってくる
 
-                     this.WIDTHHEIGHT = "( " + fallingbmp.PixelWidth + ", " + fallingbmp.PixelHeight + " )";
+                    this.WIDTHHEIGHT = "( " + fallingbmp.PixelWidth + ", " + fallingbmp.PixelHeight + " )";
 
                     if (fallingbmpupdated)
                     {
                         fallingbmpupdated=false;
                         //PropertyChanged(this, new PropertyChangedEventArgs("image_falling"));
                     }
-
                     break;
 
 
@@ -1808,7 +1858,7 @@ namespace WPFTest01
 //                byte color1 = (byte)rand.Next(256);
 //                byte color2 = (byte)rand.Next(256);
 //                byte color3 = (byte)rand.Next(256);
-//                int length = fallingbytes.Length/4;
+//                int length = fallingbytes.Length/4;b
 //                for (int i = 0; i < length; ++i)
 //                {
 //                    fallingbytes[i * 4] = color1;
