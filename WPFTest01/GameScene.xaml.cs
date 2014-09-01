@@ -1104,6 +1104,7 @@ namespace WPFTest01
 
                                 jointPoint[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
 
+                                #region Jointdebug
                                 /*
                                 switch (jointType)
                                 {
@@ -1145,6 +1146,7 @@ namespace WPFTest01
                                     default:
                                         break;
                                 }*/
+                                #endregion
 
                             }
 
@@ -1182,9 +1184,13 @@ namespace WPFTest01
                                 //    //this.tetris.setMatchingStatus(this.isMatched);
                                 //}
                             }
+                            else
+                            {
+                                this.isMatched = false;
+                            }
 
                         }
-
+                        
                     }
 
                     //レンダーエリア外に描画しないように防ぐ
@@ -1750,6 +1756,7 @@ namespace WPFTest01
                         //MatchingCountDown = 10;
                         //MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
                         //CountDownTimer.Start();
+               
                         break;
                     case STEP.NONE:
                         break;
@@ -1761,6 +1768,13 @@ namespace WPFTest01
                             
                             this.next_step = STEP.GAME_OVER;
                         }
+
+                        if (!this.isKinectLoaded)
+                        {
+                            this.next_step = STEP.MATCHING;
+                        }
+
+
                         break;
 
                     case STEP.KINECT_LOAD:
