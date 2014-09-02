@@ -293,6 +293,8 @@ namespace WPFTest01
                 }
             }
 
+            GameScene.fallingbmpcanvas.Visibility = System.Windows.Visibility.Visible;
+
             return generated;
 
 

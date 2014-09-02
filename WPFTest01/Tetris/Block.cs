@@ -40,7 +40,8 @@ namespace WPFTest01
                 Fill = new SolidColorBrush(incolor),
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                 VerticalAlignment = System.Windows.VerticalAlignment.Top,
-                Margin = new Thickness(0, 0, 0, 0)/*,
+                Margin = new Thickness(0, 0, 0, 0),
+                Opacity=0.3/*,
                 Stroke=new SolidColorBrush(Colors.Black),
                 StrokeThickness = 1.5*/
             };

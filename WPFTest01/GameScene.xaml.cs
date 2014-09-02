@@ -715,6 +715,8 @@ namespace WPFTest01
                 0
                 );
 
+            fallingbmpcanvas.Visibility = Visibility.Collapsed;
+
 
             //fallingbmp.CopyPixels(new Int32Rect(256, 0, COLOR_PIXELS_WIDTH, COLOR_PIXELS_HEIGHT), fieldbytes, FIELD_WIDTH_PIX * BYTES_PER_PIX, 0);
             //fieldbmp.WritePixels(
@@ -2000,7 +2002,8 @@ namespace WPFTest01
         //gamecanvasにRectangleを登録する
         public static void AddRect(Rectangle inobj)
         {
-            gamecanvas.Children.Add(inobj);
+            //gamecanvas.Children.Add(inobj);
+            gamecanvas.Children.Insert(0, inobj);
         }
         //gamecanvasからRectangleを削除する
         public static void DeleteRect(Rectangle inobj)
