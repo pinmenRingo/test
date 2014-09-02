@@ -146,17 +146,17 @@ namespace WPFTest01
         public static WriteableBitmap fallingbmp = null;//new WriteableBitmap(64, 64, 96.0, 96.0, PixelFormats.Bgra32, null)
         
         //カラーセンサーから取得するサイズ
-        const int COLOR_PIXELS_WIDTH = 1380;
-        const int COLOR_PIXELS_HEIGHT = 1080;
+        public const int COLOR_PIXELS_WIDTH = 1380;
+        public const int COLOR_PIXELS_HEIGHT = 1080;
 
-        const int BLOCK_WIDTH_PIX = COLOR_PIXELS_WIDTH / 4;//16;//512/TetrisGame.FIELD_WIDTH;
-        const int FIELD_WIDTH_PIX = BLOCK_WIDTH_PIX*TetrisGame.FIELD_WIDTH;
-        const int BLOCK_HEIGHT_PIX = COLOR_PIXELS_HEIGHT/4;//16;//22;
-        const int FIELD_HEIGHT_PIX = BLOCK_HEIGHT_PIX*TetrisGame.FIELD_HEIGHT;
-        const int BYTES_PER_PIX = 4;
+        public const int BLOCK_WIDTH_PIX = COLOR_PIXELS_WIDTH / 4;//16;//512/TetrisGame.FIELD_WIDTH;
+        public const int FIELD_WIDTH_PIX = BLOCK_WIDTH_PIX*TetrisGame.FIELD_WIDTH;
+        public const int BLOCK_HEIGHT_PIX = COLOR_PIXELS_HEIGHT/4;//16;//22;
+        public const int FIELD_HEIGHT_PIX = BLOCK_HEIGHT_PIX*TetrisGame.FIELD_HEIGHT;
+        public const int BYTES_PER_PIX = 4;
         static byte[] fallingbytes = new byte[COLOR_PIXELS_WIDTH*COLOR_PIXELS_WIDTH * BYTES_PER_PIX];
         static byte[] fieldbytes = null;
-        static WriteableBitmap fieldbmp = null;
+        public static WriteableBitmap fieldbmp = null;
 
         static byte[] temprowbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];
         //static byte[] tempfallingbytes = new byte[BLOCK_WIDTH_PIX * 4 * BLOCK_HEIGHT_PIX * BYTES_PER_PIX];

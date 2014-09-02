@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows;
 
 using WPFTest01;
 
@@ -472,6 +473,7 @@ namespace WPFTest01
                         rects[y, x].Move(0, 1);
                         //System.Windows.MessageBox.Show( "("+x+","+y+")" );
                     }
+
                 }
             }
             //一番上の行を空にする
@@ -479,6 +481,13 @@ namespace WPFTest01
             {
                 bUsing[0, x] = false;
             }
+
+
+            //画像も下げる
+            byte[] tbytes = new byte[GameScene.COLOR_PIXELS_WIDTH * GameScene.BLOCK_HEIGHT_PIX * inline  * GameScene.BYTES_PER_PIX];
+            GameScene.fieldbmp.CopyPixels(new Int32Rect(0, 0, GameScene.COLOR_PIXELS_WIDTH, GameScene.BLOCK_HEIGHT_PIX * inline), tbytes, GameScene.COLOR_PIXELS_WIDTH * GameScene.BYTES_PER_PIX, 0);
+            GameScene.fieldbmp.WritePixels(new Int32Rect(0, GameScene.BLOCK_HEIGHT_PIX, GameScene.COLOR_PIXELS_WIDTH, GameScene.BLOCK_HEIGHT_PIX * inline), tbytes, GameScene.COLOR_PIXELS_WIDTH * GameScene.BYTES_PER_PIX, 0);
+            
 
         }
     }
