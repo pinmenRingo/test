@@ -320,7 +320,7 @@ namespace WPFTest01
                 //テトリミノの座標を移動させる
                 x += dx; y += dy;
                 //落下キャンバスも移動させる
-                GameScene.fallingbmpcanvas.Margin = new System.Windows.Thickness((x - 2) * Block.BLOCK_WIDTH, (y) * Block.BLOCK_HEIGHT, 0, 0);
+                GameScene.fallingbmpcanvas.Margin = new System.Windows.Thickness((x - 2) * Block.BLOCK_WIDTH, (y-1) * Block.BLOCK_HEIGHT, 0, 0);
             }
 
             return bCanMove;
@@ -331,7 +331,7 @@ namespace WPFTest01
         {
             bool canMove = true;
 
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < 4 && canMove; ++i)
             {
                canMove =  blocks[i].CanMove(dx, dy);
             }

@@ -678,7 +678,7 @@ namespace WPFTest01
 
             byte[] tbytes1 = new byte[length * BYTES_PER_PIX];
             byte[] tbytes2 = new byte[length * BYTES_PER_PIX];
-            //y -= 1;//無回転
+            y -= 1;//無回転
             if (y < 0) y = 0;
             int gety = FIELD_HEIGHT_PIX - y * BLOCK_HEIGHT_PIX;
             if (gety > BLOCK_HEIGHT_PIX * 4)
