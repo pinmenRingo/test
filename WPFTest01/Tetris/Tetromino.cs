@@ -12,6 +12,8 @@ namespace WPFTest01
 
         //テトリミノの座標の中心
         public int x, y;
+        //ずれた量
+        public int dx, dy;
 
         //テトリミノを構成するブロック達
         public Block[] blocks = new Block[4];
@@ -207,7 +209,8 @@ namespace WPFTest01
             //回転の際にテトリミノの中心で回すため、
             //特定のテトリミノは座標を調整
             //闇
-            
+
+            dx = 0;
             if (tetrominonum == 3 || 
                 tetrominonum == 17||
                 tetrominonum == 6)
@@ -218,6 +221,7 @@ namespace WPFTest01
             {
                 y = 1;
                 x--;
+                dx = 1;
             }
             else if (tetrominonum == 4)
             {
@@ -228,7 +232,7 @@ namespace WPFTest01
             {
                 y = 1;
             }
-
+            dy = y;
             
 
             //System.Windows.MessageBox.Show(tetrominonum.ToString());
@@ -320,7 +324,7 @@ namespace WPFTest01
                 //テトリミノの座標を移動させる
                 x += dx; y += dy;
                 //落下キャンバスも移動させる
-                GameScene.fallingbmpcanvas.Margin = new System.Windows.Thickness((x - 2) * Block.BLOCK_WIDTH, (y-1) * Block.BLOCK_HEIGHT, 0, 0);
+                GameScene.fallingbmpcanvas.Margin = new System.Windows.Thickness((x -2+this.dx) * Block.BLOCK_WIDTH, (y-1-this.dy) * Block.BLOCK_HEIGHT, 0, 0);
             }
 
             return bCanMove;

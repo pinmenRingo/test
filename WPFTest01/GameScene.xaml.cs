@@ -659,11 +659,12 @@ namespace WPFTest01
 
         //}
 
-        public static void AddBMPField( int x, int y )
+        public static void AddBMPField( int x, int y, int dx, int dy )
         {
             int length = COLOR_PIXELS_WIDTH * COLOR_PIXELS_WIDTH;
 
             x -= 2;//無回転
+            x += dx;
             int sx = x * BLOCK_WIDTH_PIX;
             int getx = FIELD_WIDTH_PIX - x * BLOCK_WIDTH_PIX;
             if (getx > BLOCK_WIDTH_PIX * 4)
@@ -678,7 +679,7 @@ namespace WPFTest01
 
             byte[] tbytes1 = new byte[length * BYTES_PER_PIX];
             byte[] tbytes2 = new byte[length * BYTES_PER_PIX];
-            y -= 1;//無回転
+            y -=  1 + dy;//無回転
             if (y < 0) y = 0;
             int gety = FIELD_HEIGHT_PIX - y * BLOCK_HEIGHT_PIX;
             if (gety > BLOCK_HEIGHT_PIX * 4)
@@ -1809,7 +1810,7 @@ namespace WPFTest01
                         MatchingCountDown = 5;
                         MatchingCountDown_textblock.Visibility = System.Windows.Visibility.Visible;
                         CountDownTimer.Start();
-                        this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);
+                        this.matchTemplateIndex = rand.Next(TEMPLATE_NUM);//こここれ
                         this.SetColorToMatchGrid(matchTemplateIndex);
                         matchImage.Visibility = System.Windows.Visibility.Collapsed;
                         break;
@@ -1909,7 +1910,6 @@ namespace WPFTest01
                 default:
                     break;
             }
-
             //キネクト無い時用
 //            if (waitingforclip)
 //            {

@@ -141,7 +141,7 @@ namespace WPFTest01
                     //GameScene.AddBMP(intet.x, intet.y + i, i);
                 }
             }
-            GameScene.AddBMPField(intet.x, intet.y);
+            GameScene.AddBMPField(intet.x,intet.y,intet.dx,intet.dy);
 
             for (int i = 0; i < 4; ++i)
             {
