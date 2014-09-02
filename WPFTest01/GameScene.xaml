@@ -70,7 +70,7 @@
         <Image x:Name="result" Margin="280,142,278,156" Source="Images/toumei.png" Stretch="Fill"/>
         <Image x:Name="matchImage" HorizontalAlignment="Left" Height="89" Margin="578,26,0,0" VerticalAlignment="Top" Width="424" Source="Images/yahoo_match.png" Stretch="Fill" Visibility="Hidden"/>
         <Canvas x:Name="gameover_canvas" HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Background="#BA000000" Visibility="Collapsed">
-            <Image HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Source="Images/gameover.png" Stretch="Fill" OpacityMask="#FF6C3232"/>
+            <Image HorizontalAlignment="Left" Height="720" VerticalAlignment="Top" Width="1280" Source="Images/gameover2.png" Stretch="Fill" OpacityMask="#FF6C3232"/>
         </Canvas>
     </Grid>
 </Page>

@@ -1906,7 +1906,7 @@ namespace WPFTest01
                     break;
                 case STEP.GAME_OVER:
 
-                    result.Source = new BitmapImage(new Uri("gameover.png", UriKind.RelativeOrAbsolute));
+                    result.Source = new BitmapImage(new Uri("Images/gameover2.png", UriKind.RelativeOrAbsolute));
 
                     break;
                 default:

@@ -192,6 +192,9 @@
   <ItemGroup>
     <Resource Include="Images\gameover.png" />
     <Resource Include="Images\yahoo_match.png" />
+    <Resource Include="Images\gameover2.png" />
+    <Resource Include="Images\gameover3.png" />
+    <Resource Include="Images\gameover4.png" />
     <Content Include="Sounds\BGM.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
